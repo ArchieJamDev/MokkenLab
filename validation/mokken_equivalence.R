@@ -49,10 +49,27 @@ source(file.path("tests", "testthat", "helper-edge-case-data.R"))
 
 quiet <- function(expr) { out <- NULL; utils::capture.output(out <- suppressWarnings(expr)); out }
 results <- list()
+# A check passes only when both sides have the same length, the same missing
+# positions and finite values that agree within the tolerance; a length or
+# NA mismatch is a failure, never a silently ignored difference.
+# ES: Una verificación pasa solo si ambos lados tienen la misma longitud,
+# las mismas posiciones perdidas y valores finitos que coinciden dentro de la
+# tolerancia; una diferencia de longitud o de NA es un fallo.
 record <- function(check, ours, theirs, tol = 1e-8) {
-    diff <- max(abs(as.numeric(ours) - as.numeric(theirs)), na.rm = TRUE)
+    ours <- as.numeric(unlist(ours))
+    theirs <- as.numeric(unlist(theirs))
+    problem <- ""
+    if (length(ours) != length(theirs)) {
+        problem <- sprintf("length %d vs %d", length(ours), length(theirs))
+    } else if (!identical(is.na(ours), is.na(theirs))) {
+        problem <- "different missing positions"
+    } else if (any(!is.finite(ours[!is.na(ours)])) || sum(!is.na(ours)) == 0) {
+        problem <- "non-finite or empty values"
+    }
+    diff <- if (nzchar(problem)) NA_real_ else max(abs(ours - theirs), na.rm = TRUE)
     results[[length(results) + 1]] <<- data.frame(check = check, max_abs_diff = signif(diff, 3),
-                                                  tolerance = tol, pass = diff <= tol)
+                                                  tolerance = tol, pass = !nzchar(problem) && diff <= tol,
+                                                  problem = problem)
 }
 parse_ci <- function(x) {
     x <- gsub("\\[|\\]", "", trimws(x))
@@ -129,3 +146,8 @@ out <- do.call(rbind, results)
 utils::write.csv(out, file.path("validation", "mokken_equivalence_results.csv"), row.names = FALSE)
 print(out, row.names = FALSE)
 cat(sprintf("\n%d of %d checks pass.\n", sum(out$pass), nrow(out)))
+# Non-zero exit when any check fails, so CI turns red.
+# ES: Salida distinta de cero si alguna verificación falla, para que la CI
+# se ponga en rojo.
+if (!all(out$pass))
+    quit(status = 1)

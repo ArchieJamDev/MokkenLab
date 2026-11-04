@@ -284,4 +284,14 @@
         `volume`="19", 
         `issue`="4", 
         `pages`="337-352", 
-        `url`="https://doi.org/10.1177/014662169501900404"))
+        `url`="https://doi.org/10.1177/014662169501900404"), 
+    `hemker_1997`=list(
+        `type`="article", 
+        `author`="Hemker, B. T., Sijtsma, K., Molenaar, I. W., & Junker, B. W.", 
+        `year`=1997, 
+        `title`="Stochastic ordering using the latent trait and the sum score in polytomous IRT models", 
+        `publisher`="Psychometrika", 
+        `volume`="62", 
+        `issue`="3", 
+        `pages`="331-347", 
+        `url`="https://doi.org/10.1007/BF02294555"))

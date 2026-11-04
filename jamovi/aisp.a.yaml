@@ -323,6 +323,13 @@ options:
     type: Bool
     default: true
 
+  # Single lower bound: Hi of every item within its scale, with intervals.
+  # ES: Una sola cota: Hi de cada ítem dentro de su escala, con intervalos.
+  - name: scalePlot
+    title: Scale membership plot
+    type: Bool
+    default: true
+
   - name: sequencePlot
     title: Partition across lower bounds plot
     type: Bool

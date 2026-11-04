@@ -64,3 +64,10 @@ jobs:
             exit 1
           fi
           Rscript .github/scripts/run-tests.R
+
+      # Every number MokkenLab reports must equal direct mokken calls; the
+      # script exits non-zero when any comparison fails.
+      # ES: Cada número que informa MokkenLab debe ser igual a las llamadas
+      # directas a mokken; el script termina con error si alguna falla.
+      - name: Check numerical equivalence with mokken
+        run: Rscript validation/mokken_equivalence.R

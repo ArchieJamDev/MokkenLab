@@ -36,6 +36,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             testHi = FALSE,
             startSet = list(),
             scaleCoefs = TRUE,
+            scalePlot = TRUE,
             sequencePlot = TRUE,
             plotWidth = 0,
             plotHeight = 0,
@@ -239,6 +240,10 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "scaleCoefs",
                 scaleCoefs,
                 default=TRUE)
+            private$..scalePlot <- jmvcore::OptionBool$new(
+                "scalePlot",
+                scalePlot,
+                default=TRUE)
             private$..sequencePlot <- jmvcore::OptionBool$new(
                 "sequencePlot",
                 sequencePlot,
@@ -340,6 +345,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..testHi)
             self$.addOption(private$..startSet)
             self$.addOption(private$..scaleCoefs)
+            self$.addOption(private$..scalePlot)
             self$.addOption(private$..sequencePlot)
             self$.addOption(private$..plotWidth)
             self$.addOption(private$..plotHeight)
@@ -383,6 +389,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         testHi = function() private$..testHi$value,
         startSet = function() private$..startSet$value,
         scaleCoefs = function() private$..scaleCoefs$value,
+        scalePlot = function() private$..scalePlot$value,
         sequencePlot = function() private$..sequencePlot$value,
         plotWidth = function() private$..plotWidth$value,
         plotHeight = function() private$..plotHeight$value,
@@ -425,6 +432,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..testHi = NA,
         ..startSet = NA,
         ..scaleCoefs = NA,
+        ..scalePlot = NA,
         ..sequencePlot = NA,
         ..plotWidth = NA,
         ..plotHeight = NA,
@@ -452,6 +460,7 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         sequenceGuide = function() private$.items[["sequenceGuide"]],
         sequence = function() private$.items[["sequence"]],
         sequenceSummary = function() private$.items[["sequenceSummary"]],
+        scalePlotImg = function() private$.items[["scalePlotImg"]],
         sequencePlot = function() private$.items[["sequencePlot"]],
         interpretation = function() private$.items[["interpretation"]],
         notes = function() private$.items[["notes"]]),
@@ -754,6 +763,53 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="integer"))))
             self$add(jmvcore::Image$new(
                 options=options,
+                name="scalePlotImg",
+                title="Item scalability within each scale",
+                width=650,
+                height=450,
+                renderFun=".plotScales",
+                visible="(lbMode:single && scalePlot)",
+                clearWith=list(
+                    "scaleCoefs",
+                    "scalePlot",
+                    "plotPalette",
+                    "plotValueLabels",
+                    "plotYRange",
+                    "plotAxisAngle",
+                    "plotLegend",
+                    "plotNcol",
+                    "plotLineWidth",
+                    "plotPointSize",
+                    "plotHeight",
+                    "plotWidth",
+                    "vars",
+                    "negItems",
+                    "naHandling",
+                    "twowaySets",
+                    "twowaySeed",
+                    "scoreRange",
+                    "scoreMin",
+                    "scoreMax",
+                    "reportLang",
+                    "clusterVar",
+                    "lbMode",
+                    "lowerbound",
+                    "lbFrom",
+                    "lbTo",
+                    "lbStep",
+                    "search",
+                    "popsize",
+                    "maxgensMode",
+                    "maxgens",
+                    "pxover",
+                    "pmutation",
+                    "gaSeed",
+                    "alpha",
+                    "typeZ",
+                    "testHi",
+                    "startSet")))
+            self$add(jmvcore::Image$new(
+                options=options,
                 name="sequencePlot",
                 title="Scale membership across lower bounds",
                 width=650,
@@ -865,6 +921,7 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param testHi .
 #' @param startSet .
 #' @param scaleCoefs .
+#' @param scalePlot .
 #' @param sequencePlot .
 #' @param plotWidth .
 #' @param plotHeight .
@@ -888,6 +945,7 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$sequenceGuide} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$sequence} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$sequenceSummary} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$scalePlotImg} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$sequencePlot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$interpretation} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$notes} \tab \tab \tab \tab \tab a html \cr
@@ -932,6 +990,7 @@ aisp <- function(
     testHi = FALSE,
     startSet = list(),
     scaleCoefs = TRUE,
+    scalePlot = TRUE,
     sequencePlot = TRUE,
     plotWidth = 0,
     plotHeight = 0,
@@ -991,6 +1050,7 @@ aisp <- function(
         testHi = testHi,
         startSet = startSet,
         scaleCoefs = scaleCoefs,
+        scalePlot = scalePlot,
         sequencePlot = sequencePlot,
         plotWidth = plotWidth,
         plotHeight = plotHeight,

@@ -1,3 +1,34 @@
+# MokkenLab 0.1.0 (development), after the independent audit of 2026-11-04
+
+An independent review reproduced the numerical equivalence with mokken and the
+test suite, and confirmed several problems. All confirmed ones are fixed and
+pinned by `tests/testthat/test-audit.R`:
+
+* **Conditional association** failed ("Not computable") with W indices off,
+  the default: `check.ca()` returns a different structure in that case, now
+  normalized.
+* **Two-level item pairs** split item names at spaces; pairs are now built by
+  position, so names with spaces are kept whole.
+* **"Not evaluable" is never shown as "No violations"**: assumption checks
+  have an explicit not-evaluable state, and the violation profile keeps it.
+* **Key findings** now list every section that could not be computed and, in
+  Model Assumptions, every check not run.
+* **Automated Item Selection** with one lower bound now has a plot (Hi of
+  every item within its scale); before, only the sequence mode had one.
+* Interpretations made **conditional on the evidence**: a global H, high
+  reliability or no flagged violation no longer read as proof of one
+  attribute, of an invariant ordering or of local independence (Hemker et
+  al., 1997, added for polytomous items).
+* The **reversal row** is always shown (also "None"), and the two-level
+  analysis states its design and flags very few subjects.
+* Several completed data sets are labeled as a **sensitivity check, not
+  pooled** inference.
+* Weights for Guttman errors explain mokken's internal failure on tied item
+  steps; range-preserving intervals are defined at H = 1; LCRC states how its
+  number of classes was chosen; norm tables are labeled as sample statistics.
+* `validation/mokken_equivalence.R` checks lengths, missing positions and
+  finiteness, exits non-zero on any failure, and runs in CI on every push.
+
 # MokkenLab 0.1.0 (development)
 
 First version. Every exported function of mokken 3.1.2 is exposed in four

@@ -232,10 +232,12 @@ jamovi's **⋮** → **Open** → **Data Library** → **Mokken Lab**.
   same data: 20 of 20 checks pass
   ([results](validation/mokken_equivalence_results.csv)), including the
   confidence intervals MokkenLab computes itself, which agree with mokken's
-  printed ones to its three printed decimals.
+  printed ones to its three printed decimals. It runs in CI on every push and
+  fails the build on any mismatch.
 - [`tests/testthat/`](tests/testthat) exercises every analysis on
   pathological input (constant, empty and non-integer items, accented names,
-  missing values, tiny samples), every option and every plot setting: 112
+  missing values, tiny samples), every option and every plot setting, plus
+  regression tests for every confirmed finding of an independent audit: 132
   expectations, all passing. The CI workflow runs them on every push.
 
 ---

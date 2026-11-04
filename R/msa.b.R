@@ -200,10 +200,9 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                              as.integer(min(categories)), as.integer(max(categories)))),
                 list(tr("Scale H", "H de la escala"), sprintf("%s (%s)",
                      .mk_fmt_num(h_scale, 3), .mk_h_label(lang, h_scale))))
-            if (length(prep$neg) > 0)
-                summary_rows[[length(summary_rows) + 1]] <- list(
+            summary_rows[[length(summary_rows) + 1]] <- list(
                     tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
-                    paste(prep$neg, collapse = ", "))
+                    .mk_reversed_label(tr, prep))
             if (!is.null(level2))
                 summary_rows[[length(summary_rows) + 1]] <- list(
                     tr("Clusters", "Conglomerados"), sprintf(tr("%s (%d clusters; standard errors account for nesting)",
@@ -355,6 +354,8 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             private$.interpret(lang, tr, txt, h_scale, ci_scale, hi, z_items, type_z, lb, negative_pairs,
                                rel, errors, set_range, prep)
 
+            for (section in .mk_failed_sections(self$results, lang))
+                private$.addKey("warnings", sprintf(txt("common", "key_failed"), section))
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
 
@@ -513,6 +514,9 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 .mk_add_row(table, k, list(coef = rows[[k]][2], value = value))
                 if (is.na(value))
                     table$addFootnote(rowKey = k, col = "value", txt("msa", "rel_value_na"))
+                else if (identical(k, "LCRC"))
+                    table$addFootnote(rowKey = k, col = "coef", sprintf(txt("msa", "lcrc_note"), nclass,
+                        if (identical(opts$lcrcClassesMode, "manual")) txt("msa", "lcrc_manual") else txt("msa", "lcrc_auto")))
             }
             if (isTRUE(opts$relIRC) && !is.null(rel$irc)) {
                 for (i in seq_len(ncol(X)))

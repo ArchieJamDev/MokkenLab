@@ -921,7 +921,13 @@ genetic algorithm, which has no seed argument in mokken, runs under
 ones (validation/). `check.bounds()` can return upper bounds outside [-1, 1];
 those are shown but left out of the verdict, with a footnote. Result columns
 are named after item positions (E(X3)), so they are located by position.
-Several functions print to the console; `.mk_capture()` discards that output.
+Several functions print to the console; `.mk_capture()` discards that output. `check.ca()` returns
+`list(InScale, Index, Flagged)` with `Windex = TRUE` but the bare list of
+iterations with `Windex = FALSE`; both are normalized. `MLweight()` fails
+inside mokken for some item pairs with tied item-step popularities; the row
+explains it. `MLcoefH()` names item pairs by pasting item names with a space,
+so pairs are identified by position (`combn()` order), never by splitting
+names.
 
 -------------------------------------------------------------------------------
 

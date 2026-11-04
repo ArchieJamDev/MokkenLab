@@ -102,6 +102,7 @@ items:
     visible: (checkMono)
     refs:
       - junker_sijtsma_2000
+      - hemker_1997
       - molenaar_sijtsma_2000
     clearWith:
       - vars

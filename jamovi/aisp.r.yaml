@@ -298,6 +298,53 @@ items:
         title: "Items in the largest scale"
         type: integer
 
+  - name: scalePlotImg
+    title: Item scalability within each scale
+    type: Image
+    width: 650
+    height: 450
+    renderFun: .plotScales
+    visible: (lbMode:single && scalePlot)
+    clearWith:
+      - scaleCoefs
+      - scalePlot
+      - plotPalette
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+
   - name: sequencePlot
     title: Scale membership across lower bounds
     type: Image

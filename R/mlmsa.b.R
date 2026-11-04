@@ -157,13 +157,27 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     as.integer(min(raters)), .mk_fmt_num(stats::median(raters), 1), as.integer(max(raters)))),
                 list(tr("Group proportions", "Proporciones de grupo"), if (isTRUE(self$options$weighProps))
                     tr("Weighted by group size", "Ponderadas por tamaño de grupo") else tr("Averaged", "Promediadas")))
-            if (length(prep$neg) > 0)
-                rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
-                                                 paste(prep$neg, collapse = ", "))
+            rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
+                                                 .mk_reversed_label(tr, prep))
             for (i in seq_along(rows))
                 .mk_add_row(self$results$summary, i, list(element = rows[[i]][[1]], value = rows[[i]][[2]]))
             if (any(raters < 2))
                 self$results$summary$setNote("single", sprintf(txt("ml", "single_rater"), sum(raters < 2)))
+            # The design is what makes the coefficients interpretable: the
+            # subject variable must identify who or what is rated by several
+            # raters. A grouping such as sex runs but answers no two-level
+            # question (independent audit, 2026-11-04), so the requirement is
+            # always stated, and very few subjects are flagged.
+            # ES: El diseño es lo que hace interpretables los coeficientes: la
+            # variable de sujeto debe identificar a quién o qué evalúan varios
+            # evaluadores. Una agrupación como el sexo se ejecuta pero no
+            # responde ninguna pregunta de dos niveles, así que el requisito
+            # siempre se declara, y se señalan los casos con muy pocos sujetos.
+            self$results$summary$setNote("design", txt("ml", "design_note"))
+            if (length(raters) < 10) {
+                self$results$summary$setNote("few", sprintf(txt("ml", "few_subjects"), length(raters)))
+                private$.addKey("uncertain", sprintf(txt("ml", "key_few_subjects"), length(raters)))
+            }
 
             # -----------------------------------------------------------------
             # Scale and item tables. Intervals are mokken's own (ci.*.l and
@@ -201,12 +215,22 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
             if (isTRUE(self$options$showHij)) {
                 Hij <- H$Hij
-                for (k in seq_len(nrow(Hij))) {
-                    pair <- strsplit(rownames(Hij)[k], " ", fixed = TRUE)[[1]]
-                    .mk_add_row(self$results$pairs, k, list(
-                        item1 = pair[1], item2 = if (length(pair) > 1) pair[2] else "",
-                        w = get(Hij, "HWij", k), wse = get(Hij, "se.HWij", k), b = get(Hij, "HBij", k),
-                        bse = get(Hij, "se.HBij", k), bw = get(Hij, "HBWij", k)))
+                # Pairs are identified by position: MLcoefH() returns them in
+                # combn() order (1-2, 1-3, ..., 2-3, ...). Splitting its row
+                # names at spaces would break item names that contain spaces.
+                # ES: Los pares se identifican por posición: MLcoefH() los
+                # devuelve en el orden de combn(). Partir sus nombres de fila
+                # por espacios rompería nombres de ítem con espacios.
+                pairs <- utils::combn(length(items), 2)
+                if (nrow(Hij) != ncol(pairs)) {
+                    .mk_add_row(self$results$pairs, 1, list(item1 = txt("common", "not_computable")))
+                    self$results$pairs$addFootnote(rowKey = 1, col = "item1", txt("ml", "pairs_mismatch"))
+                } else {
+                    for (k in seq_len(nrow(Hij)))
+                        .mk_add_row(self$results$pairs, k, list(
+                            item1 = items[pairs[1, k]], item2 = items[pairs[2, k]],
+                            w = get(Hij, "HWij", k), wse = get(Hij, "se.HWij", k), b = get(Hij, "HBij", k),
+                            bse = get(Hij, "se.HBij", k), bw = get(Hij, "HBWij", k)))
                 }
             }
 
@@ -299,6 +323,8 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             parts <- c(parts, txt("ml", "interp_next"))
             self$results$interpretation$setContent(.mk_interpretation(lang, parts))
 
+            for (section in .mk_failed_sections(self$results, lang))
+                private$.addKey("warnings", sprintf(txt("common", "key_failed"), section))
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
 
@@ -349,8 +375,15 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     for (k in seq_along(res$value))
                         values[[paste0("w", k)]] <- .mk_clean_num(res$value[k])
                 .mk_add_row(table, row, values)
+                # mokken 3.1.2 fails inside MLweight() for some pairs whose
+                # item-step popularities are tied ("xtfrm" on a data frame);
+                # the footnote explains it instead of showing the raw error.
+                # ES: mokken 3.1.2 falla dentro de MLweight() en algunos pares
+                # cuyas popularidades de pasos de ítem están empatadas; la nota
+                # lo explica en lugar de mostrar el error crudo.
                 if (is.null(res$value))
-                    table$addFootnote(rowKey = row, col = "pair", sprintf(txt("ml", "weights_failed"), res$error))
+                    table$addFootnote(rowKey = row, col = "pair", if (grepl("xtfrm", res$error, fixed = TRUE))
+                        txt("ml", "weights_ties") else sprintf(txt("ml", "weights_failed"), res$error))
             }
             table$setNote("w", txt("ml", "weights_note"))
             warnings

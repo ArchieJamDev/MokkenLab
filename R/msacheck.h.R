@@ -697,6 +697,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 visible="(checkMono)",
                 refs=list(
                     "junker_sijtsma_2000",
+                    "hemker_1997",
                     "molenaar_sijtsma_2000"),
                 clearWith=list(
                     "vars",

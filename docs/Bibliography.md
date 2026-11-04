@@ -69,6 +69,7 @@ en Crossref el 2026-11-04.
 
 ## Model assumptions / Supuestos del modelo
 
+- Hemker, B. T., Sijtsma, K., Molenaar, I. W., & Junker, B. W. (1997). Stochastic ordering using the latent trait and the sum score in polytomous IRT models. *Psychometrika, 62*(3), 331–347. https://doi.org/10.1007/BF02294555
 - Holland, P. W., & Rosenbaum, P. R. (1986). Conditional association and unidimensionality in monotone latent variable models. *The Annals of Statistics, 14*(4), 1523–1543. https://doi.org/10.1214/aos/1176350174
 - Junker, B. W., & Sijtsma, K. (2000). Latent and manifest monotonicity in item response models. *Applied Psychological Measurement, 24*(1), 65–81. https://doi.org/10.1177/01466216000241004
 - Ligtvoet, R., van der Ark, L. A., Bergsma, W. P., & Sijtsma, K. (2011). Polytomous latent scales for the investigation of the ordering of items. *Psychometrika, 76*(2), 200–216. https://doi.org/10.1007/s11336-010-9199-8

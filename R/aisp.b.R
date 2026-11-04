@@ -212,9 +212,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (!is.null(level2))
                 rows[[length(rows) + 1]] <- list(tr("Clusters", "Conglomerados"),
                     sprintf(tr("%s (%d clusters)", "%s (%d conglomerados)"), cluster_name, length(unique(level2))))
-            if (length(prep$neg) > 0)
-                rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
-                                                 paste(prep$neg, collapse = ", "))
+            rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
+                                                 .mk_reversed_label(tr, prep))
             for (i in seq_along(rows))
                 .mk_add_row(self$results$summary, i, list(element = rows[[i]][[1]], value = rows[[i]][[2]]))
             if (z_changed)
@@ -234,6 +233,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.fillSequence(partition, lbs, lang, tr, txt)
             }
 
+            for (section in .mk_failed_sections(self$results, lang))
+                private$.addKey("warnings", sprintf(txt("common", "key_failed"), section))
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
 
@@ -275,7 +276,9 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             scale_ids <- sort(unique(scale_of[scale_of > 0]))
             unscalable <- items[scale_of == 0]
             hi_in_scale <- stats::setNames(rep(NA_real_, length(items)), items)
+            se_in_scale <- stats::setNames(rep(NA_real_, length(items)), items)
             label_of <- function(s) if (s == 0) tr("Unscalable", "No escalable") else sprintf(tr("Scale %d", "Escala %d"), s)
+            label_of_vec <- function(v) vapply(v, label_of, character(1))
 
             table <- self$results$scales
             scale_lines <- character(0)
@@ -295,6 +298,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ci <- .mk_ci(h, se, 0.95, "WB")
                 hi <- as.numeric(res$value$Hi)
                 hi_in_scale[members] <- hi
+                se_in_scale[members] <- as.numeric(res$value$se.Hi)
                 .mk_add_row(table, s, list(scale = label_of(s), nItems = length(members),
                     items = paste(members, collapse = ", "), h = h, se = se,
                     lower = .mk_clean_num(ci$lower), upper = .mk_clean_num(ci$upper),
@@ -310,6 +314,27 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 .mk_add_row(membership, item, list(item = item, scale = label_of(scale_of[[item]]),
                                                    hi = .mk_clean_num(hi_in_scale[[item]])))
             membership$setNote("order", txt("aisp", "membership_note"))
+
+            # Plot state: Hi of every scaled item within its own scale (95%
+            # Wald interval), the lower bound c marked, unscalable items
+            # listed in the caption.
+            # ES: Estado del gráfico: Hi de cada ítem escalado dentro de su
+            # escala (intervalo de Wald al 95%), la cota c marcada y los ítems
+            # no escalables en la leyenda inferior.
+            if (isTRUE(self$options$scalePlot) && length(scale_ids) > 0 && isTRUE(self$options$scaleCoefs)) {
+                scaled <- items[scale_of > 0]
+                ci <- .mk_ci(hi_in_scale[scaled], se_in_scale[scaled], 0.95, "WB")
+                .mk_set_size(self$results$scalePlotImg, self$options, 600, max(340, 26 * length(scaled) + 160))
+                self$results$scalePlotImg$setState(list(
+                    data = data.frame(item = scaled, scale = label_of_vec(scale_of[scaled]),
+                                      est = as.numeric(hi_in_scale[scaled]), lower = as.numeric(ci$lower),
+                                      upper = as.numeric(ci$upper), stringsAsFactors = FALSE),
+                    lowerbound = as.numeric(self$options$lowerbound),
+                    caption = if (length(unscalable) > 0)
+                        sprintf(tr("Unscalable: %s", "No escalables: %s"), paste(unscalable, collapse = ", ")) else NULL,
+                    labels = list(x = tr("Item scalability within its scale (Hi)", "Escalabilidad del ítem en su escala (Hi)"),
+                                  color = tr("Scale", "Escala"), bound = tr("Lower bound c", "Cota inferior c"))))
+            }
 
             # Interpretation.
             # ES: Interpretación.
@@ -420,6 +445,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 c("sequence", "Scale membership across lower bounds", "Pertenencia a las escalas según la cota inferior"),
                 c("sequenceSummary", "Partition at each lower bound", "Partición en cada cota inferior"),
                 c("sequencePlot", "Scale membership across lower bounds", "Pertenencia a las escalas según la cota inferior"),
+                c("scalePlotImg", "Item scalability within each scale", "Escalabilidad de los ítems en cada escala"),
                 c("interpretation", "Applied interpretation", "Interpretación aplicada"),
                 c("notes", "Notes", "Notas"))
             for (t in titles)
@@ -440,6 +466,40 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             for (cdef in cols)
                 tryCatch(self$results[[cdef[[1]]]]$getColumn(cdef[[2]])$setTitle(tr(cdef[[3]], cdef[[4]])),
                          error = function(e) NULL)
+        },
+
+        # ---------------------------------------------------------------------
+        # Single lower bound: Hi of each item within its scale with its
+        # interval, items grouped by scale, the lower bound c dashed.
+        # ES: Una sola cota: Hi de cada ítem dentro de su escala con su
+        # intervalo, ítems agrupados por escala, la cota c en línea
+        # discontinua.
+        # ---------------------------------------------------------------------
+        .plotScales = function(image, ggtheme, theme, ...) {
+            state <- image$state
+            if (is.null(state) || is.null(state$data) || nrow(state$data) == 0)
+                return(FALSE)
+            df <- state$data
+            order_index <- order(df$scale, df$est)
+            df$item <- factor(df$item, levels = df$item[order_index])
+            style <- .mk_plot_style(self$options)
+            plot <- ggplot2::ggplot(df, ggplot2::aes(x = item, y = est, color = scale)) +
+                ggplot2::geom_hline(yintercept = state$lowerbound, linetype = "dashed", color = "grey45",
+                                    linewidth = style$line) +
+                ggplot2::geom_errorbar(ggplot2::aes(ymin = lower, ymax = upper), width = 0.25, linewidth = style$line) +
+                ggplot2::geom_point(size = style$point * 1.4)
+            if (style$labels)
+                plot <- plot + ggplot2::geom_text(ggplot2::aes(label = formatC(est, format = "f", digits = 2)),
+                                                  vjust = -0.9, size = 2.8, show.legend = FALSE)
+            plot <- plot +
+                ggplot2::coord_flip(ylim = if (style$full) c(min(0, min(df$lower, na.rm = TRUE)), 1) else NULL) +
+                ggplot2::labs(x = NULL, y = state$labels$x, color = state$labels$color, caption = state$caption) +
+                ggtheme + .mk_plot_theme(self$options)
+            palette <- .mk_plot_series_palette(self$options$plotPalette)
+            if (!is.null(palette))
+                plot <- plot + ggplot2::scale_color_manual(values = rep_len(palette, length(unique(df$scale))))
+            print(plot)
+            TRUE
         },
 
         # ---------------------------------------------------------------------

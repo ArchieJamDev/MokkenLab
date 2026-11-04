@@ -669,6 +669,10 @@ msgstr "Gráfico de escalabilidad de los ítems por grupo"
 msgid "Item scalability plot"
 msgstr "Gráfico de escalabilidad de los ítems"
 
+#: aisp/results/scalePlotImg.title
+msgid "Item scalability within each scale"
+msgstr "Escalabilidad de los ítems en cada escala"
+
 #: msacheck/options/monoCurves/ISRF.title
 msgid "Item step response functions (ISRFs)"
 msgstr "Funciones de respuesta de los pasos de ítem (ISRF)"
@@ -1285,6 +1289,10 @@ msgstr "Pertenencia a las escalas"
 #: aisp/results/sequencePlot.title
 msgid "Scale membership across lower bounds"
 msgstr "Pertenencia a las escalas según la cota inferior"
+
+#: aisp/options/scalePlot.title
+msgid "Scale membership plot"
+msgstr "Gráfico de pertenencia a las escalas"
 
 #: aisp/results/sequenceSummary.columns.title
 msgid "Scales"

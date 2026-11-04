@@ -137,9 +137,8 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                      if (is.null(minsize)) sprintf(tr("%d (mokken default for N = %d)", "%d (valor por defecto de mokken para N = %d)"),
                                                    as.integer(.mk_default_minsize(nrow(X))), nrow(X))
                      else as.character(minsize)))
-            if (length(prep$neg) > 0)
-                rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
-                                                 paste(prep$neg, collapse = ", "))
+            rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
+                                                 .mk_reversed_label(tr, prep))
             if (!is.null(level2))
                 rows[[length(rows) + 1]] <- list(tr("Clusters", "Conglomerados"), sprintf(
                     tr("%s (%d clusters; two-level fit statistics for monotonicity and invariant item ordering)",
@@ -193,7 +192,8 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 self$results$critPlot$setState(list(data = crit_df, items = items, labels = list(
                     x = "Crit", none = tr("No serious violation", "Sin violación seria"),
                     doubtful = tr("Doubtful", "Dudosa"), serious = tr("Serious", "Seria"),
-                    zone = tr("Zone", "Zona"))))
+                    zone = tr("Zone", "Zona"), na = tr("Not evaluable", "No evaluable"),
+                    na_short = tr("not evaluable", "no evaluable"))))
             }
 
             if (length(parts) == 0)
@@ -201,6 +201,18 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             parts <- c(parts, txt("check", "interp_next"))
             self$results$interpretation$setContent(.mk_interpretation(lang, parts))
 
+            # Checks not run are named, so the summary never implies they
+            # were passed.
+            # ES: Las verificaciones no ejecutadas se nombran, para que el
+            # resumen nunca dé a entender que se superaron.
+            not_run <- c(mono = self$options$checkMono, iio = self$options$checkIIO, rest = self$options$checkRest,
+                         pmat = self$options$checkPmatrix, ca = self$options$checkCA)
+            not_run <- names(not_run)[!vapply(not_run, isTRUE, logical(1))]
+            if (length(not_run) > 0)
+                private$.addKey("uncertain", sprintf(txt("check", "key_not_run"), paste(vapply(not_run, function(k)
+                    txt("check", paste0("section_", k)), character(1)), collapse = ", ")))
+            for (section in .mk_failed_sections(self$results, lang))
+                private$.addKey("warnings", sprintf(txt("common", "key_failed"), section))
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
 
@@ -239,8 +251,15 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # sin violación seria, 40-80 dudosa, > 80 seria.
         # ---------------------------------------------------------------------
         .verdict = function(lang, vi, crit) {
-            if (is.na(vi) || vi == 0) return(.mk_text(lang, "check", "verdict_none"))
-            if (is.na(crit) || crit < 40) return(.mk_text(lang, "check", "verdict_minor"))
+            # A missing count or crit means the check could not be evaluated
+            # for this item; it is never reported as an absence of violations.
+            # ES: Un conteo o un crit ausente significa que la verificación no
+            # pudo evaluarse para este ítem; nunca se informa como ausencia de
+            # violaciones.
+            if (is.na(vi)) return(.mk_text(lang, "check", "verdict_na"))
+            if (vi == 0) return(.mk_text(lang, "check", "verdict_none"))
+            if (is.na(crit)) return(.mk_text(lang, "check", "verdict_na"))
+            if (crit < 40) return(.mk_text(lang, "check", "verdict_minor"))
             if (crit <= 80) return(.mk_text(lang, "check", "verdict_doubtful"))
             .mk_text(lang, "check", "verdict_serious")
         },
@@ -266,6 +285,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             }
             serious <- character(0)
             doubtful <- character(0)
+            not_evaluable <- character(0)
             for (i in seq_len(nrow(summ))) {
                 item <- rownames(summ)[i]
                 vi <- pick(i, "#vi")
@@ -281,11 +301,13 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 if (!is.null(check))
                     private$.crit[[length(private$.crit) + 1]] <- data.frame(
                         check = if (is.null(level_label)) check else paste0(check, " (", level_label, ")"),
-                        item = item, crit = if (is.na(crit)) 0 else crit, stringsAsFactors = FALSE)
+                        item = item, crit = if (!is.na(vi) && vi == 0 && is.na(crit)) 0 else crit,
+                        stringsAsFactors = FALSE)
+                if (is.na(vi) || (vi > 0 && is.na(crit))) not_evaluable <- c(not_evaluable, item)
                 if (!is.na(crit) && !is.na(vi) && vi > 0 && crit > 80) serious <- c(serious, item)
                 else if (!is.na(crit) && !is.na(vi) && vi > 0 && crit >= 40) doubtful <- c(doubtful, item)
             }
-            list(serious = unique(serious), doubtful = unique(doubtful))
+            list(serious = unique(serious), doubtful = unique(doubtful), not_evaluable = unique(not_evaluable))
         },
 
         .addLevelColumn = function(table, tr) {
@@ -299,7 +321,13 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
         .sectionText = function(lang, txt, section, res) {
             out <- character(0)
-            if (length(res$serious) == 0 && length(res$doubtful) == 0) {
+            if (length(res$not_evaluable) > 0) {
+                out <- c(out, sprintf(txt("check", "not_evaluable"), txt("check", paste0("section_", section)),
+                                      length(res$not_evaluable), paste(res$not_evaluable, collapse = ", ")))
+                private$.addKey("warnings", sprintf(txt("check", "key_not_evaluable"),
+                                                    txt("check", paste0("section_", section)), length(res$not_evaluable)))
+            }
+            if (length(res$serious) == 0 && length(res$doubtful) == 0 && length(res$not_evaluable) == 0) {
                 out <- txt("check", paste0(section, "_ok"))
                 private$.addKey("findings", txt("check", paste0("key_", section, "_ok")))
             } else {
@@ -340,7 +368,8 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                                                 tr("Monotonicity", "Monotonicidad"))
                 res2 <- private$.fillViolations(table, summ[[2]], lang, tr("Between", "Entre"), "L2_",
                                                 tr("Monotonicity", "Monotonicidad"))
-                res <- list(serious = union(res1$serious, res2$serious), doubtful = union(res1$doubtful, res2$doubtful))
+                res <- list(serious = union(res1$serious, res2$serious), doubtful = union(res1$doubtful, res2$doubtful),
+                            not_evaluable = union(res1$not_evaluable, res2$not_evaluable))
                 table$setNote("levels", txt("check", "levels_note"))
                 results <- fit$value[[1]]$results
             } else {
@@ -496,7 +525,8 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.addLevelColumn(table, tr)
                 r1 <- fill(summ$item.summary[[1]], tr("Within", "Dentro"), "L1_")
                 r2 <- fill(summ$item.summary[[2]], tr("Between", "Entre"), "L2_")
-                res <- list(serious = union(r1$serious, r2$serious), doubtful = union(r1$doubtful, r2$doubtful))
+                res <- list(serious = union(r1$serious, r2$serious), doubtful = union(r1$doubtful, r2$doubtful),
+                            not_evaluable = union(r1$not_evaluable, r2$not_evaluable))
                 table$setNote("levels", txt("check", "levels_note"))
             } else if (clustered) {
                 item_summ <- summ$item.summary$Items
@@ -728,6 +758,16 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             fit <- .mk_capture(mokken::check.ca(X, Windex = isTRUE(self$options$caWindex),
                 MINSIZE = as.integer(self$options$caMinsize), NWEIGHTOPTION = self$options$caNweight,
                 COVWEIGHTOPTION = self$options$caCovweight, MINGROUP = as.integer(self$options$caMingroup)))
+            # check.ca() returns list(InScale =, Index =, Flagged =) when
+            # Windex = TRUE, but the bare list of InScale iterations when
+            # Windex = FALSE. Both are valid; normalize before reading.
+            # ES: check.ca() devuelve list(InScale =, Index =, Flagged =)
+            # con Windex = TRUE, pero solo la lista de iteraciones de InScale
+            # con Windex = FALSE. Ambas son válidas; se normalizan antes de
+            # leerlas.
+            if (!is.null(fit$value) && is.null(fit$value$InScale) && is.list(fit$value) &&
+                length(fit$value) > 0 && all(vapply(fit$value, is.logical, logical(1))))
+                fit$value <- list(InScale = fit$value)
             if (is.null(fit$value) || is.null(fit$value$InScale)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"),
                                                       if (is.null(fit$error)) "" else fit$error))
@@ -964,15 +1004,18 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             df <- state$data
             df$item <- factor(df$item, levels = rev(state$items))
             df$check <- factor(df$check, levels = unique(df$check))
-            df$zone <- factor(ifelse(df$crit > 80, state$labels$serious,
-                              ifelse(df$crit >= 40, state$labels$doubtful, state$labels$none)),
-                              levels = c(state$labels$none, state$labels$doubtful, state$labels$serious))
+            missing <- is.na(df$crit)
+            df$zone <- factor(ifelse(missing, state$labels$na, ifelse(df$crit > 80, state$labels$serious,
+                              ifelse(df$crit >= 40, state$labels$doubtful, state$labels$none))),
+                              levels = c(state$labels$none, state$labels$doubtful, state$labels$serious, state$labels$na))
             style <- .mk_plot_style(self$options, length(levels(df$check)))
-            top <- max(100, max(df$crit, na.rm = TRUE) * 1.1)
+            top <- max(100, suppressWarnings(max(df$crit, na.rm = TRUE)) * 1.1, na.rm = TRUE)
             plot <- ggplot2::ggplot(df, ggplot2::aes(x = item, y = crit, fill = zone)) +
                 ggplot2::annotate("rect", xmin = -Inf, xmax = Inf, ymin = 40, ymax = 80, alpha = 0.08, fill = "orange") +
                 ggplot2::annotate("rect", xmin = -Inf, xmax = Inf, ymin = 80, ymax = Inf, alpha = 0.08, fill = "red") +
-                ggplot2::geom_col(width = 0.7) +
+                ggplot2::geom_col(data = df[!missing, , drop = FALSE], width = 0.7) +
+                ggplot2::geom_text(data = df[missing, , drop = FALSE], ggplot2::aes(y = 0, label = state$labels$na_short),
+                                   hjust = 0, size = 2.8, color = "grey35", show.legend = FALSE) +
                 ggplot2::geom_hline(yintercept = c(40, 80), linetype = "dashed", linewidth = style$line * 0.6)
             if (style$labels)
                 plot <- plot + ggplot2::geom_text(ggplot2::aes(label = crit), hjust = -0.2, size = 2.8)
@@ -982,7 +1025,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggplot2::labs(x = NULL, y = state$labels$x, fill = state$labels$zone) +
                 ggtheme + .mk_plot_theme(self$options)
             palette <- .mk_plot_series_palette(self$options$plotPalette)
-            values <- if (!is.null(palette)) palette[c(3, 1, 6)] else c("#4C9F70", "#E69F00", "#C0392B")
+            values <- if (!is.null(palette)) c(palette[c(3, 1, 6)], "grey70") else c("#4C9F70", "#E69F00", "#C0392B", "grey70")
             plot <- plot + ggplot2::scale_fill_manual(values = values, drop = FALSE)
             print(plot)
             TRUE

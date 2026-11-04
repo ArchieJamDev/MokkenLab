@@ -641,10 +641,16 @@
 #   entraron, con qué regla de datos perdidos y cuántos estaban completos.
 # -----------------------------------------------------------------------------
 .mk_cases_label <- function(tr, prep) {
-    if (!is.null(prep$completed))
-        return(sprintf(tr("%d of %d (two-way imputation of %d missing scores; %d complete cases)",
-                          "%d de %d (imputación two-way de %d puntajes perdidos; %d casos completos)"),
-                       prep$n_used, prep$n_total, as.integer(prep$imputed), prep$n_complete))
+    if (!is.null(prep$completed)) {
+        label <- sprintf(tr("%d of %d (two-way imputation of %d missing scores; %d complete cases)",
+                            "%d de %d (imputación two-way de %d puntajes perdidos; %d casos completos)"),
+                         prep$n_used, prep$n_total, as.integer(prep$imputed), prep$n_complete)
+        if (length(prep$completed) > 1)
+            label <- paste0(label, sprintf(tr("; results from completed data set 1 of %d, not pooled",
+                                              "; resultados del conjunto completado 1 de %d, sin combinar"),
+                                           length(prep$completed)))
+        return(label)
+    }
     sprintf(tr("%d of %d (listwise deletion)", "%d de %d (eliminación por lista)"),
             prep$n_used, prep$n_total)
 }
@@ -691,10 +697,24 @@
     if (identical(type, "RP")) {
         lower <- 1 - exp(log(1 - est) + z * se / (1 - est))
         upper <- 1 - exp(log(1 - est) - z * se / (1 - est))
+        # Boundary: at H = 1 the log(1 - H) scale is undefined. With a zero
+        # standard error the interval collapses to the estimate; otherwise
+        # the Wald limits are used, the upper one capped at 1.
+        # ES: Frontera: con H = 1 la escala log(1 - H) no está definida.
+        # Con error estándar cero el intervalo se reduce a la estimación; si
+        # no, se usan los límites de Wald, con el superior acotado en 1.
+        boundary <- is.finite(est) & est >= 1
+        if (any(boundary)) {
+            lower[boundary] <- ifelse(se[boundary] == 0, est[boundary], est[boundary] - z * se[boundary])
+            upper[boundary] <- 1
+        }
     } else {
         lower <- est - z * se
         upper <- est + z * se
     }
+    degenerate <- is.finite(est) & is.finite(se) & se == 0
+    lower[degenerate] <- est[degenerate]
+    upper[degenerate] <- est[degenerate]
     list(lower = lower, upper = upper)
 }
 
@@ -793,4 +813,59 @@
     ncol <- max(1, min(ncol, n_panels))
     nrow <- ceiling(n_panels / ncol) * n_rows_each
     c(max(450, 250 * ncol + 60), max(330, 220 * nrow + 110))
+}
+
+# -----------------------------------------------------------------------------
+# .mk_failed_sections()
+#
+# Input: results - the analysis' results group; lang.
+# Output: the titles of the visible tables that contain a "Not computable"
+#   cell. Every analysis adds them to the key findings, so a section that
+#   could not be computed is never hidden behind a reassuring "No warnings"
+#   (independent audit, 2026-11-04). Scanning the finished tables catches
+#   every Category B failure, including ones added in the future.
+# ES: Salida: los títulos de las tablas visibles que contienen una celda "No
+#   computable". Cada análisis los agrega a los hallazgos clave, para que una
+#   sección que no pudo calcularse nunca quede oculta tras un "No hay
+#   advertencias" tranquilizador (auditoría independiente, 2026-11-04).
+# -----------------------------------------------------------------------------
+.mk_failed_sections <- function(results, lang) {
+    marker <- .mk_text(lang, "common", "not_computable")
+    out <- character(0)
+    for (name in results$itemNames) {
+        item <- tryCatch(results$get(name), error = function(e) NULL)
+        if (is.null(item) || !inherits(item, "Table"))
+            next
+        visible <- tryCatch(isTRUE(item$visible), error = function(e) FALSE)
+        if (!visible)
+            next
+        df <- tryCatch(item$asDF, error = function(e) NULL)
+        if (is.null(df) || nrow(df) == 0)
+            next
+        if (any(vapply(df, function(col) any(as.character(col) %in% marker), logical(1))))
+            out <- c(out, item$title)
+    }
+    unique(out)
+}
+
+# -----------------------------------------------------------------------------
+# .mk_reversed_label()
+#
+# Input: tr; prep.
+# Output: the value of the "Negatively worded items (reversed)" summary row,
+#   always shown: the reversed items, or an explicit "none" with a reminder
+#   to confirm the scoring direction. Reversal is the data decision most
+#   easily left inconsistent between analyses (independent audit,
+#   2026-11-04), so it is never left implicit.
+# ES: Salida: el valor de la fila "Ítems redactados en negativo
+#   (invertidos)", que se muestra siempre: los ítems invertidos, o un
+#   "ninguno" explícito con el recordatorio de confirmar la dirección de
+#   puntuación. La inversión es la decisión de datos que más fácilmente queda
+#   inconsistente entre análisis, así que nunca queda implícita.
+# -----------------------------------------------------------------------------
+.mk_reversed_label <- function(tr, prep) {
+    if (length(prep$neg) > 0)
+        return(paste(prep$neg, collapse = ", "))
+    tr("None. Confirm that every item is scored in the same direction, and use the same reversals in every MokkenLab analysis of these items.",
+       "Ninguno. Confirme que todos los ítems están puntuados en la misma dirección, y use las mismas inversiones en todos los análisis de MokkenLab con estos ítems.")
 }
