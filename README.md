@@ -187,14 +187,16 @@ cannot be typed in an option panel; mokken's default is used). See
 
 ## Graphics
 
-Thirteen plots, all rebuilt in ggplot from mokken's own result matrices so
+Fourteen plots, all rebuilt in ggplot from mokken's own result matrices so
 they follow jamovi's theme and survive export: item scalability with
 intervals, the *H<sub>ij</sub>* heat map, *H<sub>i</sub>* by group,
 Guttman-error distributions with their fences, the percentile-rank curve with
-its band, the partition across lower bounds, the violation profile (crit with
-the 40/80 zones), item response functions (IRF and ISRFs), item pairs for
-invariant item ordering and the rest-score method, the P-matrix, and within
-and between two-level scalability.
+its band, item scalability within each selected scale, the partition across
+lower bounds, the violation profile (crit, with items that could not be
+evaluated marked as such, and the 40/80 zones), item response functions (IRF
+and ISRFs), item pairs for invariant item ordering and the rest-score method,
+the P-matrix, and within and between two-level scalability.
+
 
 Every plot responds to one shared **Plot settings** box: width and height (or
 automatic, scaled to the number of panels), point size, line width, panels
@@ -215,8 +217,11 @@ two-level analysis, items rated by several raters about the same subject):
 | **Dichotomous** | Right/wrong test items, yes/no symptoms |
 | **Polytomous ordinal** | Likert items, rating scales |
 
-Negatively worded items can be reversed inside the analysis, and missing
-values are handled by an explicit option rather than silently.
+Negatively worded items are reversed inside the analysis: the list sits right
+under **Items** in every analysis, and the summary table always states which
+items were reversed, or "None" with a reminder to confirm the scoring
+direction. Missing values are handled by an explicit option (listwise
+deletion or two-way imputation) rather than silently.
 
 ---
 
@@ -351,7 +356,7 @@ mokken (validation/).
 Trabaja con ítems dicotómicos y politómicos ordinales. Cada opción del menú
 incluye un párrafo que explica qué hace y cuándo conviene elegirla, y los
 resultados se acompañan de un resumen de hallazgos, guías e interpretaciones
-en español o inglés. Sus trece gráficos se parametrizan desde una misma caja
+en español o inglés. Sus catorce gráficos se parametrizan desde una misma caja
 de ajustes (tamaño, puntos, líneas, paneles, leyenda, ejes, rango, etiquetas
 y paleta). Incluye cuatro conjuntos de datos públicos del paquete mokken para
 practicar.
