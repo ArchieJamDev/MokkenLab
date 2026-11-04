@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="MokkenLab">
+  <title>MokkenLab</title>
+  <rect x="6" y="6" width="244" height="244" rx="52" fill="#F4F7FB" stroke="#D5DEEA" stroke-width="2"/>
+  <path d="M213 47 V81 H179 V115 H145 V149 H111 V183 H77 V217" fill="none" stroke="#8A94A6" stroke-width="3.0" stroke-dasharray="6 5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+  <circle cx="60.0" cy="64.0" r="12.0" fill="#0072B2" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="94.0" cy="64.0" r="12.0" fill="#E69F00" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="128.0" cy="64.0" r="12.0" fill="#009E73" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="162.0" cy="64.0" r="12.0" fill="#0072B2" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="196.0" cy="64.0" r="12.0" fill="#E69F00" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="60.0" cy="98.0" r="12.0" fill="#0072B2" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="94.0" cy="98.0" r="12.0" fill="#E69F00" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="128.0" cy="98.0" r="12.0" fill="#009E73" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="162.0" cy="98.0" r="12.0" fill="#0072B2" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="196" cy="98" r="5" fill="#D5DEEA"/>
+  <circle cx="60.0" cy="132.0" r="12.0" fill="#0072B2" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="94.0" cy="132.0" r="12.0" fill="#E69F00" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="128.0" cy="132.0" r="12.0" fill="#009E73" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="162" cy="132" r="5" fill="#D5DEEA"/>
+  <circle cx="196" cy="132" r="5" fill="#D5DEEA"/>
+  <circle cx="60.0" cy="166.0" r="12.0" fill="#0072B2" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="94.0" cy="166.0" r="12.0" fill="#E69F00" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="128" cy="166" r="5" fill="#D5DEEA"/>
+  <circle cx="162" cy="166" r="5" fill="#D5DEEA"/>
+  <circle cx="196" cy="166" r="5" fill="#D5DEEA"/>
+  <circle cx="60.0" cy="200.0" r="12.0" fill="#0072B2" stroke="#FFFFFF" stroke-width="3.5"/>
+  <circle cx="94" cy="200" r="5" fill="#D5DEEA"/>
+  <circle cx="128" cy="200" r="5" fill="#D5DEEA"/>
+  <circle cx="162" cy="200" r="5" fill="#D5DEEA"/>
+  <circle cx="196" cy="200" r="5" fill="#D5DEEA"/>
+</svg>
