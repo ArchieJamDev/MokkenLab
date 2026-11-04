@@ -20,6 +20,7 @@ Imports:
     poLCA,
     ggplot2,
     grDevices,
+    grid,
     stats,
     utils
 Suggests:

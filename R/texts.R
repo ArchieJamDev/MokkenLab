@@ -71,6 +71,7 @@
             too_few_cases = "Fewer than two cases remain after removing incomplete cases. Switch Missing values to two-way imputation, or review the missing-data pattern.",
             estimation_failed = "MokkenLab could not compute the scalability coefficients: %s. This usually means an item has scores in only one category for every pair of items, or a variable that is not an item score was selected. Check the selected items and their scores.",
             warnings_title = "Messages from MokkenLab",
+            interp_title = "Applied interpretation",
             not_computable = "Not computable",
             h_unscalable = "unscalable (H < .30)",
             h_weak = "weak scale (.30 ≤ H < .40)",
@@ -103,6 +104,7 @@
         # ES: Explicación de cada decisión común o propia de un análisis.
         # Cada párrafo dice qué hace la elección y cuándo conviene otra.
         choices = list(
+            title = "About your choices",
             intro = "Each decision below is explained for the option currently selected, with guidance on when an alternative would fit your data better.",
             h_na = "Missing values",
             na_listwise = "Listwise deletion keeps only respondents who answered every selected item, because mokken does not accept missing scores. It is appropriate when few cases are incomplete and missingness is unrelated to the trait. With many incomplete cases it wastes information and may bias the results; two-way imputation is then preferable.",
@@ -149,6 +151,16 @@
             order_custom = "The order codes you typed fix the position of each item; equal codes form clusters of tied items. Use it to test a hypothesized order that is not the list order.",
             h_ca = "Conditional association",
             ca_body = "Local independence is checked through three special cases of conditional association (Holland & Rosenbaum, 1986; see references): covariances between items must not be negative conditional on sum scores of other items. The worst offending item is removed and the check repeated, until no item is flagged (Straat et al., 2016; see references)."
+        ),
+
+        guide_titles = list(
+            scale = "How to read scalability", hij = "How to read item pairs", reliability = "How to read reliability",
+            errors = "How to read Guttman errors", bounds = "How to read correlation bounds",
+            norms = "How to read norm statistics", aisp = "How the automated item selection works",
+            sequence = "How to read the sequence of lower bounds", mono = "How to read monotonicity",
+            iio = "How to read invariant item ordering", rest = "How to read the rest-score method",
+            pmat = "How to read the P-matrix method", ca = "How to read conditional association",
+            ml = "How to read two-level scalability"
         ),
 
         # Teaching blocks shown before each table (option "How to read each
@@ -418,6 +430,8 @@
             key_rel = "Reliability: MS = %s.",
             interp_errors = "%d of %d respondents have more Guttman errors than the skew-adjusted fence U2. Their response patterns are unusually inconsistent with the item ordering: possible careless responding, misunderstanding or a different response process. Inspect them before deciding; do not remove them automatically.",
             key_errors = "Guttman errors: %d respondent(s) above the skew-adjusted fence.",
+            interp_errors_none = "No respondent has more Guttman errors than the skew-adjusted fence U2, so no response pattern is extreme once the skewness of the error counts is taken into account. %d respondent(s) pass only Tukey's fence U1, which assumes a symmetric distribution and over-flags skewed counts; inspect them only if you have a substantive reason.",
+            norms_perc_range = "At the extremes of the score range, the Wald-based interval of a percentile rank can pass 0 or 100 (Oosterhuis et al., 2017). The values are shown as mokken computes them; read such limits as 0 or 100. The plot draws the band within the possible range.",
             interp_next_ok = "Next step: check the model assumptions (monotonicity, and invariant item ordering if you need items ordered the same way for every respondent) in Model Assumptions before using the sum score.",
             interp_next_aisp = "Next step: run Automated Item Selection with the same items to find the subsets that do form Mokken scales, then check the model assumptions for each scale.",
             interp_imputed = "Missing scores were completed by two-way imputation; report the number of imputed scores and the seed with the results."
@@ -438,6 +452,7 @@
             too_few_cases = "Quedan menos de dos casos después de eliminar los casos incompletos. Cambie Valores perdidos a imputación two-way o revise el patrón de datos perdidos.",
             estimation_failed = "MokkenLab no pudo calcular los coeficientes de escalabilidad: %s. Esto suele significar que un ítem tiene puntajes en una sola categoría para cada par de ítems, o que se seleccionó una variable que no es un puntaje de ítem. Revise los ítems seleccionados y sus puntajes.",
             warnings_title = "Mensajes de MokkenLab",
+            interp_title = "Interpretación aplicada",
             not_computable = "No computable",
             h_unscalable = "no escalable (H < .30)",
             h_weak = "escala débil (.30 ≤ H < .40)",
@@ -463,6 +478,7 @@
         ),
 
         choices = list(
+            title = "Acerca de sus elecciones",
             intro = "Cada decisión de abajo se explica para la opción seleccionada, con orientación sobre cuándo otra alternativa se ajustaría mejor a sus datos.",
             h_na = "Valores perdidos",
             na_listwise = "La eliminación por lista conserva solo a las personas que respondieron todos los ítems seleccionados, porque mokken no acepta puntajes perdidos. Es adecuada cuando pocos casos están incompletos y la pérdida no se relaciona con el atributo. Con muchos casos incompletos desperdicia información y puede sesgar los resultados; entonces es preferible la imputación two-way.",
@@ -509,6 +525,16 @@
             order_custom = "Los códigos de orden que escribió fijan la posición de cada ítem; códigos iguales forman conglomerados de ítems empatados. Úselo para contrastar un orden hipotético distinto del de la lista.",
             h_ca = "Asociación condicional",
             ca_body = "La independencia local se verifica con tres casos especiales de asociación condicional (Holland y Rosenbaum, 1986; ver referencias): las covarianzas entre ítems no deben ser negativas condicionadas a puntuaciones de otros ítems. El ítem con peor infracción se elimina y la verificación se repite, hasta que ningún ítem quede marcado (Straat et al., 2016; ver referencias)."
+        ),
+
+        guide_titles = list(
+            scale = "Cómo leer la escalabilidad", hij = "Cómo leer los pares de ítems", reliability = "Cómo leer la fiabilidad",
+            errors = "Cómo leer los errores de Guttman", bounds = "Cómo leer las cotas de correlación",
+            norms = "Cómo leer los estadísticos normativos", aisp = "Cómo funciona la selección automática de ítems",
+            sequence = "Cómo leer la secuencia de cotas inferiores", mono = "Cómo leer la monotonicidad",
+            iio = "Cómo leer el orden invariante de los ítems", rest = "Cómo leer el método rest-score",
+            pmat = "Cómo leer el método P-matrix", ca = "Cómo leer la asociación condicional",
+            ml = "Cómo leer la escalabilidad de dos niveles"
         ),
 
         guide = list(
@@ -772,6 +798,8 @@
             key_rel = "Fiabilidad: MS = %s.",
             interp_errors = "%d de %d personas tienen más errores de Guttman que la valla ajustada U2. Sus patrones de respuesta son inusualmente inconsistentes con el orden de los ítems: posible respuesta descuidada, malentendido o un proceso de respuesta distinto. Examínelas antes de decidir; no las elimine automáticamente.",
             key_errors = "Errores de Guttman: %d persona(s) por encima de la valla ajustada por asimetría.",
+            interp_errors_none = "Ninguna persona tiene más errores de Guttman que la valla ajustada U2, así que ningún patrón de respuesta es extremo una vez considerada la asimetría de los conteos de errores. %d persona(s) superan solo la valla de Tukey U1, que supone una distribución simétrica y marca de más con conteos asimétricos; examínelas solo si tiene una razón sustantiva.",
+            norms_perc_range = "En los extremos del rango de puntajes, el intervalo de Wald de un rango percentil puede pasar de 0 o de 100 (Oosterhuis et al., 2017). Los valores se muestran tal como los calcula mokken; lea esos límites como 0 o 100. El gráfico dibuja la banda dentro del rango posible.",
             interp_next_ok = "Siguiente paso: verifique los supuestos del modelo (monotonicidad, y orden invariante de los ítems si necesita que los ítems se ordenen igual para cada persona) en Supuestos del modelo antes de usar la puntuación total.",
             interp_next_aisp = "Siguiente paso: ejecute la Selección automática de ítems con los mismos ítems para encontrar los subconjuntos que sí forman escalas de Mokken, y luego verifique los supuestos del modelo en cada escala.",
             interp_imputed = "Los puntajes perdidos se completaron por imputación two-way; informe el número de puntajes imputados y la semilla junto con los resultados."

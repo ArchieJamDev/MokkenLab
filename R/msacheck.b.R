@@ -100,8 +100,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 return()
             if (isTRUE(self$options$showGuides))
                 for (g in c("mono", "iio", "rest", "pmat", "ca"))
-                    self$results[[paste0(g, "Guide")]]$setContent(.mk_html_block(NULL, .mk_html_list(
-                        txt("guide", g)), raw = TRUE))
+                    self$results[[paste0(g, "Guide")]]$setContent(.mk_guide_block(lang, g))
             private$.key <- list(findings = character(0), uncertain = character(0), warnings = character(0))
             private$.crit <- list()
 
@@ -200,7 +199,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (length(parts) == 0)
                 parts <- txt("check", "interp_nothing")
             parts <- c(parts, txt("check", "interp_next"))
-            self$results$interpretation$setContent(.mk_html_block(NULL, parts))
+            self$results$interpretation$setContent(.mk_interpretation(lang, parts))
 
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))

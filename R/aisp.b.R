@@ -97,10 +97,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (length(self$options$vars) == 0)
                 return()
             if (isTRUE(self$options$showGuides)) {
-                self$results$aispGuide$setContent(.mk_html_block(NULL, .mk_html_list(
-                    txt("guide", "aisp"), ordered = FALSE), raw = TRUE))
-                self$results$sequenceGuide$setContent(.mk_html_block(NULL, .mk_html_list(
-                    txt("guide", "sequence")), raw = TRUE))
+                self$results$aispGuide$setContent(.mk_guide_block(lang, "aisp"))
+                self$results$sequenceGuide$setContent(.mk_guide_block(lang, "sequence"))
             }
             private$.key <- list(findings = character(0), uncertain = character(0), warnings = character(0))
 
@@ -335,7 +333,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                                                     paste(unscalable, collapse = ", ")))
             }
             parts <- c(parts, txt("aisp", "interp_caution"), txt("aisp", "interp_next"))
-            self$results$interpretation$setContent(.mk_html_block(NULL, parts))
+            self$results$interpretation$setContent(.mk_interpretation(lang, parts))
         },
 
         # ---------------------------------------------------------------------
@@ -406,7 +404,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                                           as.integer(sum(col == 0))))
             }
             parts <- c(parts, txt("aisp", "interp_seq_next"))
-            self$results$interpretation$setContent(.mk_html_block(NULL, parts))
+            self$results$interpretation$setContent(.mk_interpretation(lang, parts))
         },
 
         .setTitles = function(tr) {

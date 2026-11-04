@@ -87,7 +87,7 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (length(self$options$vars) == 0 || is.null(self$options$subject))
                 return()
             if (isTRUE(self$options$showGuides))
-                self$results$mlGuide$setContent(.mk_html_block(NULL, .mk_html_list(txt("guide", "ml")), raw = TRUE))
+                self$results$mlGuide$setContent(.mk_guide_block(lang, "ml"))
             private$.key <- list(findings = character(0), uncertain = character(0), warnings = character(0))
 
             # -----------------------------------------------------------------
@@ -297,7 +297,7 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.addKey("warnings", sprintf(txt("ml", "key_items_hb"), length(neg_b)))
             }
             parts <- c(parts, txt("ml", "interp_next"))
-            self$results$interpretation$setContent(.mk_html_block(NULL, parts))
+            self$results$interpretation$setContent(.mk_interpretation(lang, parts))
 
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))

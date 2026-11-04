@@ -267,7 +267,11 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 for (i in seq_along(items)) {
                     values <- list(item = items[i])
                     for (j in seq_along(items))
-                        values[[paste0("c", j)]] <- if (i == j) NA_real_ else .mk_clean_num(hij[i, j])
+                        # The diagonal is left blank: an item has no pair
+                        # with itself (NA would print as "NaN").
+                        # ES: La diagonal queda vacía: un ítem no forma par
+                        # consigo mismo (NA se imprimiría como "NaN").
+                        values[[paste0("c", j)]] <- if (i == j) "" else .mk_clean_num(hij[i, j])
                     .mk_add_row(table, items[i], values)
                 }
                 table$setNote("neg", txt("msa", "hij_note"))
@@ -398,8 +402,7 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             guides <- c(scaleGuide = "scale", hijGuide = "hij", reliabilityGuide = "reliability",
                         errorsGuide = "errors", boundsGuide = "bounds", normsGuide = "norms")
             for (name in names(guides))
-                self$results[[name]]$setContent(.mk_html_block(NULL, .mk_html_list(
-                    .mk_text(lang, "guide", guides[[name]])), raw = TRUE))
+                self$results[[name]]$setContent(.mk_guide_block(lang, guides[[name]]))
         },
 
         .zNote = function(lang, type_z, lb) {
@@ -698,9 +701,12 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                                       upper = nr$perc[, 4]),
                     labels = list(x = tr("Total score", "Puntuación total"),
                                   y = tr("Percentile rank", "Rango percentil"))))
-            if (isTRUE(self$options$normsPercentiles))
+            if (isTRUE(self$options$normsPercentiles)) {
                 for (i in seq_len(nrow(nr$perc)))
                     .mk_add_row(self$results$normsPerc, i, c(list(score = scores(nr$perc)[i]), row4(nr$perc, i)))
+                if (any(nr$perc[, 3] < 0 | nr$perc[, 4] > 100, na.rm = TRUE))
+                    self$results$normsPerc$setNote("range", txt("msa", "norms_perc_range"))
+            }
             invisible(NULL)
         },
 
@@ -769,10 +775,14 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
             if (!is.null(errors) && !is.null(errors$G)) {
                 n_out <- sum(errors$G$values > errors$G$u2, na.rm = TRUE)
-                parts <- c(parts, sprintf(txt("msa", "interp_errors"), as.integer(n_out),
-                                          length(errors$G$values)))
-                if (n_out > 0)
+                if (n_out > 0) {
+                    parts <- c(parts, sprintf(txt("msa", "interp_errors"), as.integer(n_out),
+                                              length(errors$G$values)))
                     private$.addKey("warnings", sprintf(txt("msa", "key_errors"), as.integer(n_out)))
+                } else {
+                    n_u1 <- sum(errors$G$values > errors$G$u1, na.rm = TRUE)
+                    parts <- c(parts, sprintf(txt("msa", "interp_errors_none"), as.integer(n_u1)))
+                }
             }
 
             next_key <- if (!is.na(h_scale) && h_scale >= 0.3 && length(low_items) == 0) "interp_next_ok" else "interp_next_aisp"
@@ -780,7 +790,7 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (!is.null(prep$completed))
                 parts <- c(parts, txt("msa", "interp_imputed"))
 
-            self$results$interpretation$setContent(.mk_html_block(NULL, parts))
+            self$results$interpretation$setContent(.mk_interpretation(lang, parts))
         },
 
         .setTitles = function(tr) {
@@ -935,7 +945,13 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggplot2::labs(x = NULL, y = NULL, fill = state$labels$fill) +
                 ggtheme + .mk_plot_theme(self$options) +
                 ggplot2::scale_fill_gradient2(low = low, mid = "white", high = high, midpoint = 0,
-                                              limits = c(-1, 1), na.value = "grey92")
+                                              limits = c(-1, 1), breaks = c(-1, -0.5, 0, 0.5, 1),
+                                              na.value = "grey92")
+            # A horizontal color bar needs room for its five labels.
+            # ES: Una barra de color horizontal necesita espacio para sus
+            # cinco etiquetas.
+            if (self$options$plotLegend %in% c("bottom", "top"))
+                plot <- plot + ggplot2::theme(legend.key.width = grid::unit(1.6, "cm"))
             print(plot)
             TRUE
         },
@@ -990,6 +1006,14 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (style$labels)
                 plot <- plot + ggplot2::geom_text(ggplot2::aes(label = formatC(est, format = "f", digits = 0)),
                                                   vjust = -0.9, size = 2.6)
+            # Wald intervals of percentile ranks can pass 0 or 100 at the
+            # extremes; the band is drawn within the possible range.
+            # ES: Los intervalos de Wald de los rangos percentiles pueden
+            # pasar de 0 o 100 en los extremos; la banda se dibuja dentro del
+            # rango posible.
+            df$lower <- pmax(df$lower, 0)
+            df$upper <- pmin(df$upper, 100)
+            plot$data <- df
             if (style$full)
                 plot <- plot + ggplot2::coord_cartesian(ylim = c(0, 100))
             plot <- plot + ggplot2::labs(x = state$labels$x, y = state$labels$y) +

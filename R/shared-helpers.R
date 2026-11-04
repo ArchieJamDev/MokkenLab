@@ -553,7 +553,29 @@
         parts <- c(parts, paste0(
             "<p style=\"", p_style, "\"><strong>", .mk_html_escape(p[1]), "</strong> ",
             .mk_html_escape(p[2]), "</p>"))
-    .mk_html_block(NULL, parts, raw = TRUE)
+    .mk_html_block(.mk_text(lang, "choices", "title"), parts, raw = TRUE)
+}
+
+# -----------------------------------------------------------------------------
+# .mk_guide_block() / .mk_interpretation()
+#
+# Input: lang; key - a section of texts.R "guide" (and "guide_titles");
+#   parts - interpretation paragraphs.
+# Output: the HTML of a teaching block or of the applied interpretation, with
+#   its heading inside the block: jamovi does not print the title of an Html
+#   result, and without a heading the reader cannot tell a guide from a
+#   result (seen in the first exported report, 2026-11-04).
+# ES: Salida: el HTML de un bloque didáctico o de la interpretación
+#   aplicada, con su encabezado dentro del bloque: jamovi no muestra el
+#   título de un resultado Html, y sin encabezado el lector no distingue una
+#   guía de un resultado (visto en el primer informe exportado, 2026-11-04).
+# -----------------------------------------------------------------------------
+.mk_guide_block <- function(lang, key) {
+    .mk_html_block(.mk_text(lang, "guide_titles", key), .mk_html_list(.mk_text(lang, "guide", key)), raw = TRUE)
+}
+
+.mk_interpretation <- function(lang, parts) {
+    .mk_html_block(.mk_text(lang, "common", "interp_title"), parts)
 }
 
 # -----------------------------------------------------------------------------
