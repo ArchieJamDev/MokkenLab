@@ -1,0 +1,455 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+name: mlmsa
+title: Two-Level Mokken Scale Analysis
+jrs: '1.1'
+
+items:
+  - name: intro
+    title: Introduction
+    type: Html
+
+  - name: keySummary
+    title: Key findings
+    type: Html
+    visible: (showKeySummary)
+
+  - name: choicesGuide
+    title: About your choices
+    type: Html
+    visible: (showChoicesGuide)
+
+  - name: mlGuide
+    title: How to read two-level scalability
+    type: Html
+    visible: (showGuides)
+
+  - name: summary
+    title: Analysis summary
+    type: Table
+    rows: 0
+    refs:
+      - mokken_pkg
+      - snijders_2001
+      - crisan_2016
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+    columns:
+      - name: element
+        title: "Element"
+        type: text
+      - name: value
+        title: "Value"
+        type: text
+
+  - name: scale
+    title: Two-level scalability of the scale
+    type: Table
+    rows: 0
+    refs:
+      - snijders_2001
+      - koopman_2020_se
+      - koopman_2022_twostep
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - weighProps
+      - showZ
+      - zLowerbound
+      - typeZ
+    columns:
+      - name: coef
+        title: "Coefficient"
+        type: text
+      - name: est
+        title: "Estimate"
+        type: number
+        format: zto
+      - name: se
+        title: "SE"
+        type: number
+        format: zto
+        visible: (se)
+      - name: lower
+        title: "Lower"
+        type: number
+        format: zto
+        superTitle: "Confidence interval"
+        visible: (ci)
+      - name: upper
+        title: "Upper"
+        type: number
+        format: zto
+        superTitle: "Confidence interval"
+        visible: (ci)
+      - name: z
+        title: "z"
+        type: number
+        visible: (showZ)
+      - name: p
+        title: "p"
+        type: number
+        format: zto,pvalue
+        visible: (showZ)
+      - name: reading
+        title: "Reading"
+        type: text
+
+  - name: items
+    title: Two-level item scalability
+    type: Table
+    rows: 0
+    refs:
+      - crisan_2016
+      - koopman_2020_se
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - weighProps
+      - showZ
+      - zLowerbound
+      - typeZ
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: w
+        title: "Within"
+        type: number
+        format: zto
+        superTitle: "Hi"
+      - name: wse
+        title: "SE"
+        type: number
+        format: zto
+        superTitle: "Hi"
+        visible: (se)
+      - name: b
+        title: "Between"
+        type: number
+        format: zto
+        superTitle: "Hi"
+      - name: bse
+        title: "SE"
+        type: number
+        format: zto
+        superTitle: "Hi"
+        visible: (se)
+      - name: bw
+        title: "Ratio BW"
+        type: number
+        format: zto
+        superTitle: "Hi"
+      - name: zw
+        title: "z (within)"
+        type: number
+        visible: (showZ)
+      - name: zb
+        title: "z (between)"
+        type: number
+        visible: (showZ)
+
+  - name: pairs
+    title: Two-level item-pair scalability
+    type: Table
+    rows: 0
+    visible: (showHij)
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - weighProps
+      - showZ
+      - zLowerbound
+      - typeZ
+      - showHij
+    columns:
+      - name: item1
+        title: "Item"
+        type: text
+      - name: item2
+        title: "Item"
+        type: text
+      - name: w
+        title: "Within"
+        type: number
+        format: zto
+        superTitle: "Hij"
+      - name: wse
+        title: "SE"
+        type: number
+        format: zto
+        superTitle: "Hij"
+        visible: (se)
+      - name: b
+        title: "Between"
+        type: number
+        format: zto
+        superTitle: "Hij"
+      - name: bse
+        title: "SE"
+        type: number
+        format: zto
+        superTitle: "Hij"
+        visible: (se)
+      - name: bw
+        title: "Ratio BW"
+        type: number
+        format: zto
+        superTitle: "Hij"
+
+  - name: covH
+    title: Covariance matrix of the scale coefficients
+    type: Table
+    rows: 0
+    visible: (showCov)
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - weighProps
+      - showCov
+    columns:
+      - name: coef
+        title: "Coefficient"
+        type: text
+
+  - name: covHi
+    title: Covariance matrix of the item coefficients
+    type: Table
+    rows: 0
+    visible: (showCov)
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - weighProps
+      - showCov
+    columns:
+      - name: coef
+        title: "Coefficient"
+        type: text
+
+  - name: covHij
+    title: Covariance matrix of the item-pair coefficients
+    type: Table
+    rows: 0
+    visible: (showCov && showHij)
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - weighProps
+      - showCov
+      - showHij
+    columns:
+      - name: coef
+        title: "Coefficient"
+        type: text
+
+  - name: icc
+    title: Intraclass correlations
+    type: Table
+    rows: 0
+    visible: (showICC)
+    refs:
+      - snijders_bosker_2012
+      - koopman_2022_twostep
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showICC
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: icc
+        title: "ICC"
+        type: number
+        format: zto
+      - name: f
+        title: "F"
+        type: number
+      - name: df1
+        title: "df1"
+        type: integer
+      - name: df2
+        title: "df2"
+        type: integer
+      - name: p
+        title: "p"
+        type: number
+        format: zto,pvalue
+
+  - name: weights
+    title: Weights for two-level Guttman errors
+    type: Table
+    rows: 0
+    visible: (showWeights)
+    refs:
+      - koopman_2017_weights
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showWeights
+    columns:
+      - name: pair
+        title: "Item pair"
+        type: text
+
+  - name: levelPlot
+    title: Within and between scalability
+    type: Image
+    width: 600
+    height: 450
+    renderFun: .plotLevels
+    visible: (levelPlot)
+    clearWith:
+      - subject
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - weighProps
+      - plotWidth
+      - plotHeight
+      - plotPointSize
+      - plotLineWidth
+      - plotNcol
+      - plotLegend
+      - plotAxisAngle
+      - plotYRange
+      - plotValueLabels
+      - plotPalette
+
+  - name: interpretation
+    title: Applied interpretation
+    type: Html
+
+  - name: notes
+    title: Notes
+    type: Html

@@ -1,0 +1,17 @@
+# jamovi / R build files
+# ES: Archivos de compilación de jamovi / R
+*.jmo
+build/
+dist/
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+*.Rcheck/
+.cache/
+Rplots.pdf
+
+# Operating-system files
+# ES: Archivos del sistema operativo
+.DS_Store
+Thumbs.db

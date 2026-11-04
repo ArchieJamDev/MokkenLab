@@ -1,0 +1,426 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+name: aisp
+title: Automated Item Selection
+menuGroup: Mokken Lab
+menuSubgroup: Scaling
+menuTitle: Automated Item Selection (AISP)
+version: '0.1.0'
+jas: '1.2'
+
+description:
+    main: >
+      Partitions a set of items into Mokken scales with Mokken's automated
+      item selection procedure or a genetic algorithm, at one lower bound or
+      across a sequence of lower bounds, with the scalability of every scale
+      found and plain-language interpretation.
+
+options:
+  - name: data
+    type: Data
+
+  # The items of the (candidate) scale. aisp() needs at least two; the .b.R
+  # rejects fewer (Category A).
+  # ES: Los ítems de la escala (candidata). aisp() necesita al menos dos; el
+  # .b.R rechaza menos (Categoría A).
+  - name: vars
+    title: Items
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+
+  # aisp(level.two.var =): respondents nested in clusters (pupils in
+  # classes). Item selection then uses tests whose standard errors take the
+  # clustering into account (Koopman et al., 2022).
+  # ES: aisp(level.two.var =): personas anidadas en conglomerados
+  # (alumnos en clases). La selección usa entonces pruebas cuyos errores estándar
+  # consideran el agrupamiento (Koopman et al., 2022).
+  - name: clusterVar
+    title: Cluster variable (nested data)
+    type: Variable
+    default: null
+    suggested:
+      - nominal
+    permitted:
+      - factor
+      - numeric
+
+  - name: reportLang
+    title: Report Language
+    type: List
+    options:
+      - title: English
+        name: en
+      - title: Español
+        name: es
+    default: en
+
+  - name: showKeySummary
+    title: Key findings
+    type: Bool
+    default: true
+
+  - name: showChoicesGuide
+    title: About your choices
+    type: Bool
+    default: false
+
+  # Teaching blocks before each table: what the statistic measures, why it
+  # matters and how to read it. On by default: MokkenLab teaches methodology.
+  # ES: Bloques didácticos antes de cada tabla: qué mide el estadístico, por
+  # qué importa y cómo leerlo. Activados por defecto: MokkenLab enseña
+  # metodología.
+  - name: showGuides
+    title: How to read each table
+    type: Bool
+    default: true
+
+  # ---------------------------------------------------------------------------
+  # Data handling shared by every MokkenLab analysis: missing values (mokken
+  # refuses them), score range and negatively worded items (recode()).
+  # ES: Manejo de datos común a todos los análisis de MokkenLab: valores
+  # perdidos (mokken los rechaza), rango de puntajes e ítems redactados en
+  # negativo (recode()).
+  # ---------------------------------------------------------------------------
+  - name: naHandling
+    title: Missing values
+    type: List
+    options:
+      - title: Listwise deletion
+        name: listwise
+      - title: Two-way imputation
+        name: twoway
+    default: listwise
+
+  # twoway(nCompletedDataSets =): more than one completed data set shows how
+  # much the coefficients move between imputations.
+  # ES: twoway(nCompletedDataSets =): más de un conjunto completado muestra
+  # cuánto se mueven los coeficientes entre imputaciones.
+  - name: twowaySets
+    title: Completed data sets
+    type: Integer
+    min: 1
+    max: 50
+    default: 1
+
+  - name: twowaySeed
+    title: Imputation seed
+    type: Integer
+    min: 1
+    max: 999999999
+    default: 2026
+
+  # twoway(minX =, maxX =) and recode(values =): the lowest and highest
+  # possible item scores.
+  # ES: twoway(minX =, maxX =) y recode(values =): los puntajes de ítem
+  # mínimo y máximo posibles.
+  - name: scoreRange
+    title: Score range
+    type: List
+    options:
+      - title: Observed in the data
+        name: observed
+      - title: Declared
+        name: manual
+    default: observed
+
+  - name: scoreMin
+    title: Lowest possible score
+    type: Integer
+    default: 0
+
+  - name: scoreMax
+    title: Highest possible score
+    type: Integer
+    default: 4
+
+  - name: negItems
+    title: Negatively worded items
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+    default: []
+
+  # ---------------------------------------------------------------------------
+  # Selection criterion: aisp(lowerbound =). One value, or a sequence of
+  # values to see how the partition changes as the criterion tightens
+  # (Hemker, Sijtsma & Molenaar, 1995 recommend this exploration).
+  # ES: Criterio de selección: aisp(lowerbound =). Un valor, o una secuencia
+  # para ver cómo cambia la partición al endurecer el criterio.
+  # ---------------------------------------------------------------------------
+  - name: lbMode
+    title: Lower bound
+    type: List
+    options:
+      - title: Single value
+        name: single
+      - title: Sequence of values
+        name: sequence
+    default: single
+
+  - name: lowerbound
+    title: Lower bound c
+    type: Number
+    min: 0
+    max: 0.95
+    default: 0.3
+
+  - name: lbFrom
+    title: From
+    type: Number
+    min: 0
+    max: 0.95
+    default: 0.05
+
+  - name: lbTo
+    title: To
+    type: Number
+    min: 0
+    max: 0.95
+    default: 0.6
+
+  - name: lbStep
+    title: Step
+    type: Number
+    min: 0.01
+    max: 0.5
+    default: 0.05
+
+  # ---------------------------------------------------------------------------
+  # Search: aisp(search =, popsize =, maxgens =, pxover =, pmutation =).
+  # The genetic algorithm is stochastic; aisp() has no seed argument, so the
+  # module sets R's seed around the call (ARCHITECTURE.md §16).
+  # ES: Búsqueda: aisp(search =, ...). El algoritmo genético es
+  # estocástico; aisp() no tiene argumento de semilla, así que el módulo fija
+  # la semilla de R alrededor de la llamada.
+  # ---------------------------------------------------------------------------
+  - name: search
+    title: Search procedure
+    type: List
+    options:
+      - title: Mokken's procedure (normal)
+        name: normal
+      - title: Genetic algorithm
+        name: ga
+    default: normal
+
+  - name: popsize
+    title: Population size
+    type: Integer
+    min: 2
+    max: 1000
+    default: 20
+
+  - name: maxgensMode
+    title: Generations
+    type: List
+    options:
+      - title: Automatic (mokken default)
+        name: auto
+      - title: Fixed
+        name: manual
+    default: auto
+
+  - name: maxgens
+    title: Maximum generations
+    type: Integer
+    min: 1
+    max: 1000000
+    default: 1000
+
+  - name: pxover
+    title: Crossover probability
+    type: Number
+    min: 0
+    max: 1
+    default: 0.5
+
+  - name: pmutation
+    title: Mutation probability
+    type: Number
+    min: 0
+    max: 1
+    default: 0.1
+
+  - name: gaSeed
+    title: Seed
+    type: Integer
+    min: 1
+    max: 999999999
+    default: 2026
+
+  # ---------------------------------------------------------------------------
+  # Tests used during selection: aisp(alpha =, type.z =, test.Hi =).
+  # ES: Pruebas usadas durante la selección: aisp(alpha =, type.z =,
+  # test.Hi =).
+  # ---------------------------------------------------------------------------
+  - name: alpha
+    title: Significance level
+    type: Number
+    min: 0.0001
+    max: 0.5
+    default: 0.05
+
+  - name: typeZ
+    title: Z test
+    type: List
+    options:
+      - title: Original Z (Mokken)
+        name: Z
+      - title: Wald-based
+        name: WB
+      - title: Range-preserving
+        name: RP
+    default: Z
+
+  - name: testHi
+    title: Test Hi against the lower bound
+    type: Bool
+    default: false
+
+  # aisp(StartSet =): items that must start the first scale.
+  # ES: aisp(StartSet =): ítems que deben iniciar la primera escala.
+  - name: startSet
+    title: Start set (first scale)
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+    default: []
+
+  - name: scaleCoefs
+    title: Scalability of each scale
+    type: Bool
+    default: true
+
+  - name: sequencePlot
+    title: Partition across lower bounds plot
+    type: Bool
+    default: true
+
+  # ---------------------------------------------------------------------------
+  # Plot settings shared by every MokkenLab plot: size, marks, layout, legend,
+  # axes and palette. Colors follow jamovi's own theme unless a palette jamovi
+  # does not ship is chosen (CODE_STYLE §18).
+  # ES: Ajustes de gráficos comunes a todos los gráficos de MokkenLab:
+  # tamaño, marcas, disposición, leyenda, ejes y paleta. Los colores siguen el
+  # tema de jamovi salvo que se elija una paleta que jamovi no trae.
+  # ---------------------------------------------------------------------------
+  - name: plotWidth
+    title: Width (0 = automatic)
+    type: Integer
+    min: 0
+    max: 3000
+    default: 0
+
+  - name: plotHeight
+    title: Height (0 = automatic)
+    type: Integer
+    min: 0
+    max: 3000
+    default: 0
+
+  - name: plotPointSize
+    title: Point size
+    type: Number
+    min: 0
+    max: 10
+    default: 2
+
+  - name: plotLineWidth
+    title: Line width
+    type: Number
+    min: 0.1
+    max: 5
+    default: 0.8
+
+  - name: plotNcol
+    title: Panels per row (0 = automatic)
+    type: Integer
+    min: 0
+    max: 10
+    default: 0
+
+  - name: plotLegend
+    title: Legend
+    type: List
+    options:
+      - title: Bottom
+        name: bottom
+      - title: Right
+        name: right
+      - title: Top
+        name: top
+      - title: Hidden
+        name: none
+    default: bottom
+
+  - name: plotAxisAngle
+    title: X-axis label angle
+    type: List
+    options:
+      - title: Horizontal
+        name: a0
+      - title: 45 degrees
+        name: a45
+      - title: Vertical
+        name: a90
+    default: a45
+
+  - name: plotYRange
+    title: Y-axis range
+    type: List
+    options:
+      - title: Fitted to the data
+        name: data
+      - title: Full theoretical range
+        name: full
+    default: full
+
+  - name: plotValueLabels
+    title: Value labels
+    type: Bool
+    default: false
+
+  - name: plotPalette
+    title: Plot palette
+    type: List
+    options:
+      - title: jamovi theme
+        name: jamovi
+      - title: Colorblind-safe (Okabe-Ito)
+        name: colorblind
+      - title: Viridis
+        name: viridis
+    default: jamovi
+...

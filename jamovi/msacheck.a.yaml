@@ -1,0 +1,553 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+name: msacheck
+title: Model Assumptions
+menuGroup: Mokken Lab
+menuSubgroup: Model fit
+menuTitle: Model Assumptions
+version: '0.1.0'
+jas: '1.2'
+
+description:
+    main: >
+      Checks the assumptions of the monotone homogeneity and double
+      monotonicity models: monotonicity, invariant item ordering,
+      nonintersection (rest-score and P-matrix methods) and local independence
+      (conditional association), with item response function plots and
+      plain-language interpretation.
+
+options:
+  - name: data
+    type: Data
+
+  # The items of the (candidate) scale. the checks compare each item with the rest
+  # score, so the .b.R rejects fewer than three (Category A).
+  # ES: Los ítems de la escala (candidata). las verificaciones comparan cada ítem con
+  # el resto, así que el .b.R rechaza menos de tres (Categoría A).
+  - name: vars
+    title: Items
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+
+  # check.monotonicity()/check.iio(level.two.var =): respondents nested in clusters (pupils in
+  # classes). Monotonicity and invariant item ordering are then
+  # checked with the two-level fit statistics of Koopman et al.
+  # ES: check.monotonicity()/check.iio(level.two.var =): personas anidadas en conglomerados
+  # (alumnos en clases). La monotonicidad y el orden invariante se verifican
+  # entonces con los estadísticos de ajuste de dos niveles de Koopman et al.
+  - name: clusterVar
+    title: Cluster variable (nested data)
+    type: Variable
+    default: null
+    suggested:
+      - nominal
+    permitted:
+      - factor
+      - numeric
+
+  - name: reportLang
+    title: Report Language
+    type: List
+    options:
+      - title: English
+        name: en
+      - title: Español
+        name: es
+    default: en
+
+  - name: showKeySummary
+    title: Key findings
+    type: Bool
+    default: true
+
+  - name: showChoicesGuide
+    title: About your choices
+    type: Bool
+    default: false
+
+  # Teaching blocks before each table: what the statistic measures, why it
+  # matters and how to read it. On by default: MokkenLab teaches methodology.
+  # ES: Bloques didácticos antes de cada tabla: qué mide el estadístico, por
+  # qué importa y cómo leerlo. Activados por defecto: MokkenLab enseña
+  # metodología.
+  - name: showGuides
+    title: How to read each table
+    type: Bool
+    default: true
+
+  # ---------------------------------------------------------------------------
+  # Data handling shared by every MokkenLab analysis: missing values (mokken
+  # refuses them), score range and negatively worded items (recode()).
+  # ES: Manejo de datos común a todos los análisis de MokkenLab: valores
+  # perdidos (mokken los rechaza), rango de puntajes e ítems redactados en
+  # negativo (recode()).
+  # ---------------------------------------------------------------------------
+  - name: naHandling
+    title: Missing values
+    type: List
+    options:
+      - title: Listwise deletion
+        name: listwise
+      - title: Two-way imputation
+        name: twoway
+    default: listwise
+
+  # twoway(nCompletedDataSets =): more than one completed data set shows how
+  # much the coefficients move between imputations.
+  # ES: twoway(nCompletedDataSets =): más de un conjunto completado muestra
+  # cuánto se mueven los coeficientes entre imputaciones.
+  - name: twowaySets
+    title: Completed data sets
+    type: Integer
+    min: 1
+    max: 50
+    default: 1
+
+  - name: twowaySeed
+    title: Imputation seed
+    type: Integer
+    min: 1
+    max: 999999999
+    default: 2026
+
+  # twoway(minX =, maxX =) and recode(values =): the lowest and highest
+  # possible item scores.
+  # ES: twoway(minX =, maxX =) y recode(values =): los puntajes de ítem
+  # mínimo y máximo posibles.
+  - name: scoreRange
+    title: Score range
+    type: List
+    options:
+      - title: Observed in the data
+        name: observed
+      - title: Declared
+        name: manual
+    default: observed
+
+  - name: scoreMin
+    title: Lowest possible score
+    type: Integer
+    default: 0
+
+  - name: scoreMax
+    title: Highest possible score
+    type: Integer
+    default: 4
+
+  - name: negItems
+    title: Negatively worded items
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+    default: []
+
+  # ---------------------------------------------------------------------------
+  # Rest-score groups shared by monotonicity, invariant item ordering and the
+  # rest-score method: minsize = mokken's default (depends on N) or fixed.
+  # ES: Grupos de rest-score comunes a monotonicidad, orden invariante y
+  # método rest-score: minsize = el valor por defecto de mokken (depende de
+  # N) o fijo.
+  # ---------------------------------------------------------------------------
+  - name: minsizeMode
+    title: Minimum rest-score group size
+    type: List
+    options:
+      - title: Automatic (mokken default)
+        name: auto
+      - title: Fixed
+        name: manual
+    default: auto
+
+  - name: minsize
+    title: Minimum group size
+    type: Integer
+    min: 2
+    max: 100000
+    default: 50
+
+  # ---------------------------------------------------------------------------
+  # Monotonicity: check.monotonicity(minvi =, minsize =, level.two.var =).
+  # ES: Monotonicidad: check.monotonicity(...).
+  # ---------------------------------------------------------------------------
+  - name: checkMono
+    title: Monotonicity
+    type: Bool
+    default: true
+
+  - name: monoMinvi
+    title: Minimum violation
+    type: Number
+    min: 0
+    max: 1
+    default: 0.03
+
+  # ---------------------------------------------------------------------------
+  # Invariant item ordering: check.iio(method =, minvi =, minsize =, alpha =,
+  # item.selection =, fixed.item.order =, level.two.var =). The fixed order
+  # can be the order of the item list, consecutive clusters of k items (the
+  # clustered-item ordering of Koopman & Braeken, TROG data) or typed codes.
+  # ES: Orden invariante de los ítems: check.iio(...). El orden fijo puede
+  # ser el de la lista de ítems, conglomerados consecutivos de k ítems (el
+  # orden de ítems agrupados de Koopman y Braeken, datos TROG) o códigos
+  # escritos.
+  # ---------------------------------------------------------------------------
+  - name: checkIIO
+    title: Invariant item ordering
+    type: Bool
+    default: false
+
+  - name: iioMethod
+    title: Method
+    type: List
+    options:
+      - title: Manifest IIO (MIIO)
+        name: MIIO
+      - title: Manifest scale cumulative probability model (MSCPM)
+        name: MSCPM
+      - title: Increasingness in transposition (IT)
+        name: IT
+    default: MIIO
+
+  - name: iioMinviMode
+    title: Minimum violation
+    type: List
+    options:
+      - title: Automatic (mokken default)
+        name: auto
+      - title: Fixed
+        name: manual
+    default: auto
+
+  - name: iioMinvi
+    title: Minimum violation value
+    type: Number
+    min: 0
+    max: 5
+    default: 0.03
+
+  - name: iioAlpha
+    title: Significance level
+    type: Number
+    min: 0.0001
+    max: 0.5
+    default: 0.05
+
+  - name: iioItemSelection
+    title: Backward item selection
+    type: Bool
+    default: true
+
+  - name: iioOrder
+    title: Item order
+    type: List
+    options:
+      - title: Estimated from the item means
+        name: estimated
+      - title: Fixed, as listed
+        name: listed
+      - title: Fixed, clusters of consecutive items
+        name: clusters
+      - title: Fixed, typed codes
+        name: custom
+    default: estimated
+
+  - name: iioClusterSize
+    title: Items per cluster
+    type: Integer
+    min: 1
+    max: 1000
+    default: 4
+
+  - name: iioOrderText
+    title: Order codes (one per item)
+    type: String
+    default: ''
+
+  # ---------------------------------------------------------------------------
+  # Nonintersection: check.restscore(minvi =, minsize =) and
+  # check.pmatrix(minvi =).
+  # ES: No intersección: check.restscore(...) y check.pmatrix(...).
+  # ---------------------------------------------------------------------------
+  - name: checkRest
+    title: Rest-score method
+    type: Bool
+    default: false
+
+  - name: restMinvi
+    title: Minimum violation
+    type: Number
+    min: 0
+    max: 1
+    default: 0.03
+
+  - name: checkPmatrix
+    title: P-matrix method
+    type: Bool
+    default: false
+
+  - name: pmatMinvi
+    title: Minimum violation
+    type: Number
+    min: 0
+    max: 1
+    default: 0.03
+
+  # ---------------------------------------------------------------------------
+  # Local independence: check.ca(Windex =, MINSIZE =, NWEIGHTOPTION =,
+  # COVWEIGHTOPTION =, MINGROUP =) (Straat et al., 2016).
+  # ES: Independencia local: check.ca(...) (Straat et al., 2016).
+  # ---------------------------------------------------------------------------
+  - name: checkCA
+    title: Conditional association (local independence)
+    type: Bool
+    default: false
+
+  - name: caWindex
+    title: W indices
+    type: Bool
+    default: false
+
+  - name: caMinsize
+    title: Minimum conditioning group size
+    type: Integer
+    min: 1
+    max: 10000
+    default: 4
+
+  - name: caMingroup
+    title: Minimum number of groups
+    type: Integer
+    min: 1
+    max: 1000
+    default: 4
+
+  - name: caNweight
+    title: Sample-size weight
+    type: List
+    options:
+      - title: None (each covariance weight 1)
+        name: noweight
+      - title: Square root of group size
+        name: sqrt
+    default: noweight
+
+  - name: caCovweight
+    title: Covariance weight
+    type: List
+    options:
+      - title: Probability of a negative covariance (pnorm)
+        name: pnorm
+      - title: None (negative covariance counts 1)
+        name: noweight
+    default: pnorm
+
+  # ---------------------------------------------------------------------------
+  # Plots: the response functions and pairwise comparisons drawn by mokken's
+  # plot methods, rebuilt in ggplot so they follow jamovi's theme.
+  # ES: Gráficos: las funciones de respuesta y comparaciones por pares de
+  # los métodos plot de mokken, reconstruidas en ggplot para seguir el tema
+  # de jamovi.
+  # ---------------------------------------------------------------------------
+  - name: critPlot
+    title: Violation profile (crit)
+    type: Bool
+    default: true
+
+  - name: monoPlot
+    title: Item response functions
+    type: Bool
+    default: true
+
+  - name: monoCurves
+    title: Curves
+    type: List
+    options:
+      - title: Both (IRF and ISRFs)
+        name: both
+      - title: Item response function (IRF)
+        name: IRF
+      - title: Item step response functions (ISRFs)
+        name: ISRF
+    default: both
+
+  - name: iioPlot
+    title: Item pairs (invariant item ordering)
+    type: Bool
+    default: false
+
+  - name: restPlot
+    title: Item pairs (rest-score method)
+    type: Bool
+    default: false
+
+  - name: pmatPlot
+    title: P-matrix
+    type: Bool
+    default: false
+
+  - name: pmatType
+    title: Matrix
+    type: List
+    options:
+      - title: Both
+        name: both
+      - title: P(++)
+        name: ppp
+      - title: P(--)
+        name: pmm
+    default: both
+
+  - name: plotItems
+    title: Items to plot
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+    default: []
+
+  - name: plotCI
+    title: Confidence bands
+    type: Bool
+    default: true
+
+  - name: plotAlpha
+    title: Band significance level
+    type: Number
+    min: 0.001
+    max: 0.5
+    default: 0.05
+
+  - name: plotTransparency
+    title: Band opacity (%)
+    type: Integer
+    min: 0
+    max: 100
+    default: 20
+
+  # ---------------------------------------------------------------------------
+  # Plot settings shared by every MokkenLab plot: size, marks, layout, legend,
+  # axes and palette. Colors follow jamovi's own theme unless a palette jamovi
+  # does not ship is chosen (CODE_STYLE §18).
+  # ES: Ajustes de gráficos comunes a todos los gráficos de MokkenLab:
+  # tamaño, marcas, disposición, leyenda, ejes y paleta. Los colores siguen el
+  # tema de jamovi salvo que se elija una paleta que jamovi no trae.
+  # ---------------------------------------------------------------------------
+  - name: plotWidth
+    title: Width (0 = automatic)
+    type: Integer
+    min: 0
+    max: 3000
+    default: 0
+
+  - name: plotHeight
+    title: Height (0 = automatic)
+    type: Integer
+    min: 0
+    max: 3000
+    default: 0
+
+  - name: plotPointSize
+    title: Point size
+    type: Number
+    min: 0
+    max: 10
+    default: 2
+
+  - name: plotLineWidth
+    title: Line width
+    type: Number
+    min: 0.1
+    max: 5
+    default: 0.8
+
+  - name: plotNcol
+    title: Panels per row (0 = automatic)
+    type: Integer
+    min: 0
+    max: 10
+    default: 0
+
+  - name: plotLegend
+    title: Legend
+    type: List
+    options:
+      - title: Bottom
+        name: bottom
+      - title: Right
+        name: right
+      - title: Top
+        name: top
+      - title: Hidden
+        name: none
+    default: bottom
+
+  - name: plotAxisAngle
+    title: X-axis label angle
+    type: List
+    options:
+      - title: Horizontal
+        name: a0
+      - title: 45 degrees
+        name: a45
+      - title: Vertical
+        name: a90
+    default: a45
+
+  - name: plotYRange
+    title: Y-axis range
+    type: List
+    options:
+      - title: Fitted to the data
+        name: data
+      - title: Full theoretical range
+        name: full
+    default: full
+
+  - name: plotValueLabels
+    title: Value labels
+    type: Bool
+    default: false
+
+  - name: plotPalette
+    title: Plot palette
+    type: List
+    options:
+      - title: jamovi theme
+        name: jamovi
+      - title: Colorblind-safe (Okabe-Ito)
+        name: colorblind
+      - title: Viridis
+        name: viridis
+    default: jamovi
+...

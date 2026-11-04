@@ -1,0 +1,506 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+name: msa
+title: Mokken Scale Analysis
+menuGroup: Mokken Lab
+menuSubgroup: Scaling
+menuTitle: Mokken Scale Analysis
+version: '0.1.0'
+jas: '1.2'
+
+description:
+    main: >
+      Scalability coefficients of a set of items (item pairs, items and the
+      whole scale) with standard errors, confidence intervals and tests against
+      a lower bound, by group, with reliability, Guttman-error outliers, bounds
+      for dichotomous items, norm statistics and plain-language interpretation.
+
+options:
+  - name: data
+    type: Data
+
+  # The items of the (candidate) scale. coefH() needs at least two; the .b.R
+  # rejects fewer (Category A).
+  # ES: Los ítems de la escala (candidata). coefH() necesita al menos dos; el
+  # .b.R rechaza menos (Categoría A).
+  - name: vars
+    title: Items
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+
+  # coefH(group.var =): the coefficients are also estimated within each group.
+  # ES: coefH(group.var =): los coeficientes también se estiman dentro de cada
+  # grupo.
+  - name: groupVar
+    title: Grouping variable
+    type: Variable
+    default: null
+    suggested:
+      - nominal
+      - ordinal
+    permitted:
+      - factor
+      - numeric
+
+  # coefH()/coefZ(level.two.var =): respondents nested in clusters (pupils in
+  # classes). The coefficients do not change; their standard errors and tests
+  # take the clustering into account (Koopman et al., 2020).
+  # ES: coefH()/coefZ(level.two.var =): personas anidadas en conglomerados
+  # (alumnos en clases). Los coeficientes no cambian; sus errores estándar y
+  # pruebas consideran el agrupamiento (Koopman et al., 2020).
+  - name: clusterVar
+    title: Cluster variable (nested data)
+    type: Variable
+    default: null
+    suggested:
+      - nominal
+    permitted:
+      - factor
+      - numeric
+
+  - name: reportLang
+    title: Report Language
+    type: List
+    options:
+      - title: English
+        name: en
+      - title: Español
+        name: es
+    default: en
+
+  - name: showKeySummary
+    title: Key findings
+    type: Bool
+    default: true
+
+  - name: showChoicesGuide
+    title: About your choices
+    type: Bool
+    default: false
+
+  # Teaching blocks before each table: what the statistic measures, why it
+  # matters and how to read it. On by default: MokkenLab teaches methodology.
+  # ES: Bloques didácticos antes de cada tabla: qué mide el estadístico, por
+  # qué importa y cómo leerlo. Activados por defecto: MokkenLab enseña
+  # metodología.
+  - name: showGuides
+    title: How to read each table
+    type: Bool
+    default: true
+
+  # ---------------------------------------------------------------------------
+  # Data handling shared by every MokkenLab analysis: missing values (mokken
+  # refuses them), score range and negatively worded items (recode()).
+  # ES: Manejo de datos común a todos los análisis de MokkenLab: valores
+  # perdidos (mokken los rechaza), rango de puntajes e ítems redactados en
+  # negativo (recode()).
+  # ---------------------------------------------------------------------------
+  - name: naHandling
+    title: Missing values
+    type: List
+    options:
+      - title: Listwise deletion
+        name: listwise
+      - title: Two-way imputation
+        name: twoway
+    default: listwise
+
+  # twoway(nCompletedDataSets =): more than one completed data set shows how
+  # much the coefficients move between imputations.
+  # ES: twoway(nCompletedDataSets =): más de un conjunto completado muestra
+  # cuánto se mueven los coeficientes entre imputaciones.
+  - name: twowaySets
+    title: Completed data sets
+    type: Integer
+    min: 1
+    max: 50
+    default: 1
+
+  - name: twowaySeed
+    title: Imputation seed
+    type: Integer
+    min: 1
+    max: 999999999
+    default: 2026
+
+  # twoway(minX =, maxX =) and recode(values =): the lowest and highest
+  # possible item scores.
+  # ES: twoway(minX =, maxX =) y recode(values =): los puntajes de ítem
+  # mínimo y máximo posibles.
+  - name: scoreRange
+    title: Score range
+    type: List
+    options:
+      - title: Observed in the data
+        name: observed
+      - title: Declared
+        name: manual
+    default: observed
+
+  - name: scoreMin
+    title: Lowest possible score
+    type: Integer
+    default: 0
+
+  - name: scoreMax
+    title: Highest possible score
+    type: Integer
+    default: 4
+
+  - name: negItems
+    title: Negatively worded items
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+    default: []
+
+  # ---------------------------------------------------------------------------
+  # Scalability coefficients: coefH(se =, ci =, type.ci =).
+  # ES: Coeficientes de escalabilidad: coefH(se =, ci =, type.ci =).
+  # ---------------------------------------------------------------------------
+  - name: se
+    title: Standard errors
+    type: Bool
+    default: true
+
+  - name: ci
+    title: Confidence intervals
+    type: Bool
+    default: true
+
+  - name: ciWidth
+    title: Confidence level
+    type: Number
+    min: 50
+    max: 99.9
+    default: 95
+
+  - name: typeCI
+    title: Interval type
+    type: List
+    options:
+      - title: Wald-based
+        name: WB
+      - title: Range-preserving
+        name: RP
+    default: WB
+
+  - name: showHij
+    title: Item-pair coefficients (Hij)
+    type: Bool
+    default: false
+
+  # ---------------------------------------------------------------------------
+  # Significance tests: coefZ(lowerbound =, type.z =).
+  # ES: Pruebas de significación: coefZ(lowerbound =, type.z =).
+  # ---------------------------------------------------------------------------
+  - name: showZ
+    title: Z tests
+    type: Bool
+    default: true
+
+  - name: zLowerbound
+    title: Test against
+    type: Number
+    min: 0
+    max: 0.95
+    default: 0.3
+
+  - name: typeZ
+    title: Z test
+    type: List
+    options:
+      - title: Original Z (Mokken)
+        name: Z
+      - title: Wald-based
+        name: WB
+      - title: Range-preserving
+        name: RP
+    default: WB
+
+  # ---------------------------------------------------------------------------
+  # Reliability: check.reliability(MS =, alpha =, lambda.2 =, LCRC =,
+  # nclass =, irc =).
+  # ES: Fiabilidad: check.reliability(...).
+  # ---------------------------------------------------------------------------
+  - name: showReliability
+    title: Reliability
+    type: Bool
+    default: true
+
+  - name: relMS
+    title: Molenaar-Sijtsma (MS)
+    type: Bool
+    default: true
+
+  - name: relAlpha
+    title: Cronbach's alpha
+    type: Bool
+    default: true
+
+  - name: relLambda2
+    title: Guttman's lambda-2
+    type: Bool
+    default: true
+
+  - name: relLCRC
+    title: Latent class reliability (LCRC)
+    type: Bool
+    default: false
+
+  - name: lcrcClassesMode
+    title: Latent classes
+    type: List
+    options:
+      - title: Automatic (items - 1)
+        name: auto
+      - title: Fixed
+        name: manual
+    default: auto
+
+  - name: lcrcClasses
+    title: Number of latent classes
+    type: Integer
+    min: 2
+    max: 30
+    default: 3
+
+  - name: relIRC
+    title: Item-rest correlations
+    type: Bool
+    default: false
+
+  # ---------------------------------------------------------------------------
+  # Outliers: check.errors(returnGplus =, returnOplus =).
+  # ES: Atípicos: check.errors(returnGplus =, returnOplus =).
+  # ---------------------------------------------------------------------------
+  - name: showErrors
+    title: Guttman errors (outliers)
+    type: Bool
+    default: false
+
+  - name: errorsGplus
+    title: Number of Guttman errors (G+)
+    type: Bool
+    default: true
+
+  - name: errorsOplus
+    title: Infrequent scores (O+)
+    type: Bool
+    default: false
+
+  - name: errorsPlot
+    title: Distribution plot
+    type: Bool
+    default: false
+
+  - name: gplusOV
+    title: Save G+
+    type: Output
+
+  - name: oplusOV
+    title: Save O+
+    type: Output
+
+  # ---------------------------------------------------------------------------
+  # Relative bounds for dichotomous items: check.bounds(quant =, lower =,
+  # upper =) (Ellis, 2014).
+  # ES: Cotas relativas para ítems dicotómicos: check.bounds(...) (Ellis,
+  # 2014).
+  # ---------------------------------------------------------------------------
+  - name: showBounds
+    title: Correlation bounds (dichotomous items)
+    type: Bool
+    default: false
+
+  - name: boundsQuant
+    title: Quantile for L2
+    type: Number
+    min: 0.5
+    max: 0.99
+    default: 0.9
+
+  - name: boundsLower
+    title: Lower bounds
+    type: Bool
+    default: true
+
+  - name: boundsUpper
+    title: Upper bounds
+    type: Bool
+    default: false
+
+  # ---------------------------------------------------------------------------
+  # Norms of the total score: check.norms() (Oosterhuis et al., 2017).
+  # ES: Normas de la puntuación total: check.norms() (Oosterhuis et al.,
+  # 2017).
+  # ---------------------------------------------------------------------------
+  - name: showNorms
+    title: Norm statistics
+    type: Bool
+    default: false
+
+  - name: normsZ
+    title: Standard scores
+    type: Bool
+    default: true
+
+  - name: normsStanines
+    title: Stanine boundaries
+    type: Bool
+    default: true
+
+  - name: normsPercentiles
+    title: Percentile ranks
+    type: Bool
+    default: true
+
+  # ---------------------------------------------------------------------------
+  # Plots.
+  # ES: Gráficos.
+  # ---------------------------------------------------------------------------
+  - name: hiPlot
+    title: Item scalability plot
+    type: Bool
+    default: true
+
+  - name: hijPlot
+    title: Item-pair heat map (Hij)
+    type: Bool
+    default: false
+
+  - name: groupPlot
+    title: Item scalability by group plot
+    type: Bool
+    default: true
+
+  - name: normsPlot
+    title: Percentile rank curve
+    type: Bool
+    default: false
+
+  # ---------------------------------------------------------------------------
+  # Plot settings shared by every MokkenLab plot: size, marks, layout, legend,
+  # axes and palette. Colors follow jamovi's own theme unless a palette jamovi
+  # does not ship is chosen (CODE_STYLE §18).
+  # ES: Ajustes de gráficos comunes a todos los gráficos de MokkenLab:
+  # tamaño, marcas, disposición, leyenda, ejes y paleta. Los colores siguen el
+  # tema de jamovi salvo que se elija una paleta que jamovi no trae.
+  # ---------------------------------------------------------------------------
+  - name: plotWidth
+    title: Width (0 = automatic)
+    type: Integer
+    min: 0
+    max: 3000
+    default: 0
+
+  - name: plotHeight
+    title: Height (0 = automatic)
+    type: Integer
+    min: 0
+    max: 3000
+    default: 0
+
+  - name: plotPointSize
+    title: Point size
+    type: Number
+    min: 0
+    max: 10
+    default: 2
+
+  - name: plotLineWidth
+    title: Line width
+    type: Number
+    min: 0.1
+    max: 5
+    default: 0.8
+
+  - name: plotNcol
+    title: Panels per row (0 = automatic)
+    type: Integer
+    min: 0
+    max: 10
+    default: 0
+
+  - name: plotLegend
+    title: Legend
+    type: List
+    options:
+      - title: Bottom
+        name: bottom
+      - title: Right
+        name: right
+      - title: Top
+        name: top
+      - title: Hidden
+        name: none
+    default: bottom
+
+  - name: plotAxisAngle
+    title: X-axis label angle
+    type: List
+    options:
+      - title: Horizontal
+        name: a0
+      - title: 45 degrees
+        name: a45
+      - title: Vertical
+        name: a90
+    default: a45
+
+  - name: plotYRange
+    title: Y-axis range
+    type: List
+    options:
+      - title: Fitted to the data
+        name: data
+      - title: Full theoretical range
+        name: full
+    default: full
+
+  - name: plotValueLabels
+    title: Value labels
+    type: Bool
+    default: false
+
+  - name: plotPalette
+    title: Plot palette
+    type: List
+    options:
+      - title: jamovi theme
+        name: jamovi
+      - title: Colorblind-safe (Okabe-Ito)
+        name: colorblind
+      - title: Viridis
+        name: viridis
+    default: jamovi
+...

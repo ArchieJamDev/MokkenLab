@@ -1,0 +1,103 @@
+---
+name: MokkenLab
+title: Mokken Lab
+version: 0.1.0
+jms: '1.0'
+authors:
+  - Arquímedes De León Chacón Chacón
+maintainer: Arquímedes De León Chacón Chacón <arquimedeschacon@gmail.com>
+description: >
+  MokkenLab brings every capability of the mokken package to jamovi and pairs
+  every result with evidence-based methodological guidance, interpretation and
+  educational support. It estimates scalability coefficients (Hij, Hi, H) with
+  standard errors, Wald-based or range-preserving confidence intervals and
+  significance tests, selects items into Mokken scales automatically (Mokken's
+  procedure or a genetic algorithm, at one or many lower bounds), checks
+  monotonicity, invariant item ordering, nonintersection (rest-score and
+  P-matrix methods) and local independence (conditional association), and
+  reports reliability (MS, alpha, lambda-2, LCRC), Guttman-error outliers,
+  bounds for dichotomous items, norm statistics with standard errors, and
+  two-level Mokken scale analysis for raters nested in subjects. Every
+  method-backed table cites its own source in jamovi's native numbered format,
+  and the complete APA 7th edition bibliography lives in the module's
+  documentation.
+usesNative: false
+minApp: 1.0.8
+icon: assets/mokkenlab-icon.png
+analyses:
+  - title: Mokken Scale Analysis
+    name: msa
+    ns: MokkenLab
+    menuGroup: Mokken Lab
+    menuSubgroup: Scaling
+    menuTitle: Mokken Scale Analysis
+    description: >
+      Scalability coefficients of a set of items (item pairs, items and the
+      whole scale) with standard errors, confidence intervals and tests against
+      a lower bound, by group, with reliability, Guttman-error outliers, bounds
+      for dichotomous items, norm statistics and plain-language interpretation.
+    category: analyses
+  - title: Automated Item Selection
+    name: aisp
+    ns: MokkenLab
+    menuGroup: Mokken Lab
+    menuSubgroup: Scaling
+    menuTitle: Automated Item Selection (AISP)
+    description: >
+      Partitions a set of items into Mokken scales with Mokken's automated item
+      selection procedure or a genetic algorithm, at one lower bound or across a
+      sequence of lower bounds, with the scalability of every scale found and
+      plain-language interpretation.
+    category: analyses
+  - title: Model Assumptions
+    name: msacheck
+    ns: MokkenLab
+    menuGroup: Mokken Lab
+    menuSubgroup: Model fit
+    menuTitle: Model Assumptions
+    description: >
+      Checks the assumptions of the monotone homogeneity and double monotonicity
+      models: monotonicity, invariant item ordering, nonintersection (rest-score
+      and P-matrix methods) and local independence (conditional association),
+      with item response function plots and plain-language interpretation.
+    category: analyses
+  - title: Two-Level Mokken Scale Analysis
+    name: mlmsa
+    ns: MokkenLab
+    menuGroup: Mokken Lab
+    menuSubgroup: Two-level data
+    menuTitle: Two-Level Mokken Scale Analysis
+    description: >
+      Within-subject, between-subject and ratio scalability coefficients for
+      raters nested in subjects (for example, students rating their teacher),
+      with standard errors, confidence intervals, tests, intraclass
+      correlations, weights for Guttman errors and plain-language
+      interpretation.
+    category: analyses
+datasets:
+  - name: Type D Scale DS14 (n=541)
+    path: mokkenlab_ds14.csv
+    description: >-
+      Fourteen 5-point items of the Type D Scale (social inhibition and negative
+      affectivity), two of them negatively worded, with real missing data, sex
+      and age, from the mokken package - see data/README.md
+  - name: Transitive reasoning (n=425)
+    path: mokkenlab_transreas.csv
+    description: >-
+      Twelve dichotomous transitive reasoning tasks answered by 425 pupils in
+      five school grades, from the mokken package - see data/README.md
+  - name: Autonomy support (259 students rating 14 teachers)
+    path: mokkenlab_autonomy.csv
+    description: >-
+      Seven 5-point items on which 259 students rated the autonomy support of
+      their teacher (two-level data: students nested in teachers), from the
+      mokken package - see data/README.md
+  - name: Test for Reception of Grammar TROG (n=210)
+    path: mokkenlab_trog.csv
+    description: >-
+      Eighty dichotomous items of the Norwegian TROG in 20 clusters of four
+      items (a1-a4 ... t1-t4), the clustered-item example of Koopman and Braeken
+      for investigating the ordering structure of a test, from the mokken
+      package - see data/README.md
+
+...

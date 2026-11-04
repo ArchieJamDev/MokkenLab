@@ -1,0 +1,190 @@
+title: Automated Item Selection
+name: aisp
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Items
+        children:
+          - type: VariablesListBox
+            name: vars
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Cluster variable (optional)
+        children:
+          - type: VariablesListBox
+            name: clusterVar
+            maxItemCount: 1
+            isTarget: true
+  - type: CollapseBox
+    label: Report Language
+    collapsed: false
+    children:
+      - type: ComboBox
+        name: reportLang
+      - type: CheckBox
+        name: showKeySummary
+      - type: CheckBox
+        name: showChoicesGuide
+      - type: CheckBox
+        name: showGuides
+  - type: CollapseBox
+    label: Data
+    collapsed: true
+    children:
+      - type: ComboBox
+        name: naHandling
+      - type: TextBox
+        name: twowaySets
+        format: number
+        enable: (naHandling:twoway)
+      - type: TextBox
+        name: twowaySeed
+        format: number
+        enable: (naHandling:twoway)
+      - type: ComboBox
+        name: scoreRange
+      - type: TextBox
+        name: scoreMin
+        format: number
+        enable: (scoreRange:manual)
+      - type: TextBox
+        name: scoreMax
+        format: number
+        enable: (scoreRange:manual)
+      - type: VariableSupplier
+        persistentItems: true
+        stretchFactor: 1
+        suggested:
+          - ordinal
+          - continuous
+        permitted:
+          - numeric
+        children:
+          - type: TargetLayoutBox
+            label: Negatively worded items
+            children:
+              - type: VariablesListBox
+                name: negItems
+                isTarget: true
+                height: small
+  - type: CollapseBox
+    label: Selection criterion
+    collapsed: false
+    children:
+      - type: ComboBox
+        name: lbMode
+      - type: TextBox
+        name: lowerbound
+        format: number
+        enable: (lbMode:single)
+      - type: TextBox
+        name: lbFrom
+        format: number
+        enable: (lbMode:sequence)
+      - type: TextBox
+        name: lbTo
+        format: number
+        enable: (lbMode:sequence)
+      - type: TextBox
+        name: lbStep
+        format: number
+        enable: (lbMode:sequence)
+  - type: CollapseBox
+    label: Search procedure
+    collapsed: true
+    children:
+      - type: ComboBox
+        name: search
+      - type: TextBox
+        name: popsize
+        format: number
+        enable: (search:ga)
+      - type: ComboBox
+        name: maxgensMode
+        enable: (search:ga)
+      - type: TextBox
+        name: maxgens
+        format: number
+        enable: (search:ga && maxgensMode:manual)
+      - type: TextBox
+        name: pxover
+        format: number
+        enable: (search:ga)
+      - type: TextBox
+        name: pmutation
+        format: number
+        enable: (search:ga)
+      - type: TextBox
+        name: gaSeed
+        format: number
+        enable: (search:ga)
+  - type: CollapseBox
+    label: Tests during selection
+    collapsed: true
+    children:
+      - type: TextBox
+        name: alpha
+        format: number
+      - type: ComboBox
+        name: typeZ
+      - type: CheckBox
+        name: testHi
+      - type: VariableSupplier
+        persistentItems: true
+        stretchFactor: 1
+        suggested:
+          - ordinal
+          - continuous
+        permitted:
+          - numeric
+        children:
+          - type: TargetLayoutBox
+            label: Start set (first scale)
+            children:
+              - type: VariablesListBox
+                name: startSet
+                isTarget: true
+                height: small
+  - type: CollapseBox
+    label: Output
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: scaleCoefs
+      - type: CheckBox
+        name: sequencePlot
+  - type: CollapseBox
+    label: Plot settings
+    collapsed: true
+    children:
+      - type: TextBox
+        name: plotWidth
+        format: number
+      - type: TextBox
+        name: plotHeight
+        format: number
+      - type: TextBox
+        name: plotPointSize
+        format: number
+      - type: TextBox
+        name: plotLineWidth
+        format: number
+      - type: TextBox
+        name: plotNcol
+        format: number
+      - type: ComboBox
+        name: plotLegend
+      - type: ComboBox
+        name: plotAxisAngle
+      - type: ComboBox
+        name: plotYRange
+      - type: CheckBox
+        name: plotValueLabels
+      - type: ComboBox
+        name: plotPalette

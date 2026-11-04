@@ -1,0 +1,353 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+name: mlmsa
+title: Two-Level Mokken Scale Analysis
+menuGroup: Mokken Lab
+menuSubgroup: Two-level data
+menuTitle: Two-Level Mokken Scale Analysis
+version: '0.1.0'
+jas: '1.2'
+
+description:
+    main: >
+      Within-subject, between-subject and ratio scalability coefficients for
+      raters nested in subjects (for example, students rating their teacher),
+      with standard errors, confidence intervals, tests, intraclass
+      correlations, weights for Guttman errors and plain-language
+      interpretation.
+
+options:
+  - name: data
+    type: Data
+
+  # MLcoefH(subject =): the subject each row (rater) evaluates. MokkenLab
+  # always puts it in the first column, as mokken expects.
+  # ES: MLcoefH(subject =): el sujeto que evalúa cada fila (evaluador).
+  # MokkenLab siempre lo pone en la primera columna, como espera mokken.
+  - name: subject
+    title: Subject (rated person)
+    type: Variable
+    default: null
+    suggested:
+      - nominal
+    permitted:
+      - factor
+      - numeric
+
+  - name: vars
+    title: Items
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+
+  - name: reportLang
+    title: Report Language
+    type: List
+    options:
+      - title: English
+        name: en
+      - title: Español
+        name: es
+    default: en
+
+  - name: showKeySummary
+    title: Key findings
+    type: Bool
+    default: true
+
+  - name: showChoicesGuide
+    title: About your choices
+    type: Bool
+    default: false
+
+  # Teaching blocks before each table: what the statistic measures, why it
+  # matters and how to read it. On by default: MokkenLab teaches methodology.
+  # ES: Bloques didácticos antes de cada tabla: qué mide el estadístico, por
+  # qué importa y cómo leerlo. Activados por defecto: MokkenLab enseña
+  # metodología.
+  - name: showGuides
+    title: How to read each table
+    type: Bool
+    default: true
+
+  # ---------------------------------------------------------------------------
+  # Data handling shared by every MokkenLab analysis: missing values (mokken
+  # refuses them), score range and negatively worded items (recode()).
+  # ES: Manejo de datos común a todos los análisis de MokkenLab: valores
+  # perdidos (mokken los rechaza), rango de puntajes e ítems redactados en
+  # negativo (recode()).
+  # ---------------------------------------------------------------------------
+  - name: naHandling
+    title: Missing values
+    type: List
+    options:
+      - title: Listwise deletion
+        name: listwise
+      - title: Two-way imputation
+        name: twoway
+    default: listwise
+
+  # twoway(nCompletedDataSets =): more than one completed data set shows how
+  # much the coefficients move between imputations.
+  # ES: twoway(nCompletedDataSets =): más de un conjunto completado muestra
+  # cuánto se mueven los coeficientes entre imputaciones.
+  - name: twowaySets
+    title: Completed data sets
+    type: Integer
+    min: 1
+    max: 50
+    default: 1
+
+  - name: twowaySeed
+    title: Imputation seed
+    type: Integer
+    min: 1
+    max: 999999999
+    default: 2026
+
+  # twoway(minX =, maxX =) and recode(values =): the lowest and highest
+  # possible item scores.
+  # ES: twoway(minX =, maxX =) y recode(values =): los puntajes de ítem
+  # mínimo y máximo posibles.
+  - name: scoreRange
+    title: Score range
+    type: List
+    options:
+      - title: Observed in the data
+        name: observed
+      - title: Declared
+        name: manual
+    default: observed
+
+  - name: scoreMin
+    title: Lowest possible score
+    type: Integer
+    default: 0
+
+  - name: scoreMax
+    title: Highest possible score
+    type: Integer
+    default: 4
+
+  - name: negItems
+    title: Negatively worded items
+    type: Variables
+    suggested:
+      - ordinal
+      - continuous
+    permitted:
+      - numeric
+    default: []
+
+  # ---------------------------------------------------------------------------
+  # Two-level coefficients: MLcoefH(se =, ci =, type.ci =, weigh.props =,
+  # cov.mat =).
+  # ES: Coeficientes de dos niveles: MLcoefH(...).
+  # ---------------------------------------------------------------------------
+  - name: se
+    title: Standard errors
+    type: Bool
+    default: true
+
+  - name: ci
+    title: Confidence intervals
+    type: Bool
+    default: true
+
+  - name: ciWidth
+    title: Confidence level
+    type: Number
+    min: 50
+    max: 99.9
+    default: 95
+
+  - name: typeCI
+    title: Interval type
+    type: List
+    options:
+      - title: Wald-based
+        name: WB
+      - title: Range-preserving
+        name: RP
+    default: WB
+
+  - name: weighProps
+    title: Weight proportions by group size
+    type: Bool
+    default: true
+
+  - name: showHij
+    title: Item-pair coefficients
+    type: Bool
+    default: false
+
+  - name: showCov
+    title: Covariance matrices of the coefficients
+    type: Bool
+    default: false
+
+  # MLcoefZ(lowerbound =, type.z =).
+  - name: showZ
+    title: Z tests
+    type: Bool
+    default: true
+
+  - name: zLowerbound
+    title: Test against
+    type: Number
+    min: 0
+    max: 0.95
+    default: 0
+
+  - name: typeZ
+    title: Z test
+    type: List
+    options:
+      - title: Wald-based
+        name: WB
+      - title: Range-preserving
+        name: RP
+    default: WB
+
+  # ICC(): how much of the item-score variance lies between subjects.
+  # ES: ICC(): qué parte de la varianza de los puntajes está entre sujetos.
+  - name: showICC
+    title: Intraclass correlations
+    type: Bool
+    default: true
+
+  # MLweight(minx =, maxx =): weights of every item-score pattern of each
+  # item pair for two-level Guttman errors (Koopman et al., 2017).
+  # ES: MLweight(minx =, maxx =): pesos de cada patrón de puntajes de cada
+  # par de ítems para errores de Guttman de dos niveles.
+  - name: showWeights
+    title: Weights for Guttman errors
+    type: Bool
+    default: false
+
+  - name: levelPlot
+    title: Within and between scalability plot
+    type: Bool
+    default: true
+
+  # ---------------------------------------------------------------------------
+  # Plot settings shared by every MokkenLab plot: size, marks, layout, legend,
+  # axes and palette. Colors follow jamovi's own theme unless a palette jamovi
+  # does not ship is chosen (CODE_STYLE §18).
+  # ES: Ajustes de gráficos comunes a todos los gráficos de MokkenLab:
+  # tamaño, marcas, disposición, leyenda, ejes y paleta. Los colores siguen el
+  # tema de jamovi salvo que se elija una paleta que jamovi no trae.
+  # ---------------------------------------------------------------------------
+  - name: plotWidth
+    title: Width (0 = automatic)
+    type: Integer
+    min: 0
+    max: 3000
+    default: 0
+
+  - name: plotHeight
+    title: Height (0 = automatic)
+    type: Integer
+    min: 0
+    max: 3000
+    default: 0
+
+  - name: plotPointSize
+    title: Point size
+    type: Number
+    min: 0
+    max: 10
+    default: 2
+
+  - name: plotLineWidth
+    title: Line width
+    type: Number
+    min: 0.1
+    max: 5
+    default: 0.8
+
+  - name: plotNcol
+    title: Panels per row (0 = automatic)
+    type: Integer
+    min: 0
+    max: 10
+    default: 0
+
+  - name: plotLegend
+    title: Legend
+    type: List
+    options:
+      - title: Bottom
+        name: bottom
+      - title: Right
+        name: right
+      - title: Top
+        name: top
+      - title: Hidden
+        name: none
+    default: bottom
+
+  - name: plotAxisAngle
+    title: X-axis label angle
+    type: List
+    options:
+      - title: Horizontal
+        name: a0
+      - title: 45 degrees
+        name: a45
+      - title: Vertical
+        name: a90
+    default: a45
+
+  - name: plotYRange
+    title: Y-axis range
+    type: List
+    options:
+      - title: Fitted to the data
+        name: data
+      - title: Full theoretical range
+        name: full
+    default: full
+
+  - name: plotValueLabels
+    title: Value labels
+    type: Bool
+    default: false
+
+  - name: plotPalette
+    title: Plot palette
+    type: List
+    options:
+      - title: jamovi theme
+        name: jamovi
+      - title: Colorblind-safe (Okabe-Ito)
+        name: colorblind
+      - title: Viridis
+        name: viridis
+    default: jamovi
+...

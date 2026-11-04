@@ -1,0 +1,891 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+
+name: msa
+title: Mokken Scale Analysis
+jrs: '1.1'
+
+items:
+  - name: intro
+    title: Introduction
+    type: Html
+
+  - name: keySummary
+    title: Key findings
+    type: Html
+    visible: (showKeySummary)
+
+  - name: choicesGuide
+    title: About your choices
+    type: Html
+    visible: (showChoicesGuide)
+
+  - name: summary
+    title: Analysis summary
+    type: Table
+    rows: 0
+    refs:
+      - mokken_pkg
+      - vanderark_2007
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - groupVar
+      - clusterVar
+    columns:
+      - name: element
+        title: "Element"
+        type: text
+      - name: value
+        title: "Value"
+        type: text
+
+  - name: scaleGuide
+    title: How to read scalability
+    type: Html
+    visible: (showGuides)
+
+  - name: scale
+    title: Scalability of the scale
+    type: Table
+    rows: 0
+    refs:
+      - mokken_1971
+      - sijtsma_2002
+      - kuijpers_2013
+      - koopman_2021_rp
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - zLowerbound
+      - typeZ
+    columns:
+      - name: coef
+        title: "Coefficient"
+        type: text
+      - name: est
+        title: "H"
+        type: number
+        format: zto
+      - name: se
+        title: "SE"
+        type: number
+        format: zto
+        visible: (se)
+      - name: lower
+        title: "Lower"
+        type: number
+        format: zto
+        superTitle: "Confidence interval"
+        visible: (ci)
+      - name: upper
+        title: "Upper"
+        type: number
+        format: zto
+        superTitle: "Confidence interval"
+        visible: (ci)
+      - name: z
+        title: "z"
+        type: number
+        visible: (showZ)
+      - name: p
+        title: "p"
+        type: number
+        format: zto,pvalue
+        visible: (showZ)
+      - name: strength
+        title: "Strength"
+        type: text
+
+  - name: items
+    title: Item scalability
+    type: Table
+    rows: 0
+    refs:
+      - mokken_1971
+      - kuijpers_2013
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - zLowerbound
+      - typeZ
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: mean
+        title: "Mean"
+        type: number
+      - name: est
+        title: "Hi"
+        type: number
+        format: zto
+      - name: se
+        title: "SE"
+        type: number
+        format: zto
+        visible: (se)
+      - name: lower
+        title: "Lower"
+        type: number
+        format: zto
+        superTitle: "Confidence interval"
+        visible: (ci)
+      - name: upper
+        title: "Upper"
+        type: number
+        format: zto
+        superTitle: "Confidence interval"
+        visible: (ci)
+      - name: z
+        title: "z"
+        type: number
+        visible: (showZ)
+      - name: p
+        title: "p"
+        type: number
+        format: zto,pvalue
+        visible: (showZ)
+
+  - name: hijGuide
+    title: How to read item pairs
+    type: Html
+    visible: (showGuides && showHij)
+
+  - name: hij
+    title: Item-pair scalability (Hij)
+    type: Table
+    rows: 0
+    visible: (showHij)
+    refs:
+      - mokken_1971
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - zLowerbound
+      - typeZ
+      - showHij
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+
+  - name: completedSets
+    title: Scalability across completed data sets
+    type: Table
+    rows: 0
+    visible: false
+    refs:
+      - vanginkel_2007
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+    columns:
+      - name: set
+        title: "Completed data set"
+        type: integer
+      - name: est
+        title: "H"
+        type: number
+        format: zto
+      - name: se
+        title: "SE"
+        type: number
+        format: zto
+      - name: minHi
+        title: "Lowest Hi"
+        type: number
+        format: zto
+
+  - name: groups
+    title: Scalability by group
+    type: Table
+    rows: 0
+    visible: false
+    refs:
+      - mokken_1971
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - groupVar
+    columns:
+      - name: group
+        title: "Group"
+        type: text
+      - name: n
+        title: "N"
+        type: integer
+      - name: est
+        title: "H"
+        type: number
+        format: zto
+      - name: se
+        title: "SE"
+        type: number
+        format: zto
+        visible: (se)
+      - name: lower
+        title: "Lower"
+        type: number
+        format: zto
+        superTitle: "Confidence interval"
+        visible: (ci)
+      - name: upper
+        title: "Upper"
+        type: number
+        format: zto
+        superTitle: "Confidence interval"
+        visible: (ci)
+
+  - name: groupItems
+    title: Item scalability by group
+    type: Table
+    rows: 0
+    visible: false
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - groupVar
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+
+  - name: reliabilityGuide
+    title: How to read reliability
+    type: Html
+    visible: (showGuides && showReliability)
+
+  - name: reliability
+    title: Reliability
+    type: Table
+    rows: 0
+    visible: (showReliability)
+    refs:
+      - sijtsma_molenaar_1987
+      - vanderark_2011
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showReliability
+      - relMS
+      - relAlpha
+      - relLambda2
+      - relLCRC
+      - lcrcClassesMode
+      - lcrcClasses
+    columns:
+      - name: coef
+        title: "Coefficient"
+        type: text
+      - name: value
+        title: "Value"
+        type: number
+        format: zto
+
+  - name: irc
+    title: Item-rest correlations
+    type: Table
+    rows: 0
+    visible: (showReliability && relIRC)
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showReliability
+      - relIRC
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: irc
+        title: "Item-rest r"
+        type: number
+        format: zto
+
+  - name: errorsGuide
+    title: How to read Guttman errors
+    type: Html
+    visible: (showGuides && showErrors)
+
+  - name: errors
+    title: Guttman errors (outliers)
+    type: Table
+    rows: 0
+    visible: (showErrors)
+    refs:
+      - meijer_1994
+      - zijlstra_2007
+      - hubert_2008
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showErrors
+      - errorsGplus
+      - errorsOplus
+    columns:
+      - name: stat
+        title: "Statistic"
+        type: text
+      - name: mean
+        title: "Mean"
+        type: number
+      - name: median
+        title: "Median"
+        type: number
+      - name: max
+        title: "Maximum"
+        type: number
+      - name: u1
+        title: "Tukey fence (U1)"
+        type: number
+      - name: n1
+        title: "Above"
+        type: integer
+      - name: u2
+        title: "Skew-adjusted fence (U2)"
+        type: number
+      - name: n2
+        title: "Above"
+        type: integer
+
+  - name: errorsPlot
+    title: Distribution of Guttman errors
+    type: Image
+    width: 550
+    height: 380
+    renderFun: .plotErrors
+    visible: (showErrors && errorsPlot)
+    clearWith:
+      - plotPalette
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showErrors
+      - errorsGplus
+      - errorsOplus
+
+  - name: gplusOV
+    title: Guttman errors (G+)
+    type: Output
+    initInRun: true
+    measureType: continuous
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+
+  - name: oplusOV
+    title: Infrequent scores (O+)
+    type: Output
+    initInRun: true
+    measureType: continuous
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+
+  - name: boundsGuide
+    title: How to read correlation bounds
+    type: Html
+    visible: (showGuides && showBounds)
+
+  - name: bounds
+    title: Correlation bounds for dichotomous items
+    type: Table
+    rows: 0
+    visible: (showBounds)
+    refs:
+      - ellis_2014
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showBounds
+      - boundsQuant
+      - boundsLower
+      - boundsUpper
+    columns:
+      - name: item1
+        title: "Item"
+        type: text
+      - name: item2
+        title: "Item"
+        type: text
+      - name: r
+        title: "r"
+        type: number
+        format: zto
+      - name: l1
+        title: "L1"
+        type: number
+        format: zto
+        visible: (boundsLower)
+      - name: l2
+        title: "L2"
+        type: number
+        format: zto
+        visible: (boundsLower)
+      - name: u1
+        title: "U1"
+        type: number
+        format: zto
+        visible: (boundsUpper)
+      - name: u2
+        title: "U2"
+        type: number
+        format: zto
+        visible: (boundsUpper)
+      - name: verdict
+        title: "Verdict"
+        type: text
+
+  - name: normsGuide
+    title: How to read norm statistics
+    type: Html
+    visible: (showGuides && showNorms)
+
+  - name: normsSummary
+    title: Norm statistics of the total score
+    type: Table
+    rows: 0
+    visible: (showNorms)
+    refs:
+      - oosterhuis_2017
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showNorms
+    columns:
+      - name: stat
+        title: "Statistic"
+        type: text
+      - name: est
+        title: "Estimate"
+        type: number
+      - name: se
+        title: "SE"
+        type: number
+      - name: lower
+        title: "Lower"
+        type: number
+        superTitle: "95% confidence interval"
+      - name: upper
+        title: "Upper"
+        type: number
+        superTitle: "95% confidence interval"
+
+  - name: normsZ
+    title: Standard scores
+    type: Table
+    rows: 0
+    visible: (showNorms && normsZ)
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showNorms
+      - normsZ
+    columns:
+      - name: score
+        title: "Total score"
+        type: integer
+      - name: est
+        title: "z"
+        type: number
+      - name: se
+        title: "SE"
+        type: number
+      - name: lower
+        title: "Lower"
+        type: number
+        superTitle: "95% confidence interval"
+      - name: upper
+        title: "Upper"
+        type: number
+        superTitle: "95% confidence interval"
+
+  - name: normsSta9
+    title: Stanine boundaries
+    type: Table
+    rows: 0
+    visible: (showNorms && normsStanines)
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showNorms
+      - normsStanines
+    columns:
+      - name: bound
+        title: "Boundary"
+        type: text
+      - name: est
+        title: "Total score"
+        type: number
+      - name: se
+        title: "SE"
+        type: number
+      - name: lower
+        title: "Lower"
+        type: number
+        superTitle: "95% confidence interval"
+      - name: upper
+        title: "Upper"
+        type: number
+        superTitle: "95% confidence interval"
+
+  - name: normsPerc
+    title: Percentile ranks
+    type: Table
+    rows: 0
+    visible: (showNorms && normsPercentiles)
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - showNorms
+      - normsPercentiles
+    columns:
+      - name: score
+        title: "Total score"
+        type: integer
+      - name: est
+        title: "Percentile rank"
+        type: number
+      - name: se
+        title: "SE"
+        type: number
+      - name: lower
+        title: "Lower"
+        type: number
+        superTitle: "95% confidence interval"
+      - name: upper
+        title: "Upper"
+        type: number
+        superTitle: "95% confidence interval"
+
+  - name: hiPlot
+    title: Item scalability
+    type: Image
+    width: 550
+    height: 420
+    renderFun: .plotHi
+    visible: (hiPlot)
+    clearWith:
+      - plotPalette
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - zLowerbound
+
+  - name: hijPlotImg
+    title: Item-pair scalability (Hij)
+    type: Image
+    width: 550
+    height: 420
+    renderFun: .plotHij
+    visible: (hijPlot)
+    clearWith:
+      - plotPalette
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - zLowerbound
+
+  - name: groupPlotImg
+    title: Item scalability by group
+    type: Image
+    width: 550
+    height: 420
+    renderFun: .plotGroups
+    visible: (groupPlot)
+    clearWith:
+      - groupVar
+      - plotPalette
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - zLowerbound
+
+  - name: normsPlotImg
+    title: Percentile ranks of the total score
+    type: Image
+    width: 550
+    height: 420
+    renderFun: .plotNorms
+    visible: (showNorms && normsPlot)
+    clearWith:
+      - showNorms
+      - plotPalette
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - se
+      - ci
+      - ciWidth
+      - typeCI
+      - zLowerbound
+
+  - name: interpretation
+    title: Applied interpretation
+    type: Html
+
+  - name: notes
+    title: Notes
+    type: Html

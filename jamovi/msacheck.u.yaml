@@ -1,0 +1,273 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+
+title: Model Assumptions
+name: msacheck
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Items
+        children:
+          - type: VariablesListBox
+            name: vars
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Cluster variable (optional)
+        children:
+          - type: VariablesListBox
+            name: clusterVar
+            maxItemCount: 1
+            isTarget: true
+  - type: CollapseBox
+    label: Report Language
+    collapsed: false
+    children:
+      - type: ComboBox
+        name: reportLang
+      - type: CheckBox
+        name: showKeySummary
+      - type: CheckBox
+        name: showChoicesGuide
+      - type: CheckBox
+        name: showGuides
+  - type: CollapseBox
+    label: Data
+    collapsed: true
+    children:
+      - type: ComboBox
+        name: naHandling
+      - type: TextBox
+        name: twowaySets
+        format: number
+        enable: (naHandling:twoway)
+      - type: TextBox
+        name: twowaySeed
+        format: number
+        enable: (naHandling:twoway)
+      - type: ComboBox
+        name: scoreRange
+      - type: TextBox
+        name: scoreMin
+        format: number
+        enable: (scoreRange:manual)
+      - type: TextBox
+        name: scoreMax
+        format: number
+        enable: (scoreRange:manual)
+      - type: VariableSupplier
+        persistentItems: true
+        stretchFactor: 1
+        suggested:
+          - ordinal
+          - continuous
+        permitted:
+          - numeric
+        children:
+          - type: TargetLayoutBox
+            label: Negatively worded items
+            children:
+              - type: VariablesListBox
+                name: negItems
+                isTarget: true
+                height: small
+  - type: CollapseBox
+    label: Monotonicity
+    collapsed: false
+    children:
+      - type: CheckBox
+        name: checkMono
+        children:
+          - type: TextBox
+            name: monoMinvi
+            format: number
+            enable: (checkMono)
+      - type: ComboBox
+        name: minsizeMode
+      - type: TextBox
+        name: minsize
+        format: number
+        enable: (minsizeMode:manual)
+  - type: CollapseBox
+    label: Invariant item ordering
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: checkIIO
+        children:
+          - type: ComboBox
+            name: iioMethod
+            enable: (checkIIO)
+          - type: ComboBox
+            name: iioMinviMode
+            enable: (checkIIO)
+          - type: TextBox
+            name: iioMinvi
+            format: number
+            enable: (checkIIO && iioMinviMode:manual)
+          - type: TextBox
+            name: iioAlpha
+            format: number
+            enable: (checkIIO)
+          - type: CheckBox
+            name: iioItemSelection
+            enable: (checkIIO)
+          - type: ComboBox
+            name: iioOrder
+            enable: (checkIIO)
+          - type: TextBox
+            name: iioClusterSize
+            format: number
+            enable: (checkIIO && iioOrder:clusters)
+          - type: TextBox
+            name: iioOrderText
+            format: string
+            stretchFactor: 2
+            enable: (checkIIO && iioOrder:custom)
+  - type: CollapseBox
+    label: Nonintersection
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: checkRest
+        children:
+          - type: TextBox
+            name: restMinvi
+            format: number
+            enable: (checkRest)
+      - type: CheckBox
+        name: checkPmatrix
+        children:
+          - type: TextBox
+            name: pmatMinvi
+            format: number
+            enable: (checkPmatrix)
+  - type: CollapseBox
+    label: Local independence
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: checkCA
+        children:
+          - type: CheckBox
+            name: caWindex
+            enable: (checkCA)
+          - type: TextBox
+            name: caMinsize
+            format: number
+            enable: (checkCA)
+          - type: TextBox
+            name: caMingroup
+            format: number
+            enable: (checkCA)
+          - type: ComboBox
+            name: caNweight
+            enable: (checkCA)
+          - type: ComboBox
+            name: caCovweight
+            enable: (checkCA)
+  - type: CollapseBox
+    label: Plots
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: critPlot
+      - type: CheckBox
+        name: monoPlot
+        children:
+          - type: ComboBox
+            name: monoCurves
+            enable: (monoPlot)
+      - type: CheckBox
+        name: iioPlot
+      - type: CheckBox
+        name: restPlot
+      - type: CheckBox
+        name: pmatPlot
+        children:
+          - type: ComboBox
+            name: pmatType
+            enable: (pmatPlot)
+      - type: VariableSupplier
+        persistentItems: true
+        stretchFactor: 1
+        suggested:
+          - ordinal
+          - continuous
+        permitted:
+          - numeric
+        children:
+          - type: TargetLayoutBox
+            label: Items to plot (empty = first six)
+            children:
+              - type: VariablesListBox
+                name: plotItems
+                isTarget: true
+                height: small
+      - type: CheckBox
+        name: plotCI
+        children:
+          - type: TextBox
+            name: plotAlpha
+            format: number
+            enable: (plotCI)
+          - type: TextBox
+            name: plotTransparency
+            format: number
+            enable: (plotCI)
+  - type: CollapseBox
+    label: Plot settings
+    collapsed: true
+    children:
+      - type: TextBox
+        name: plotWidth
+        format: number
+      - type: TextBox
+        name: plotHeight
+        format: number
+      - type: TextBox
+        name: plotPointSize
+        format: number
+      - type: TextBox
+        name: plotLineWidth
+        format: number
+      - type: TextBox
+        name: plotNcol
+        format: number
+      - type: ComboBox
+        name: plotLegend
+      - type: ComboBox
+        name: plotAxisAngle
+      - type: ComboBox
+        name: plotYRange
+      - type: CheckBox
+        name: plotValueLabels
+      - type: ComboBox
+        name: plotPalette

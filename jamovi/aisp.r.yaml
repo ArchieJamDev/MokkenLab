@@ -1,0 +1,352 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+name: aisp
+title: Automated Item Selection
+jrs: '1.1'
+
+items:
+  - name: intro
+    title: Introduction
+    type: Html
+
+  - name: keySummary
+    title: Key findings
+    type: Html
+    visible: (showKeySummary)
+
+  - name: choicesGuide
+    title: About your choices
+    type: Html
+    visible: (showChoicesGuide)
+
+  - name: aispGuide
+    title: How the automated item selection works
+    type: Html
+    visible: (showGuides)
+
+  - name: summary
+    title: Analysis summary
+    type: Table
+    rows: 0
+    refs:
+      - mokken_pkg
+      - vanderark_2012
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+    columns:
+      - name: element
+        title: "Element"
+        type: text
+      - name: value
+        title: "Value"
+        type: text
+
+  - name: membership
+    title: Scale membership
+    type: Table
+    rows: 0
+    visible: (lbMode:single)
+    refs:
+      - mokken_1971
+      - molenaar_sijtsma_2000
+      - straat_2013
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: scale
+        title: "Scale"
+        type: text
+      - name: hi
+        title: "Hi in its scale"
+        type: number
+        format: zto
+        visible: (scaleCoefs)
+
+  - name: scales
+    title: Scalability of each scale
+    type: Table
+    rows: 0
+    visible: (lbMode:single && scaleCoefs)
+    refs:
+      - kuijpers_2013
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+      - scaleCoefs
+    columns:
+      - name: scale
+        title: "Scale"
+        type: text
+      - name: nItems
+        title: "Items"
+        type: integer
+      - name: items
+        title: "Item list"
+        type: text
+      - name: h
+        title: "H"
+        type: number
+        format: zto
+      - name: se
+        title: "SE"
+        type: number
+        format: zto
+      - name: lower
+        title: "Lower"
+        type: number
+        format: zto
+      - name: upper
+        title: "Upper"
+        type: number
+        format: zto
+      - name: minHi
+        title: "Lowest Hi"
+        type: number
+        format: zto
+      - name: strength
+        title: "Strength"
+        type: text
+
+  - name: sequenceGuide
+    title: How to read the sequence of lower bounds
+    type: Html
+    visible: (showGuides && lbMode:sequence)
+
+  - name: sequence
+    title: Scale membership across lower bounds
+    type: Table
+    rows: 0
+    visible: (lbMode:sequence)
+    refs:
+      - hemker_1995
+      - sijtsma_vanderark_2017
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+
+  - name: sequenceSummary
+    title: Partition at each lower bound
+    type: Table
+    rows: 0
+    visible: (lbMode:sequence)
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+    columns:
+      - name: lb
+        title: "Lower bound"
+        type: number
+        format: zto
+      - name: nScales
+        title: "Scales"
+        type: integer
+      - name: nUnscalable
+        title: "Unscalable items"
+        type: integer
+      - name: largest
+        title: "Items in the largest scale"
+        type: integer
+
+  - name: sequencePlot
+    title: Scale membership across lower bounds
+    type: Image
+    width: 650
+    height: 450
+    renderFun: .plotSequence
+    visible: (lbMode:sequence && sequencePlot)
+    clearWith:
+      - plotPalette
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+
+  - name: interpretation
+    title: Applied interpretation
+    type: Html
+
+  - name: notes
+    title: Notes
+    type: Html

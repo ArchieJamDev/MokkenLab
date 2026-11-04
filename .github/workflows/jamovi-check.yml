@@ -1,0 +1,63 @@
+name: Validate jamovi module
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  jamovi-check:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+
+      # mokken compiles C++ code through Rcpp and imports poLCA; ggplot2's
+      # graphics stack needs these system libraries.
+      # ES: mokken compila código C++ con Rcpp e importa poLCA; la pila
+      # gráfica de ggplot2 necesita estas bibliotecas del sistema.
+      - name: Install Linux system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libglpk-dev libgmp3-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev
+
+      - name: Install tools and check the jamovi module
+        run: |
+          Rscript -e "install.packages(c('remotes', 'rcmdcheck'), repos = 'https://cloud.r-project.org')"
+          Rscript -e "install.packages('jmvtools', repos = c('https://repo.jamovi.org', 'https://cloud.r-project.org'))"
+          Rscript -e "remotes::install_deps(dependencies = TRUE, upgrade = 'never')"
+          Rscript -e "jmvtools::check()"
+
+      # jmvtools::check() never runs tests/, so this step installs MokkenLab
+      # as a plain R package and runs the edge-case suite explicitly. A green
+      # check therefore proves every analysis degrades gracefully on the
+      # pathological input covered there (same design as AssumptionsLab).
+      # ES: jmvtools::check() nunca ejecuta tests/, así que este paso instala
+      # MokkenLab como paquete de R normal y ejecuta explícitamente la suite
+      # de casos límite. Una marca verde prueba así que cada análisis degrada
+      # con elegancia ante las entradas patológicas cubiertas allí (mismo
+      # diseño que AssumptionsLab).
+      - name: Install MokkenLab and run the edge-case test suite
+        # Failures are also emitted as workflow annotations (::error::), so
+        # they can be read from the PR's Checks tab and the API without
+        # downloading the full log.
+        # ES: Los fallos también se emiten como anotaciones del flujo
+        # (::error::), para poder leerlos desde la pestaña Checks del PR y la
+        # API sin descargar el registro completo.
+        run: |
+          if ! R CMD INSTALL --no-multiarch --with-keep.source . > install.log 2>&1; then
+            cat install.log
+            echo "::error title=R CMD INSTALL failed::$(tail -n 40 install.log | sed ':a;N;$!ba;s/%/%25/g;s/\r/%0D/g;s/\n/%0A/g')"
+            exit 1
+          fi
+          Rscript .github/scripts/run-tests.R

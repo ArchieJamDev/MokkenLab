@@ -1,0 +1,1708 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2021-07-26 12:08:06+01000\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Language: es\n"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "#ac"
+msgstr "#ac"
+
+#: msacheck/results/iio.columns.title
+msgid "#tsig"
+msgstr "#tsig"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "#vi"
+msgstr "#vi"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "#vi/#ac"
+msgstr "#vi/#ac"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "#zsig"
+msgstr "#zsig"
+
+#: mlmsa/ui[3]/ci/ciWidth.suffix
+#: msa/ui[3]/ci/ciWidth.suffix
+msgid "%"
+msgstr "%"
+
+#: aisp/options/plotAxisAngle/a45.title
+#: mlmsa/options/plotAxisAngle/a45.title
+#: msa/options/plotAxisAngle/a45.title
+#: msacheck/options/plotAxisAngle/a45.title
+msgid "45 degrees"
+msgstr "45 grados"
+
+#: msa/results/normsSummary.columns.superTitle
+#: msa/results/normsZ.columns.superTitle
+#: msa/results/normsSta9.columns.superTitle
+#: msa/results/normsPerc.columns.superTitle
+msgid "95% confidence interval"
+msgstr "Intervalo de confianza al 95%"
+
+#: aisp/options/showChoicesGuide.title
+#: aisp/results/choicesGuide.title
+#: mlmsa/options/showChoicesGuide.title
+#: mlmsa/results/choicesGuide.title
+#: msa/options/showChoicesGuide.title
+#: msa/results/choicesGuide.title
+#: msacheck/options/showChoicesGuide.title
+#: msacheck/results/choicesGuide.title
+msgid "About your choices"
+msgstr "Acerca de sus elecciones"
+
+#: msa/results/errors.columns.title
+msgid "Above"
+msgstr "Por encima"
+
+#: msacheck/results/iioHT.title
+msgid "Accuracy of the item ordering"
+msgstr "Precisión del orden de los ítems"
+
+#: aisp/results/summary.title
+#: mlmsa/results/summary.title
+#: msa/results/summary.title
+#: msacheck/results/summary.title
+msgid "Analysis summary"
+msgstr "Resumen del análisis"
+
+#: aisp/results/interpretation.title
+#: mlmsa/results/interpretation.title
+#: msa/results/interpretation.title
+#: msacheck/results/interpretation.title
+msgid "Applied interpretation"
+msgstr "Interpretación aplicada"
+
+#: package/analyses/aisp.title
+#: aisp/options.title
+#: aisp/ui.title
+#: aisp/results.title
+msgid "Automated Item Selection"
+msgstr "Selección automática de ítems"
+
+#: package/analyses/aisp.menuTitle
+#: aisp/options.menuTitle
+msgid "Automated Item Selection (AISP)"
+msgstr "Selección automática de ítems (AISP)"
+
+#: msa/options/lcrcClassesMode/auto.title
+msgid "Automatic (items - 1)"
+msgstr "Automático (ítems - 1)"
+
+#: aisp/options/maxgensMode/auto.title
+#: msacheck/options/minsizeMode/auto.title
+#: msacheck/options/iioMinviMode/auto.title
+msgid "Automatic (mokken default)"
+msgstr "Automático (valor por defecto de mokken)"
+
+#: package/datasets/Autonomysupport(259studentsrating14teachers).name
+msgid "Autonomy support (259 students rating 14 teachers)"
+msgstr "Apoyo a la autonomía (259 estudiantes que evalúan a 14 docentes)"
+
+#: msacheck/options/iioItemSelection.title
+msgid "Backward item selection"
+msgstr "Selección de ítems hacia atrás"
+
+#: msacheck/options/plotTransparency.title
+msgid "Band opacity (%)"
+msgstr "Opacidad de la banda (%)"
+
+#: msacheck/options/plotAlpha.title
+msgid "Band significance level"
+msgstr "Nivel de significación de la banda"
+
+#: mlmsa/results/items.columns.title
+#: mlmsa/results/pairs.columns.title
+msgid "Between"
+msgstr "Entre"
+
+#: msacheck/options/pmatType/both.title
+msgid "Both"
+msgstr "Ambas"
+
+#: msacheck/options/monoCurves/both.title
+msgid "Both (IRF and ISRFs)"
+msgstr "Ambas (IRF e ISRF)"
+
+#: aisp/options/plotLegend/bottom.title
+#: mlmsa/options/plotLegend/bottom.title
+#: msa/options/plotLegend/bottom.title
+#: msacheck/options/plotLegend/bottom.title
+msgid "Bottom"
+msgstr "Abajo"
+
+#: msa/results/normsSta9.columns.title
+msgid "Boundary"
+msgstr "Límite"
+
+#: msa/ui[6].label
+msgid "Bounds and norms"
+msgstr "Cotas y normas"
+
+#: package/analyses/msacheck.description
+#: msacheck/options.description.main
+msgid ""
+"Checks the assumptions of the monotone homogeneity and double monotonicity "
+"models: monotonicity, invariant item ordering, nonintersection (rest-score "
+"and P-matrix methods) and local independence (conditional association), with "
+"item response function plots and plain-language interpretation."
+msgstr ""
+"Verifica los supuestos de los modelos de homogeneidad monótona y de doble "
+"monotonicidad: monotonicidad, orden invariante de los ítems, no intersección "
+"(métodos rest-score y P-matrix) e independencia local (asociación "
+"condicional), con gráficos de las funciones de respuesta de los ítems e "
+"interpretación en lenguaje claro."
+
+#: msacheck/results/iioClusters.columns.title
+msgid "Cluster"
+msgstr "Conglomerado"
+
+#: aisp/options/clusterVar.title
+#: msa/options/clusterVar.title
+#: msacheck/options/clusterVar.title
+msgid "Cluster variable (nested data)"
+msgstr "Variable de conglomerado (datos anidados)"
+
+#: aisp/ui[0][1].label
+#: msa/ui[0][2].label
+#: msacheck/ui[0][1].label
+msgid "Cluster variable (optional)"
+msgstr "Variable de conglomerado (opcional)"
+
+#: mlmsa/results/scale.columns.title
+#: mlmsa/results/covH.columns.title
+#: mlmsa/results/covHi.columns.title
+#: mlmsa/results/covHij.columns.title
+#: msa/results/scale.columns.title
+#: msa/results/reliability.columns.title
+msgid "Coefficient"
+msgstr "Coeficiente"
+
+#: aisp/options/plotPalette/colorblind.title
+#: mlmsa/options/plotPalette/colorblind.title
+#: msa/options/plotPalette/colorblind.title
+#: msacheck/options/plotPalette/colorblind.title
+msgid "Colorblind-safe (Okabe-Ito)"
+msgstr "Apta para daltonismo (Okabe-Ito)"
+
+#: msa/results/completedSets.columns.title
+msgid "Completed data set"
+msgstr "Conjunto completado"
+
+#: aisp/options/twowaySets.title
+#: mlmsa/options/twowaySets.title
+#: msa/options/twowaySets.title
+#: msacheck/options/twowaySets.title
+msgid "Completed data sets"
+msgstr "Conjuntos completados"
+
+#: msacheck/options/checkCA.title
+msgid "Conditional association (local independence)"
+msgstr "Asociación condicional (independencia local)"
+
+#: msacheck/options/plotCI.title
+msgid "Confidence bands"
+msgstr "Bandas de confianza"
+
+#: mlmsa/results/scale.columns.superTitle
+#: msa/results/scale.columns.superTitle
+#: msa/results/items.columns.superTitle
+#: msa/results/groups.columns.superTitle
+msgid "Confidence interval"
+msgstr "Intervalo de confianza"
+
+#: mlmsa/options/ci.title
+#: msa/options/ci.title
+msgid "Confidence intervals"
+msgstr "Intervalos de confianza"
+
+#: mlmsa/options/ciWidth.title
+#: msa/options/ciWidth.title
+msgid "Confidence level"
+msgstr "Nivel de confianza"
+
+#: msa/options/showBounds.title
+msgid "Correlation bounds (dichotomous items)"
+msgstr "Cotas de correlación (ítems dicotómicos)"
+
+#: msa/results/bounds.title
+msgid "Correlation bounds for dichotomous items"
+msgstr "Cotas de correlación para ítems dicotómicos"
+
+#: mlmsa/options/showCov.title
+msgid "Covariance matrices of the coefficients"
+msgstr "Matrices de covarianzas de los coeficientes"
+
+#: mlmsa/results/covHi.title
+msgid "Covariance matrix of the item coefficients"
+msgstr "Matriz de covarianzas de los coeficientes de los ítems"
+
+#: mlmsa/results/covHij.title
+msgid "Covariance matrix of the item-pair coefficients"
+msgstr "Matriz de covarianzas de los coeficientes de los pares"
+
+#: mlmsa/results/covH.title
+msgid "Covariance matrix of the scale coefficients"
+msgstr "Matriz de covarianzas de los coeficientes de la escala"
+
+#: msacheck/options/caCovweight.title
+msgid "Covariance weight"
+msgstr "Peso de las covarianzas"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "Crit"
+msgstr "Crit"
+
+#: msa/options/relAlpha.title
+msgid "Cronbach's alpha"
+msgstr "Alfa de Cronbach"
+
+#: aisp/options/pxover.title
+msgid "Crossover probability"
+msgstr "Probabilidad de cruce"
+
+#: msacheck/options/monoCurves.title
+msgid "Curves"
+msgstr "Curvas"
+
+#: aisp/ui[2].label
+#: mlmsa/ui[2].label
+#: msa/ui[2].label
+#: msacheck/ui[2].label
+msgid "Data"
+msgstr "Datos"
+
+#: aisp/options/scoreRange/manual.title
+#: mlmsa/options/scoreRange/manual.title
+#: msa/options/scoreRange/manual.title
+#: msacheck/options/scoreRange/manual.title
+msgid "Declared"
+msgstr "Declarado"
+
+#: mlmsa/results/icc.columns.title
+msgid "df1"
+msgstr "gl1"
+
+#: mlmsa/results/icc.columns.title
+msgid "df2"
+msgstr "gl2"
+
+#: msa/results/errorsPlot.title
+msgid "Distribution of Guttman errors"
+msgstr "Distribución de los errores de Guttman"
+
+#: msa/options/errorsPlot.title
+msgid "Distribution plot"
+msgstr "Gráfico de distribución"
+
+#: package/datasets/TestforReceptionofGrammarTROG(n=210).description
+msgid ""
+"Eighty dichotomous items of the Norwegian TROG in 20 clusters of four items "
+"(a1-a4 ... t1-t4), the clustered-item example of Koopman and Braeken for "
+"investigating the ordering structure of a test, from the mokken package - "
+"see data/README.md"
+msgstr ""
+"Ochenta ítems dicotómicos del TROG noruego en 20 conglomerados de cuatro "
+"ítems (a1-a4 ... t1-t4), el ejemplo de ítems agrupados de Koopman y Braeken "
+"para investigar la estructura de orden de una prueba, del paquete mokken - "
+"ver data/README.md"
+
+#: aisp/results/summary.columns.title
+#: mlmsa/results/summary.columns.title
+#: msa/results/summary.columns.title
+#: msacheck/results/summary.columns.title
+msgid "Element"
+msgstr "Elemento"
+
+#: aisp/options/reportLang/en.title
+#: mlmsa/options/reportLang/en.title
+#: msa/options/reportLang/en.title
+#: msacheck/options/reportLang/en.title
+msgid "English"
+msgstr "English"
+
+#: aisp/options/reportLang/es.title
+#: mlmsa/options/reportLang/es.title
+#: msa/options/reportLang/es.title
+#: msacheck/options/reportLang/es.title
+msgid "Español"
+msgstr "Español"
+
+#: mlmsa/results/scale.columns.title
+#: msa/results/normsSummary.columns.title
+msgid "Estimate"
+msgstr "Estimación"
+
+#: msacheck/options/iioOrder/estimated.title
+msgid "Estimated from the item means"
+msgstr "Estimado a partir de las medias de los ítems"
+
+#: aisp/options/plotYRange/data.title
+#: mlmsa/options/plotYRange/data.title
+#: msa/options/plotYRange/data.title
+#: msacheck/options/plotYRange/data.title
+msgid "Fitted to the data"
+msgstr "Ajustado a los datos"
+
+#: aisp/options/maxgensMode/manual.title
+#: msa/options/lcrcClassesMode/manual.title
+#: msacheck/options/minsizeMode/manual.title
+#: msacheck/options/iioMinviMode/manual.title
+msgid "Fixed"
+msgstr "Fijo"
+
+#: msacheck/options/iioOrder/listed.title
+msgid "Fixed, as listed"
+msgstr "Fijo, según la lista"
+
+#: msacheck/options/iioOrder/clusters.title
+msgid "Fixed, clusters of consecutive items"
+msgstr "Fijo, conglomerados de ítems consecutivos"
+
+#: msacheck/options/iioOrder/custom.title
+msgid "Fixed, typed codes"
+msgstr "Fijo, códigos escritos"
+
+#: package/datasets/TypeDScaleDS14(n=541).description
+msgid ""
+"Fourteen 5-point items of the Type D Scale (social inhibition and negative "
+"affectivity), two of them negatively worded, with real missing data, sex and "
+"age, from the mokken package - see data/README.md"
+msgstr ""
+"Catorce ítems de 5 puntos de la Escala tipo D (inhibición social y "
+"afectividad negativa), dos de ellos redactados en negativo, con datos "
+"perdidos reales, sexo y edad, del paquete mokken - ver data/README.md"
+
+#: aisp/options/lbFrom.title
+msgid "From"
+msgstr "Desde"
+
+#: aisp/options/plotYRange/full.title
+#: mlmsa/options/plotYRange/full.title
+#: msa/options/plotYRange/full.title
+#: msacheck/options/plotYRange/full.title
+msgid "Full theoretical range"
+msgstr "Rango teórico completo"
+
+#: aisp/options/maxgensMode.title
+msgid "Generations"
+msgstr "Generaciones"
+
+#: aisp/options/search/ga.title
+msgid "Genetic algorithm"
+msgstr "Algoritmo genético"
+
+#: msa/results/groups.columns.title
+msgid "Group"
+msgstr "Grupo"
+
+#: msa/options/groupVar.title
+msgid "Grouping variable"
+msgstr "Variable de agrupación"
+
+#: msa/ui[0][1].label
+msgid "Grouping variable (optional)"
+msgstr "Variable de agrupación (opcional)"
+
+#: msa/results/gplusOV.title
+msgid "Guttman errors (G+)"
+msgstr "Errores de Guttman (G+)"
+
+#: msa/options/showErrors.title
+#: msa/results/errors.title
+msgid "Guttman errors (outliers)"
+msgstr "Errores de Guttman (atípicos)"
+
+#: msa/options/relLambda2.title
+msgid "Guttman's lambda-2"
+msgstr "Lambda-2 de Guttman"
+
+#: aisp/options/plotHeight.title
+#: mlmsa/options/plotHeight.title
+#: msa/options/plotHeight.title
+#: msacheck/options/plotHeight.title
+msgid "Height (0 = automatic)"
+msgstr "Alto (0 = automático)"
+
+#: mlmsa/results/items.columns.superTitle
+#: msa/results/items.columns.title
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "Hi"
+msgstr "Hi"
+
+#: aisp/results/membership.columns.title
+msgid "Hi in its scale"
+msgstr "Hi en su escala"
+
+#: aisp/options/plotLegend/none.title
+#: mlmsa/options/plotLegend/none.title
+#: msa/options/plotLegend/none.title
+#: msacheck/options/plotLegend/none.title
+msgid "Hidden"
+msgstr "Oculta"
+
+#: aisp/options/scoreMax.title
+#: mlmsa/options/scoreMax.title
+#: msa/options/scoreMax.title
+#: msacheck/options/scoreMax.title
+msgid "Highest possible score"
+msgstr "Puntaje máximo posible"
+
+#: mlmsa/results/pairs.columns.superTitle
+msgid "Hij"
+msgstr "Hij"
+
+#: aisp/options/plotAxisAngle/a0.title
+#: mlmsa/options/plotAxisAngle/a0.title
+#: msa/options/plotAxisAngle/a0.title
+#: msacheck/options/plotAxisAngle/a0.title
+msgid "Horizontal"
+msgstr "Horizontal"
+
+#: aisp/results/aispGuide.title
+msgid "How the automated item selection works"
+msgstr "Cómo funciona la selección automática de ítems"
+
+#: msacheck/results/caGuide.title
+msgid "How to read conditional association"
+msgstr "Cómo leer la asociación condicional"
+
+#: msa/results/boundsGuide.title
+msgid "How to read correlation bounds"
+msgstr "Cómo leer las cotas de correlación"
+
+#: aisp/options/showGuides.title
+#: mlmsa/options/showGuides.title
+#: msa/options/showGuides.title
+#: msacheck/options/showGuides.title
+msgid "How to read each table"
+msgstr "Cómo leer cada tabla"
+
+#: msa/results/errorsGuide.title
+msgid "How to read Guttman errors"
+msgstr "Cómo leer los errores de Guttman"
+
+#: msacheck/results/iioGuide.title
+msgid "How to read invariant item ordering"
+msgstr "Cómo leer el orden invariante de los ítems"
+
+#: msa/results/hijGuide.title
+msgid "How to read item pairs"
+msgstr "Cómo leer los pares de ítems"
+
+#: msacheck/results/monoGuide.title
+msgid "How to read monotonicity"
+msgstr "Cómo leer la monotonicidad"
+
+#: msa/results/normsGuide.title
+msgid "How to read norm statistics"
+msgstr "Cómo leer los estadísticos normativos"
+
+#: msa/results/reliabilityGuide.title
+msgid "How to read reliability"
+msgstr "Cómo leer la fiabilidad"
+
+#: msa/results/scaleGuide.title
+msgid "How to read scalability"
+msgstr "Cómo leer la escalabilidad"
+
+#: msacheck/results/pmatGuide.title
+msgid "How to read the P-matrix method"
+msgstr "Cómo leer el método P-matrix"
+
+#: msacheck/results/restGuide.title
+msgid "How to read the rest-score method"
+msgstr "Cómo leer el método rest-score"
+
+#: aisp/results/sequenceGuide.title
+msgid "How to read the sequence of lower bounds"
+msgstr "Cómo leer la secuencia de cotas inferiores"
+
+#: mlmsa/results/mlGuide.title
+msgid "How to read two-level scalability"
+msgstr "Cómo leer la escalabilidad de dos niveles"
+
+#: mlmsa/results/icc.columns.title
+msgid "ICC"
+msgstr "CCI"
+
+#: aisp/options/twowaySeed.title
+#: mlmsa/options/twowaySeed.title
+#: msa/options/twowaySeed.title
+#: msacheck/options/twowaySeed.title
+msgid "Imputation seed"
+msgstr "Semilla de imputación"
+
+#: msacheck/options/iioMethod/IT.title
+msgid "Increasingness in transposition (IT)"
+msgstr "Creciente por transposición (IT)"
+
+#: msa/options/errorsOplus.title
+#: msa/results/oplusOV.title
+msgid "Infrequent scores (O+)"
+msgstr "Puntajes infrecuentes (O+)"
+
+#: mlmsa/options/typeCI.title
+#: msa/options/typeCI.title
+msgid "Interval type"
+msgstr "Tipo de intervalo"
+
+#: mlmsa/options/showICC.title
+#: mlmsa/results/icc.title
+msgid "Intraclass correlations"
+msgstr "Correlaciones intraclase"
+
+#: mlmsa/ui[4].label
+msgid "Intraclass correlations and weights"
+msgstr "Correlaciones intraclase y pesos"
+
+#: aisp/results/intro.title
+#: mlmsa/results/intro.title
+#: msa/results/intro.title
+#: msacheck/results/intro.title
+msgid "Introduction"
+msgstr "Introducción"
+
+#: msacheck/options/checkIIO.title
+#: msacheck/ui[4].label
+#: msacheck/results/iio.title
+msgid "Invariant item ordering"
+msgstr "Orden invariante de los ítems"
+
+#: msacheck/results/iioClusters.title
+msgid "Invariant ordering of item clusters"
+msgstr "Orden invariante de los conglomerados de ítems"
+
+#: aisp/results/membership.columns.title
+#: aisp/results/sequence.columns.title
+#: mlmsa/results/items.columns.title
+#: mlmsa/results/pairs.columns.title
+#: mlmsa/results/icc.columns.title
+#: msa/results/items.columns.title
+#: msa/results/hij.columns.title
+#: msa/results/groupItems.columns.title
+#: msa/results/irc.columns.title
+#: msa/results/bounds.columns.title
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+#: msacheck/results/ca.columns.title
+#: msacheck/results/caW.columns.title
+msgid "Item"
+msgstr "Ítem"
+
+#: aisp/results/scales.columns.title
+msgid "Item list"
+msgstr "Lista de ítems"
+
+#: msacheck/options/iioOrder.title
+msgid "Item order"
+msgstr "Orden de los ítems"
+
+#: mlmsa/results/weights.columns.title
+msgid "Item pair"
+msgstr "Par de ítems"
+
+#: msacheck/options/iioPlot.title
+#: msacheck/results/iioPlot.title
+msgid "Item pairs (invariant item ordering)"
+msgstr "Pares de ítems (orden invariante)"
+
+#: msacheck/options/restPlot.title
+#: msacheck/results/restPlot.title
+msgid "Item pairs (rest-score method)"
+msgstr "Pares de ítems (método rest-score)"
+
+#: msacheck/options/monoCurves/IRF.title
+msgid "Item response function (IRF)"
+msgstr "Función de respuesta del ítem (IRF)"
+
+#: msacheck/options/monoPlot.title
+#: msacheck/results/monoPlot.title
+msgid "Item response functions"
+msgstr "Funciones de respuesta de los ítems"
+
+#: msa/results/items.title
+#: msa/results/hiPlot.title
+msgid "Item scalability"
+msgstr "Escalabilidad de los ítems"
+
+#: msa/results/groupItems.title
+#: msa/results/groupPlotImg.title
+msgid "Item scalability by group"
+msgstr "Escalabilidad de los ítems por grupo"
+
+#: msa/options/groupPlot.title
+msgid "Item scalability by group plot"
+msgstr "Gráfico de escalabilidad de los ítems por grupo"
+
+#: msa/options/hiPlot.title
+msgid "Item scalability plot"
+msgstr "Gráfico de escalabilidad de los ítems"
+
+#: msacheck/options/monoCurves/ISRF.title
+msgid "Item step response functions (ISRFs)"
+msgstr "Funciones de respuesta de los pasos de ítem (ISRF)"
+
+#: mlmsa/options/showHij.title
+msgid "Item-pair coefficients"
+msgstr "Coeficientes de los pares de ítems"
+
+#: msa/options/showHij.title
+msgid "Item-pair coefficients (Hij)"
+msgstr "Coeficientes de los pares de ítems (Hij)"
+
+#: msa/options/hijPlot.title
+msgid "Item-pair heat map (Hij)"
+msgstr "Mapa de calor de los pares (Hij)"
+
+#: msa/results/hij.title
+#: msa/results/hijPlotImg.title
+msgid "Item-pair scalability (Hij)"
+msgstr "Escalabilidad de los pares de ítems (Hij)"
+
+#: msa/options/relIRC.title
+#: msa/results/irc.title
+msgid "Item-rest correlations"
+msgstr "Correlaciones ítem-resto"
+
+#: msa/results/irc.columns.title
+msgid "Item-rest r"
+msgstr "r ítem-resto"
+
+#: aisp/options/vars.title
+#: aisp/ui[0][0].label
+#: aisp/results/scales.columns.title
+#: mlmsa/options/vars.title
+#: mlmsa/ui[0][1].label
+#: msa/options/vars.title
+#: msa/ui[0][0].label
+#: msacheck/options/vars.title
+#: msacheck/ui[0][0].label
+msgid "Items"
+msgstr "Ítems"
+
+#: aisp/results/sequenceSummary.columns.title
+msgid "Items in the largest scale"
+msgstr "Ítems en la escala mayor"
+
+#: msacheck/options/iioClusterSize.title
+msgid "Items per cluster"
+msgstr "Ítems por conglomerado"
+
+#: msacheck/options/plotItems.title
+msgid "Items to plot"
+msgstr "Ítems a graficar"
+
+#: msacheck/ui[7][5][0].label
+msgid "Items to plot (empty = first six)"
+msgstr "Ítems a graficar (vacío = los seis primeros)"
+
+#: aisp/options/plotPalette/jamovi.title
+#: mlmsa/options/plotPalette/jamovi.title
+#: msa/options/plotPalette/jamovi.title
+#: msacheck/options/plotPalette/jamovi.title
+msgid "jamovi theme"
+msgstr "Tema de jamovi"
+
+#: aisp/options/showKeySummary.title
+#: aisp/results/keySummary.title
+#: mlmsa/options/showKeySummary.title
+#: mlmsa/results/keySummary.title
+#: msa/options/showKeySummary.title
+#: msa/results/keySummary.title
+#: msacheck/options/showKeySummary.title
+#: msacheck/results/keySummary.title
+msgid "Key findings"
+msgstr "Hallazgos clave"
+
+#: msa/results/bounds.columns.title
+msgid "L1"
+msgstr "L1"
+
+#: msa/results/bounds.columns.title
+msgid "L2"
+msgstr "L2"
+
+#: msacheck/results/caW.columns.title
+msgid "Largest W1"
+msgstr "W1 mayor"
+
+#: msacheck/results/caW.columns.title
+msgid "Largest W3"
+msgstr "W3 mayor"
+
+#: msa/options/relLCRC.title
+msgid "Latent class reliability (LCRC)"
+msgstr "Fiabilidad de clases latentes (LCRC)"
+
+#: msa/options/lcrcClassesMode.title
+msgid "Latent classes"
+msgstr "Clases latentes"
+
+#: aisp/options/plotLegend.title
+#: mlmsa/options/plotLegend.title
+#: msa/options/plotLegend.title
+#: msacheck/options/plotLegend.title
+msgid "Legend"
+msgstr "Leyenda"
+
+#: aisp/options/plotLineWidth.title
+#: mlmsa/options/plotLineWidth.title
+#: msa/options/plotLineWidth.title
+#: msacheck/options/plotLineWidth.title
+msgid "Line width"
+msgstr "Grosor de línea"
+
+#: aisp/options/naHandling/listwise.title
+#: mlmsa/options/naHandling/listwise.title
+#: msa/options/naHandling/listwise.title
+#: msacheck/options/naHandling/listwise.title
+msgid "Listwise deletion"
+msgstr "Eliminación por lista"
+
+#: msacheck/ui[6].label
+msgid "Local independence"
+msgstr "Independencia local"
+
+#: msacheck/results/ca.title
+msgid "Local independence (conditional association)"
+msgstr "Independencia local (asociación condicional)"
+
+#: aisp/results/scales.columns.title
+#: mlmsa/results/scale.columns.title
+#: msa/results/scale.columns.title
+#: msa/results/items.columns.title
+#: msa/results/groups.columns.title
+#: msa/results/normsSummary.columns.title
+#: msa/results/normsZ.columns.title
+#: msa/results/normsSta9.columns.title
+#: msa/results/normsPerc.columns.title
+msgid "Lower"
+msgstr "Inferior"
+
+#: aisp/options/lbMode.title
+#: aisp/results/sequenceSummary.columns.title
+msgid "Lower bound"
+msgstr "Cota inferior"
+
+#: aisp/options/lowerbound.title
+msgid "Lower bound c"
+msgstr "Cota inferior c"
+
+#: msa/options/boundsLower.title
+msgid "Lower bounds"
+msgstr "Cotas inferiores"
+
+#: aisp/results/scales.columns.title
+#: msa/results/completedSets.columns.title
+msgid "Lowest Hi"
+msgstr "Hi más bajo"
+
+#: aisp/options/scoreMin.title
+#: mlmsa/options/scoreMin.title
+#: msa/options/scoreMin.title
+#: msacheck/options/scoreMin.title
+msgid "Lowest possible score"
+msgstr "Puntaje mínimo posible"
+
+#: msacheck/options/iioMethod/MIIO.title
+msgid "Manifest IIO (MIIO)"
+msgstr "IIO manifiesto (MIIO)"
+
+#: msacheck/options/iioMethod/MSCPM.title
+msgid "Manifest scale cumulative probability model (MSCPM)"
+msgstr "Modelo manifiesto de probabilidad acumulada de escala (MSCPM)"
+
+#: msacheck/options/pmatType.title
+msgid "Matrix"
+msgstr "Matriz"
+
+#: msa/results/errors.columns.title
+msgid "Maximum"
+msgstr "Máximo"
+
+#: aisp/options/maxgens.title
+msgid "Maximum generations"
+msgstr "Generaciones máximas"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "maxvi"
+msgstr "maxvi"
+
+#: msa/results/items.columns.title
+#: msa/results/errors.columns.title
+#: msacheck/results/iio.columns.title
+msgid "Mean"
+msgstr "Media"
+
+#: msa/results/errors.columns.title
+msgid "Median"
+msgstr "Mediana"
+
+#: msacheck/options/iioMethod.title
+msgid "Method"
+msgstr "Método"
+
+#: msacheck/options/caMinsize.title
+msgid "Minimum conditioning group size"
+msgstr "Tamaño mínimo del grupo condicionante"
+
+#: msacheck/options/minsize.title
+msgid "Minimum group size"
+msgstr "Tamaño mínimo de grupo"
+
+#: msacheck/options/caMingroup.title
+msgid "Minimum number of groups"
+msgstr "Número mínimo de grupos"
+
+#: msacheck/options/minsizeMode.title
+msgid "Minimum rest-score group size"
+msgstr "Tamaño mínimo de grupo de rest-score"
+
+#: msacheck/options/monoMinvi.title
+#: msacheck/options/iioMinviMode.title
+#: msacheck/options/restMinvi.title
+#: msacheck/options/pmatMinvi.title
+msgid "Minimum violation"
+msgstr "Violación mínima"
+
+#: msacheck/options/iioMinvi.title
+msgid "Minimum violation value"
+msgstr "Valor de violación mínima"
+
+#: aisp/options/naHandling.title
+#: mlmsa/options/naHandling.title
+#: msa/options/naHandling.title
+#: msacheck/options/naHandling.title
+msgid "Missing values"
+msgstr "Valores perdidos"
+
+#: package/analyses/msacheck.title
+#: package/analyses/msacheck.menuTitle
+#: msacheck/options.title
+#: msacheck/options.menuTitle
+#: msacheck/ui.title
+#: msacheck/results.title
+msgid "Model Assumptions"
+msgstr "Supuestos del modelo"
+
+#: package/analyses/msacheck.menuSubgroup
+#: msacheck/options.menuSubgroup
+msgid "Model fit"
+msgstr "Ajuste del modelo"
+
+#: package.title
+#: package/analyses/msa.menuGroup
+#: package/analyses/aisp.menuGroup
+#: package/analyses/msacheck.menuGroup
+#: package/analyses/mlmsa.menuGroup
+#: aisp/options.menuGroup
+#: mlmsa/options.menuGroup
+#: msa/options.menuGroup
+#: msacheck/options.menuGroup
+msgid "Mokken Lab"
+msgstr "Mokken Lab"
+
+#: package/analyses/msa.title
+#: package/analyses/msa.menuTitle
+#: msa/options.title
+#: msa/options.menuTitle
+#: msa/ui.title
+#: msa/results.title
+msgid "Mokken Scale Analysis"
+msgstr "Análisis de escalamiento de Mokken"
+
+#: aisp/options/search/normal.title
+msgid "Mokken's procedure (normal)"
+msgstr "Procedimiento de Mokken (normal)"
+
+#: package.description
+msgid ""
+"MokkenLab brings every capability of the mokken package to jamovi and pairs "
+"every result with evidence-based methodological guidance, interpretation and "
+"educational support. It estimates scalability coefficients (Hij, Hi, H) with "
+"standard errors, Wald-based or range-preserving confidence intervals and "
+"significance tests, selects items into Mokken scales automatically (Mokken's "
+"procedure or a genetic algorithm, at one or many lower bounds), checks "
+"monotonicity, invariant item ordering, nonintersection (rest-score and "
+"P-matrix methods) and local independence (conditional association), and "
+"reports reliability (MS, alpha, lambda-2, LCRC), Guttman-error outliers, "
+"bounds for dichotomous items, norm statistics with standard errors, and "
+"two-level Mokken scale analysis for raters nested in subjects. Every "
+"method-backed table cites its own source in jamovi's native numbered format, "
+"and the complete APA 7th edition bibliography lives in the module's "
+"documentation."
+msgstr ""
+"MokkenLab lleva a jamovi todas las capacidades del paquete mokken y acompaña "
+"cada resultado con orientación metodológica basada en evidencia, "
+"interpretación y apoyo educativo. Estima coeficientes de escalabilidad (Hij, "
+"Hi, H) con errores estándar, intervalos de confianza de Wald o preservadores "
+"de rango y pruebas de significación; selecciona ítems en escalas de Mokken "
+"de forma automática (procedimiento de Mokken o algoritmo genético, con una o "
+"varias cotas inferiores); verifica monotonicidad, orden invariante de los "
+"ítems, no intersección (métodos rest-score y P-matrix) e independencia local "
+"(asociación condicional); e informa fiabilidad (MS, alfa, lambda-2, LCRC), "
+"atípicos por errores de Guttman, cotas para ítems dicotómicos, estadísticos "
+"normativos con errores estándar y análisis de escalamiento de Mokken de dos "
+"niveles para evaluadores anidados en sujetos. Cada tabla basada en un método "
+"cita su fuente en el formato numerado nativo de jamovi, y la bibliografía "
+"completa en APA 7.ª edición está en la documentación del módulo."
+
+#: msa/options/relMS.title
+msgid "Molenaar-Sijtsma (MS)"
+msgstr "Molenaar-Sijtsma (MS)"
+
+#: msacheck/options/checkMono.title
+#: msacheck/ui[3].label
+#: msacheck/results/mono.title
+msgid "Monotonicity"
+msgstr "Monotonicidad"
+
+#: aisp/options/pmutation.title
+msgid "Mutation probability"
+msgstr "Probabilidad de mutación"
+
+#: aisp/options/negItems.title
+#: aisp/ui[2][6][0].label
+#: mlmsa/options/negItems.title
+#: mlmsa/ui[2][6][0].label
+#: msa/options/negItems.title
+#: msa/ui[2][6][0].label
+#: msacheck/options/negItems.title
+#: msacheck/ui[2][6][0].label
+msgid "Negatively worded items"
+msgstr "Ítems redactados en negativo"
+
+#: msacheck/options/caNweight/noweight.title
+msgid "None (each covariance weight 1)"
+msgstr "Ninguno (cada covarianza pesa 1)"
+
+#: msacheck/options/caCovweight/noweight.title
+msgid "None (negative covariance counts 1)"
+msgstr "Ninguno (una covarianza negativa cuenta 1)"
+
+#: msacheck/ui[5].label
+msgid "Nonintersection"
+msgstr "No intersección"
+
+#: msacheck/results/pmat.title
+msgid "Nonintersection (P-matrix method)"
+msgstr "No intersección (método P-matrix)"
+
+#: msacheck/results/rest.title
+msgid "Nonintersection (rest-score method)"
+msgstr "No intersección (método rest-score)"
+
+#: msa/options/showNorms.title
+msgid "Norm statistics"
+msgstr "Estadísticos normativos"
+
+#: msa/results/normsSummary.title
+msgid "Norm statistics of the total score"
+msgstr "Estadísticos normativos de la puntuación total"
+
+#: aisp/results/notes.title
+#: mlmsa/results/notes.title
+#: msa/results/notes.title
+#: msacheck/results/notes.title
+msgid "Notes"
+msgstr "Notas"
+
+#: msa/options/errorsGplus.title
+msgid "Number of Guttman errors (G+)"
+msgstr "Número de errores de Guttman (G+)"
+
+#: msa/options/lcrcClasses.title
+msgid "Number of latent classes"
+msgstr "Número de clases latentes"
+
+#: aisp/options/scoreRange/observed.title
+#: mlmsa/options/scoreRange/observed.title
+#: msa/options/scoreRange/observed.title
+#: msacheck/options/scoreRange/observed.title
+msgid "Observed in the data"
+msgstr "Observado en los datos"
+
+#: msacheck/options/iioOrderText.title
+msgid "Order codes (one per item)"
+msgstr "Códigos de orden (uno por ítem)"
+
+#: aisp/options/typeZ/Z.title
+#: msa/options/typeZ/Z.title
+msgid "Original Z (Mokken)"
+msgstr "Z original (Mokken)"
+
+#: msa/ui[5].label
+msgid "Outliers"
+msgstr "Atípicos"
+
+#: aisp/ui[6].label
+msgid "Output"
+msgstr "Salida"
+
+#: msacheck/options/pmatPlot.title
+#: msacheck/results/pmatPlot.title
+msgid "P-matrix"
+msgstr "P-matrix"
+
+#: msacheck/options/checkPmatrix.title
+msgid "P-matrix method"
+msgstr "Método P-matrix"
+
+#: msacheck/options/pmatType/pmm.title
+msgid "P(--)"
+msgstr "P(--)"
+
+#: msacheck/options/pmatType/ppp.title
+msgid "P(++)"
+msgstr "P(++)"
+
+#: aisp/options/plotNcol.title
+#: mlmsa/options/plotNcol.title
+#: msa/options/plotNcol.title
+#: msacheck/options/plotNcol.title
+msgid "Panels per row (0 = automatic)"
+msgstr "Paneles por fila (0 = automático)"
+
+#: aisp/options/sequencePlot.title
+msgid "Partition across lower bounds plot"
+msgstr "Gráfico de la partición según la cota inferior"
+
+#: aisp/results/sequenceSummary.title
+msgid "Partition at each lower bound"
+msgstr "Partición en cada cota inferior"
+
+#: package/analyses/aisp.description
+#: aisp/options.description.main
+msgid ""
+"Partitions a set of items into Mokken scales with Mokken's automated item "
+"selection procedure or a genetic algorithm, at one lower bound or across a "
+"sequence of lower bounds, with the scalability of every scale found and "
+"plain-language interpretation."
+msgstr ""
+"Divide un conjunto de ítems en escalas de Mokken con el procedimiento de "
+"selección automática de Mokken o un algoritmo genético, con una cota "
+"inferior o una secuencia de cotas, con la escalabilidad de cada escala "
+"encontrada e interpretación en lenguaje claro."
+
+#: msa/results/normsPerc.columns.title
+msgid "Percentile rank"
+msgstr "Rango percentil"
+
+#: msa/options/normsPlot.title
+msgid "Percentile rank curve"
+msgstr "Curva de rangos percentiles"
+
+#: msa/options/normsPercentiles.title
+#: msa/results/normsPerc.title
+msgid "Percentile ranks"
+msgstr "Rangos percentiles"
+
+#: msa/results/normsPlotImg.title
+msgid "Percentile ranks of the total score"
+msgstr "Rangos percentiles de la puntuación total"
+
+#: aisp/options/plotPalette.title
+#: mlmsa/options/plotPalette.title
+#: msa/options/plotPalette.title
+#: msacheck/options/plotPalette.title
+msgid "Plot palette"
+msgstr "Paleta de gráficos"
+
+#: aisp/ui[7].label
+#: mlmsa/ui[6].label
+#: msa/ui[8].label
+#: msacheck/ui[8].label
+msgid "Plot settings"
+msgstr "Ajustes de gráficos"
+
+#: mlmsa/ui[5].label
+#: msa/ui[7].label
+#: msacheck/ui[7].label
+msgid "Plots"
+msgstr "Gráficos"
+
+#: aisp/options/plotPointSize.title
+#: mlmsa/options/plotPointSize.title
+#: msa/options/plotPointSize.title
+#: msacheck/options/plotPointSize.title
+msgid "Point size"
+msgstr "Tamaño de punto"
+
+#: aisp/options/popsize.title
+msgid "Population size"
+msgstr "Tamaño de la población"
+
+#: msacheck/options/caCovweight/pnorm.title
+msgid "Probability of a negative covariance (pnorm)"
+msgstr "Probabilidad de una covarianza negativa (pnorm)"
+
+#: msa/options/boundsQuant.title
+msgid "Quantile for L2"
+msgstr "Cuantil para L2"
+
+#: aisp/options/typeZ/RP.title
+#: mlmsa/options/typeCI/RP.title
+#: mlmsa/options/typeZ/RP.title
+#: msa/options/typeCI/RP.title
+#: msa/options/typeZ/RP.title
+msgid "Range-preserving"
+msgstr "Preservador de rango"
+
+#: mlmsa/results/items.columns.title
+#: mlmsa/results/pairs.columns.title
+msgid "Ratio BW"
+msgstr "Razón BW"
+
+#: mlmsa/results/scale.columns.title
+#: msacheck/results/iioHT.columns.title
+msgid "Reading"
+msgstr "Lectura"
+
+#: msa/options/showReliability.title
+#: msa/ui[4].label
+#: msa/results/reliability.title
+msgid "Reliability"
+msgstr "Fiabilidad"
+
+#: msacheck/results/iio.columns.title
+msgid "Removed at step"
+msgstr "Eliminado en el paso"
+
+#: aisp/options/reportLang.title
+#: aisp/ui[1].label
+#: mlmsa/options/reportLang.title
+#: mlmsa/ui[1].label
+#: msa/options/reportLang.title
+#: msa/ui[1].label
+#: msacheck/options/reportLang.title
+#: msacheck/ui[1].label
+msgid "Report Language"
+msgstr "Idioma del informe"
+
+#: msacheck/options/checkRest.title
+msgid "Rest-score method"
+msgstr "Método rest-score"
+
+#: aisp/options/plotLegend/right.title
+#: mlmsa/options/plotLegend/right.title
+#: msa/options/plotLegend/right.title
+#: msacheck/options/plotLegend/right.title
+msgid "Right"
+msgstr "Derecha"
+
+#: msacheck/options/caNweight.title
+msgid "Sample-size weight"
+msgstr "Peso por tamaño de muestra"
+
+#: msa/options/gplusOV.title
+msgid "Save G+"
+msgstr "Guardar G+"
+
+#: msa/options/oplusOV.title
+msgid "Save O+"
+msgstr "Guardar O+"
+
+#: msa/results/completedSets.title
+msgid "Scalability across completed data sets"
+msgstr "Escalabilidad entre conjuntos completados"
+
+#: msa/results/groups.title
+msgid "Scalability by group"
+msgstr "Escalabilidad por grupo"
+
+#: msa/ui[3].label
+msgid "Scalability coefficients"
+msgstr "Coeficientes de escalabilidad"
+
+#: package/analyses/msa.description
+#: msa/options.description.main
+msgid ""
+"Scalability coefficients of a set of items (item pairs, items and the whole "
+"scale) with standard errors, confidence intervals and tests against a lower "
+"bound, by group, with reliability, Guttman-error outliers, bounds for "
+"dichotomous items, norm statistics and plain-language interpretation."
+msgstr ""
+"Coeficientes de escalabilidad de un conjunto de ítems (pares, ítems y escala "
+"completa) con errores estándar, intervalos de confianza y pruebas contra una "
+"cota inferior, por grupo, con fiabilidad, atípicos por errores de Guttman, "
+"cotas para ítems dicotómicos, estadísticos normativos e interpretación en "
+"lenguaje claro."
+
+#: aisp/options/scaleCoefs.title
+#: aisp/results/scales.title
+msgid "Scalability of each scale"
+msgstr "Escalabilidad de cada escala"
+
+#: msa/results/scale.title
+msgid "Scalability of the scale"
+msgstr "Escalabilidad de la escala"
+
+#: aisp/results/membership.columns.title
+#: aisp/results/scales.columns.title
+msgid "Scale"
+msgstr "Escala"
+
+#: aisp/results/membership.title
+msgid "Scale membership"
+msgstr "Pertenencia a las escalas"
+
+#: aisp/results/sequence.title
+#: aisp/results/sequencePlot.title
+msgid "Scale membership across lower bounds"
+msgstr "Pertenencia a las escalas según la cota inferior"
+
+#: aisp/results/sequenceSummary.columns.title
+msgid "Scales"
+msgstr "Escalas"
+
+#: package/analyses/msa.menuSubgroup
+#: package/analyses/aisp.menuSubgroup
+#: aisp/options.menuSubgroup
+#: msa/options.menuSubgroup
+msgid "Scaling"
+msgstr "Escalamiento"
+
+#: aisp/options/scoreRange.title
+#: mlmsa/options/scoreRange.title
+#: msa/options/scoreRange.title
+#: msacheck/options/scoreRange.title
+msgid "Score range"
+msgstr "Rango de puntajes"
+
+#: aisp/results/scales.columns.title
+#: mlmsa/results/scale.columns.title
+#: mlmsa/results/items.columns.title
+#: mlmsa/results/pairs.columns.title
+#: msa/results/scale.columns.title
+#: msa/results/items.columns.title
+#: msa/results/completedSets.columns.title
+#: msa/results/groups.columns.title
+#: msa/results/normsSummary.columns.title
+#: msa/results/normsZ.columns.title
+#: msa/results/normsSta9.columns.title
+#: msa/results/normsPerc.columns.title
+msgid "SE"
+msgstr "EE"
+
+#: aisp/options/search.title
+#: aisp/ui[4].label
+msgid "Search procedure"
+msgstr "Procedimiento de búsqueda"
+
+#: aisp/options/gaSeed.title
+msgid "Seed"
+msgstr "Semilla"
+
+#: aisp/ui[3].label
+msgid "Selection criterion"
+msgstr "Criterio de selección"
+
+#: aisp/options/lbMode/sequence.title
+msgid "Sequence of values"
+msgstr "Secuencia de valores"
+
+#: package/datasets/Autonomysupport(259studentsrating14teachers).description
+msgid ""
+"Seven 5-point items on which 259 students rated the autonomy support of "
+"their teacher (two-level data: students nested in teachers), from the mokken "
+"package - see data/README.md"
+msgstr ""
+"Siete ítems de 5 puntos con los que 259 estudiantes evaluaron el apoyo a la "
+"autonomía de su docente (datos de dos niveles: estudiantes anidados en "
+"docentes), del paquete mokken - ver data/README.md"
+
+#: aisp/options/alpha.title
+#: msacheck/options/iioAlpha.title
+msgid "Significance level"
+msgstr "Nivel de significación"
+
+#: aisp/options/lbMode/single.title
+msgid "Single value"
+msgstr "Valor único"
+
+#: msa/results/errors.columns.title
+msgid "Skew-adjusted fence (U2)"
+msgstr "Valla ajustada por asimetría (U2)"
+
+#: msacheck/options/caNweight/sqrt.title
+msgid "Square root of group size"
+msgstr "Raíz cuadrada del tamaño de grupo"
+
+#: mlmsa/options/se.title
+#: msa/options/se.title
+msgid "Standard errors"
+msgstr "Errores estándar"
+
+#: msa/options/normsZ.title
+#: msa/results/normsZ.title
+msgid "Standard scores"
+msgstr "Puntuaciones típicas"
+
+#: msa/options/normsStanines.title
+#: msa/results/normsSta9.title
+msgid "Stanine boundaries"
+msgstr "Límites de los estaninos"
+
+#: aisp/options/startSet.title
+#: aisp/ui[5][3][0].label
+msgid "Start set (first scale)"
+msgstr "Conjunto inicial (primera escala)"
+
+#: msa/results/errors.columns.title
+#: msa/results/normsSummary.columns.title
+#: msacheck/results/iioHT.columns.title
+msgid "Statistic"
+msgstr "Estadístico"
+
+#: aisp/options/lbStep.title
+msgid "Step"
+msgstr "Paso"
+
+#: aisp/results/scales.columns.title
+#: msa/results/scale.columns.title
+msgid "Strength"
+msgstr "Fuerza"
+
+#: mlmsa/options/subject.title
+#: mlmsa/ui[0][0].label
+msgid "Subject (rated person)"
+msgstr "Sujeto (persona evaluada)"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "sum"
+msgstr "sum"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "sum/#ac"
+msgstr "sum/#ac"
+
+#: mlmsa/options/zLowerbound.title
+#: msa/options/zLowerbound.title
+msgid "Test against"
+msgstr "Contrastar contra"
+
+#: package/datasets/TestforReceptionofGrammarTROG(n=210).name
+msgid "Test for Reception of Grammar TROG (n=210)"
+msgstr "Test for Reception of Grammar TROG (n=210)"
+
+#: aisp/options/testHi.title
+msgid "Test Hi against the lower bound"
+msgstr "Contrastar Hi contra la cota inferior"
+
+#: aisp/ui[5].label
+msgid "Tests during selection"
+msgstr "Pruebas durante la selección"
+
+#: msacheck/results/iio.columns.title
+msgid "tmax"
+msgstr "tmax"
+
+#: aisp/options/lbTo.title
+msgid "To"
+msgstr "Hasta"
+
+#: aisp/options/plotLegend/top.title
+#: mlmsa/options/plotLegend/top.title
+#: msa/options/plotLegend/top.title
+#: msacheck/options/plotLegend/top.title
+msgid "Top"
+msgstr "Arriba"
+
+#: msa/results/normsZ.columns.title
+#: msa/results/normsSta9.columns.title
+#: msa/results/normsPerc.columns.title
+msgid "Total score"
+msgstr "Puntuación total"
+
+#: package/datasets/Transitivereasoning(n=425).name
+msgid "Transitive reasoning (n=425)"
+msgstr "Razonamiento transitivo (n=425)"
+
+#: msa/results/errors.columns.title
+msgid "Tukey fence (U1)"
+msgstr "Valla de Tukey (U1)"
+
+#: package/datasets/Transitivereasoning(n=425).description
+msgid ""
+"Twelve dichotomous transitive reasoning tasks answered by 425 pupils in five "
+"school grades, from the mokken package - see data/README.md"
+msgstr ""
+"Doce tareas dicotómicas de razonamiento transitivo respondidas por 425 "
+"alumnos de cinco grados escolares, del paquete mokken - ver data/README.md"
+
+#: mlmsa/ui[3].label
+msgid "Two-level coefficients"
+msgstr "Coeficientes de dos niveles"
+
+#: package/analyses/mlmsa.menuSubgroup
+#: mlmsa/options.menuSubgroup
+msgid "Two-level data"
+msgstr "Datos de dos niveles"
+
+#: mlmsa/results/items.title
+msgid "Two-level item scalability"
+msgstr "Escalabilidad de dos niveles de los ítems"
+
+#: mlmsa/results/pairs.title
+msgid "Two-level item-pair scalability"
+msgstr "Escalabilidad de dos niveles de los pares de ítems"
+
+#: package/analyses/mlmsa.title
+#: package/analyses/mlmsa.menuTitle
+#: mlmsa/options.title
+#: mlmsa/options.menuTitle
+#: mlmsa/ui.title
+#: mlmsa/results.title
+msgid "Two-Level Mokken Scale Analysis"
+msgstr "Análisis de escalamiento de Mokken de dos niveles"
+
+#: mlmsa/results/scale.title
+msgid "Two-level scalability of the scale"
+msgstr "Escalabilidad de dos niveles de la escala"
+
+#: aisp/options/naHandling/twoway.title
+#: mlmsa/options/naHandling/twoway.title
+#: msa/options/naHandling/twoway.title
+#: msacheck/options/naHandling/twoway.title
+msgid "Two-way imputation"
+msgstr "Imputación two-way"
+
+#: package/datasets/TypeDScaleDS14(n=541).name
+msgid "Type D Scale DS14 (n=541)"
+msgstr "Escala tipo D DS14 (n=541)"
+
+#: msa/results/bounds.columns.title
+msgid "U1"
+msgstr "U1"
+
+#: msa/results/bounds.columns.title
+msgid "U2"
+msgstr "U2"
+
+#: aisp/results/sequenceSummary.columns.title
+msgid "Unscalable items"
+msgstr "Ítems no escalables"
+
+#: aisp/results/scales.columns.title
+#: mlmsa/results/scale.columns.title
+#: msa/results/scale.columns.title
+#: msa/results/items.columns.title
+#: msa/results/groups.columns.title
+#: msa/results/normsSummary.columns.title
+#: msa/results/normsZ.columns.title
+#: msa/results/normsSta9.columns.title
+#: msa/results/normsPerc.columns.title
+msgid "Upper"
+msgstr "Superior"
+
+#: msa/options/boundsUpper.title
+msgid "Upper bounds"
+msgstr "Cotas superiores"
+
+#: aisp/results/summary.columns.title
+#: mlmsa/results/summary.columns.title
+#: msa/results/summary.columns.title
+#: msa/results/reliability.columns.title
+#: msacheck/results/summary.columns.title
+#: msacheck/results/iioHT.columns.title
+msgid "Value"
+msgstr "Valor"
+
+#: aisp/options/plotValueLabels.title
+#: mlmsa/options/plotValueLabels.title
+#: msa/options/plotValueLabels.title
+#: msacheck/options/plotValueLabels.title
+msgid "Value labels"
+msgstr "Etiquetas de valor"
+
+#: msa/results/bounds.columns.title
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "Verdict"
+msgstr "Veredicto"
+
+#: aisp/options/plotAxisAngle/a90.title
+#: mlmsa/options/plotAxisAngle/a90.title
+#: msa/options/plotAxisAngle/a90.title
+#: msacheck/options/plotAxisAngle/a90.title
+msgid "Vertical"
+msgstr "Vertical"
+
+#: msacheck/results/critPlot.title
+msgid "Violation profile"
+msgstr "Perfil de violaciones"
+
+#: msacheck/options/critPlot.title
+msgid "Violation profile (crit)"
+msgstr "Perfil de violaciones (crit)"
+
+#: aisp/options/plotPalette/viridis.title
+#: mlmsa/options/plotPalette/viridis.title
+#: msa/options/plotPalette/viridis.title
+#: msacheck/options/plotPalette/viridis.title
+msgid "Viridis"
+msgstr "Viridis"
+
+#: msacheck/options/caWindex.title
+msgid "W indices"
+msgstr "Índices W"
+
+#: msacheck/results/caW.title
+msgid "W indices of local dependence"
+msgstr "Índices W de dependencia local"
+
+#: msacheck/results/caW.columns.title
+msgid "W1 flags"
+msgstr "Marcas W1"
+
+#: msacheck/results/caW.columns.title
+msgid "W2"
+msgstr "W2"
+
+#: msacheck/results/caW.columns.title
+msgid "W2 flag"
+msgstr "Marca W2"
+
+#: msacheck/results/caW.columns.title
+msgid "W3 flags"
+msgstr "Marcas W3"
+
+#: aisp/options/typeZ/WB.title
+#: mlmsa/options/typeCI/WB.title
+#: mlmsa/options/typeZ/WB.title
+#: msa/options/typeCI/WB.title
+#: msa/options/typeZ/WB.title
+msgid "Wald-based"
+msgstr "De Wald"
+
+#: mlmsa/options/weighProps.title
+msgid "Weight proportions by group size"
+msgstr "Ponderar las proporciones por tamaño de grupo"
+
+#: mlmsa/options/showWeights.title
+msgid "Weights for Guttman errors"
+msgstr "Pesos para errores de Guttman"
+
+#: mlmsa/results/weights.title
+msgid "Weights for two-level Guttman errors"
+msgstr "Pesos para errores de Guttman de dos niveles"
+
+#: aisp/options/plotWidth.title
+#: mlmsa/options/plotWidth.title
+#: msa/options/plotWidth.title
+#: msacheck/options/plotWidth.title
+msgid "Width (0 = automatic)"
+msgstr "Ancho (0 = automático)"
+
+#: mlmsa/results/items.columns.title
+#: mlmsa/results/pairs.columns.title
+msgid "Within"
+msgstr "Dentro"
+
+#: mlmsa/results/levelPlot.title
+msgid "Within and between scalability"
+msgstr "Escalabilidad dentro y entre"
+
+#: mlmsa/options/levelPlot.title
+msgid "Within and between scalability plot"
+msgstr "Gráfico de escalabilidad dentro y entre"
+
+#: package/analyses/mlmsa.description
+#: mlmsa/options.description.main
+msgid ""
+"Within-subject, between-subject and ratio scalability coefficients for "
+"raters nested in subjects (for example, students rating their teacher), with "
+"standard errors, confidence intervals, tests, intraclass correlations, "
+"weights for Guttman errors and plain-language interpretation."
+msgstr ""
+"Coeficientes de escalabilidad dentro de sujetos, entre sujetos y su razón "
+"para evaluadores anidados en sujetos (por ejemplo, estudiantes que evalúan a "
+"su docente), con errores estándar, intervalos de confianza, pruebas, "
+"correlaciones intraclase, pesos para errores de Guttman e interpretación en "
+"lenguaje claro."
+
+#: aisp/options/plotAxisAngle.title
+#: mlmsa/options/plotAxisAngle.title
+#: msa/options/plotAxisAngle.title
+#: msacheck/options/plotAxisAngle.title
+msgid "X-axis label angle"
+msgstr "Ángulo de las etiquetas del eje X"
+
+#: aisp/options/plotYRange.title
+#: mlmsa/options/plotYRange.title
+#: msa/options/plotYRange.title
+#: msacheck/options/plotYRange.title
+msgid "Y-axis range"
+msgstr "Rango del eje Y"
+
+#: mlmsa/results/items.columns.title
+msgid "z (between)"
+msgstr "z (entre)"
+
+#: mlmsa/results/items.columns.title
+msgid "z (within)"
+msgstr "z (dentro)"
+
+#: aisp/options/typeZ.title
+#: mlmsa/options/typeZ.title
+#: msa/options/typeZ.title
+msgid "Z test"
+msgstr "Prueba Z"
+
+#: mlmsa/options/showZ.title
+#: msa/options/showZ.title
+msgid "Z tests"
+msgstr "Pruebas Z"
+
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iioClusters.columns.title
+#: msacheck/results/rest.columns.title
+#: msacheck/results/pmat.columns.title
+msgid "zmax"
+msgstr "zmax"

@@ -1,0 +1,15 @@
+{
+  "title": "MokkenLab: A jamovi Module for Mokken Scale Analysis",
+  "creators": [
+    {
+      "name": "Chacón Chacón, Arquímedes De León",
+      "orcid": "0000-0002-7014-7513",
+      "affiliation": "Universidad Católica Andrés Bello (UCAB), Caracas, Venezuela"
+    }
+  ],
+  "description": "An open-source jamovi module that brings every capability of the mokken R package to jamovi (scalability coefficients with standard errors, confidence intervals and tests, automated item selection, monotonicity, invariant item ordering, nonintersection and conditional association checks, reliability, Guttman-error outliers, norm statistics and two-level Mokken scale analysis), pairing every result with evidence-based methodological guidance, interpretation and educational support in English and Spanish.",
+  "keywords": ["jamovi", "Mokken Scale Analysis", "Nonparametric Item Response Theory", "Psychometrics", "mokken", "Open Science"],
+  "license": "gpl-3.0",
+  "upload_type": "software",
+  "version": "0.1.0"
+}

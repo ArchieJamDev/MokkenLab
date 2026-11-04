@@ -1,0 +1,21 @@
+"check","max_abs_diff","tolerance","pass"
+"coefH: scale H",0,1e-08,TRUE
+"coefH: scale SE",0,1e-08,TRUE
+"coefH: item Hi",0,1e-08,TRUE
+"coefH: item SE",0,1e-08,TRUE
+"coefZ (WB, .30): scale z",0,1e-08,TRUE
+"coefZ (WB, .30): item z",0,1e-08,TRUE
+"CI (WB) of H vs mokken's printed interval",0.000157,5e-04,TRUE
+"CI (WB) of Hi vs mokken's printed intervals",0.000487,5e-04,TRUE
+"CI (RP) of H vs mokken's printed interval",0.000161,5e-04,TRUE
+"CI (RP) of Hi vs mokken's printed intervals",0.000495,5e-04,TRUE
+"check.reliability: MS, alpha, lambda-2",0,1e-08,TRUE
+"check.norms: mean and SD",0,1e-08,TRUE
+"check.norms: percentile ranks",0,1e-08,TRUE
+"aisp (c = .40): partition",0,0,TRUE
+"check.monotonicity: crit",0,0,TRUE
+"check.iio (MIIO): HT",0,1e-08,TRUE
+"check.iio clustered (TROG): HT, HTB, HTB/HT",0,1e-08,TRUE
+"MLcoefH: HW, HB, BW",0,1e-08,TRUE
+"MLcoefH: HWi",0,1e-08,TRUE
+"ICC: scale",0,1e-08,TRUE

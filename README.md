@@ -31,10 +31,13 @@ behind it and the next step to take.
 
 - [Why MokkenLab?](#why-mokkenlab)
 - [Analyses](#analyses)
+- [Coverage of mokken](#coverage-of-mokken)
+- [Graphics](#graphics)
 - [Supported Data](#supported-data)
 - [Methodological Philosophy](#methodological-philosophy)
 - [Installation](#installation)
 - [Example Datasets](#example-datasets)
+- [Validation and Testing](#validation-and-testing)
 - [For Developers](#for-developers)
 - [Roadmap](#roadmap)
 - [Citation](#citation)
@@ -95,7 +98,7 @@ explanation.
 | Analysis | Question it answers | Status |
 |---|---|---|
 | **Monotonicity** | Does the probability of endorsing each item rise with the rest score? | ✅ 0.1.0 (in Model Assumptions) |
-| **Invariant item ordering** | Do the items keep the same order of difficulty for every respondent (manifest IIO, with backward item selection)? | ✅ 0.1.0 (in Model Assumptions) |
+| **Invariant item ordering** | Do the items keep the same order of difficulty for every respondent (MIIO, MSCPM or IT, with backward item selection; estimated, listed, clustered or typed item order, as in the TROG example)? | ✅ 0.1.0 (in Model Assumptions) |
 | **Nonintersection** | Do item step response functions cross (rest-score and P-matrix methods)? | ✅ 0.1.0 (in Model Assumptions) |
 | **Local independence** | Are some item pairs more related than one trait explains (conditional association)? | ✅ 0.1.0 (in Model Assumptions) |
 
@@ -103,7 +106,62 @@ explanation.
 
 | Analysis | Question it answers | Status |
 |---|---|---|
-| **Two-Level Mokken Scale Analysis** | With raters nested in subjects (students rating their teacher), how scalable are the items within and between subjects, and what is their ratio? | 🔄 In development |
+| **Two-Level Mokken Scale Analysis** | With raters nested in subjects (students rating their teacher), how scalable are the items within and between subjects, and what is their ratio (with intervals, tests, covariance matrices, intraclass correlations and weights for Guttman errors)? | ✅ 0.1.0 |
+
+---
+
+## Coverage of mokken
+
+Every exported function of mokken 3.1.2, and every argument of each, is
+exposed in one of the four analyses, except where a stated reason prevents it.
+
+| mokken | Analysis | Arguments exposed |
+|---|---|---|
+| `coefH` | Mokken Scale Analysis | `se`, `ci`, `type.ci`, `group.var`, `level.two.var`, `results` |
+| `coefZ` | Mokken Scale Analysis | `lowerbound`, `type.z`, `level.two.var` |
+| `check.reliability` | Mokken Scale Analysis | `MS`, `alpha`, `lambda.2`, `LCRC`, `nclass`, `irc` |
+| `check.errors` | Mokken Scale Analysis | `returnGplus`, `returnOplus` (G+ and O+ can be saved as columns) |
+| `check.bounds` | Mokken Scale Analysis | `quant`, `lower`, `upper` |
+| `check.norms` | Mokken Scale Analysis | mean, SD, standard scores, stanines, percentile ranks |
+| `twoway`, `recode` | every analysis | `nCompletedDataSets`, `minX`, `maxX`, `seed`; `items`, `values` |
+| `aisp` | Automated Item Selection | `lowerbound` (single or sequence), `search`, `alpha`, `StartSet`, `popsize`, `maxgens`, `pxover`, `pmutation`, `type.z`, `test.Hi`, `level.two.var` |
+| `check.monotonicity` | Model Assumptions | `minvi`, `minsize`, `level.two.var` |
+| `check.iio` | Model Assumptions | `method`, `minvi`, `minsize`, `alpha`, `item.selection`, `fixed.item.order`, `level.two.var` |
+| `check.restscore` | Model Assumptions | `minvi`, `minsize` |
+| `check.pmatrix` | Model Assumptions | `minvi` |
+| `check.ca` | Model Assumptions | `Windex`, `MINSIZE`, `NWEIGHTOPTION`, `COVWEIGHTOPTION`, `MINGROUP` |
+| `plot` methods | Model Assumptions | `items`, `item.pairs`, `curves`, `pmatrix`, `ci`, `alpha`, `transparancy`, `color` |
+| `MLcoefH` | Two-Level Mokken Scale Analysis | `subject`, `se`, `ci`, `type.ci`, `weigh.props`, `cov.mat` |
+| `MLcoefZ` | Two-Level Mokken Scale Analysis | `lowerbound`, `type.z` |
+| `ICC` | Two-Level Mokken Scale Analysis | item and scale ICC with F test |
+| `MLweight` | Two-Level Mokken Scale Analysis | `minx`, `maxx`, for every item pair |
+
+Not exposed, by design: `aisp(search = "extended")` (an unfinished stub in
+mokken 3.1.2 that fails on any data), `verbose` (console progress only), the
+`ask` argument of the plot methods (jamovi shows every panel at once) and
+`fixed.itemstep.order` / `itemstep.order` (a matrix of item-step ranks that
+cannot be typed in an option panel; mokken's default is used). See
+[ARCHITECTURE.md §14](ARCHITECTURE.md).
+
+---
+
+## Graphics
+
+Thirteen plots, all rebuilt in ggplot from mokken's own result matrices so
+they follow jamovi's theme and survive export: item scalability with
+intervals, the *H<sub>ij</sub>* heat map, *H<sub>i</sub>* by group,
+Guttman-error distributions with their fences, the percentile-rank curve with
+its band, the partition across lower bounds, the violation profile (crit with
+the 40/80 zones), item response functions (IRF and ISRFs), item pairs for
+invariant item ordering and the rest-score method, the P-matrix, and within
+and between two-level scalability.
+
+Every plot responds to one shared **Plot settings** box: width and height (or
+automatic, scaled to the number of panels), point size, line width, panels
+per row, legend position, x-axis label angle, y-axis range (full theoretical
+range or fitted to the data), value labels and palette (jamovi theme,
+colorblind-safe Okabe-Ito or viridis). Response-function plots add confidence
+bands with their own significance level and opacity.
 
 ---
 
@@ -165,6 +223,21 @@ jamovi's **⋮** → **Open** → **Data Library** → **Mokken Lab**.
 
 ---
 
+## Validation and Testing
+
+- [`validation/mokken_equivalence.R`](validation/mokken_equivalence.R) checks
+  that every number MokkenLab reports equals the one mokken returns for the
+  same data: 20 of 20 checks pass
+  ([results](validation/mokken_equivalence_results.csv)), including the
+  confidence intervals MokkenLab computes itself, which agree with mokken's
+  printed ones to its three printed decimals.
+- [`tests/testthat/`](tests/testthat) exercises every analysis on
+  pathological input (constant, empty and non-integer items, accented names,
+  missing values, tiny samples), every option and every plot setting: 112
+  expectations, all passing. The CI workflow runs them on every push.
+
+---
+
 ## For Developers
 
 ```r
@@ -182,9 +255,10 @@ package.
 | Phase | Content | Status |
 |---|---|---|
 | 0 | Platform, Mokken Scale Analysis, AISP, Model Assumptions, datasets, icon | ✅ Done |
-| 1 | Two-Level Mokken Scale Analysis | 🔄 In progress |
-| 2 | Test suite and CI, validation against direct mokken calls | 🗓 Planned |
-| 3 | Documentation (bibliography, architecture), release and jamovi Library submission | 🗓 Planned |
+| 1 | Two-Level Mokken Scale Analysis | ✅ Done |
+| 2 | Test suite and CI, validation against direct mokken calls | ✅ Done |
+| 3 | Documentation (bibliography, architecture) | ✅ Done |
+| 4 | Release and jamovi Library submission | 🗓 Planned |
 
 ---
 
@@ -227,11 +301,15 @@ escalas (procedimiento de Mokken o algoritmo genético); comprobar la
 monotonicidad, el orden invariante de los ítems, la no intersección y la
 independencia local; y obtener la fiabilidad, los casos atípicos por errores
 de Guttman, los límites para ítems dicotómicos y las normas del puntaje
-total. El análisis de Mokken de dos niveles (evaluadores anidados en sujetos)
-está en desarrollo.
+total. También incluye el análisis de Mokken de dos niveles (evaluadores
+anidados en sujetos). Cada función del paquete mokken y cada uno de sus
+argumentos está disponible, y cada número coincide con el que devuelve
+mokken (validation/).
 
 Trabaja con ítems dicotómicos y politómicos ordinales. Cada opción del menú
 incluye un párrafo que explica qué hace y cuándo conviene elegirla, y los
 resultados se acompañan de un resumen de hallazgos, guías e interpretaciones
-en español o inglés. Incluye cuatro conjuntos de datos públicos del paquete
-mokken para practicar.
+en español o inglés. Sus trece gráficos se parametrizan desde una misma caja
+de ajustes (tamaño, puntos, líneas, paneles, leyenda, ejes, rango, etiquetas
+y paleta). Incluye cuatro conjuntos de datos públicos del paquete mokken para
+practicar.

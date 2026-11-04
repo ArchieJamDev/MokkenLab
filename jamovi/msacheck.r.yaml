@@ -1,0 +1,797 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+name: msacheck
+title: Model Assumptions
+jrs: '1.1'
+
+items:
+  - name: intro
+    title: Introduction
+    type: Html
+
+  - name: keySummary
+    title: Key findings
+    type: Html
+    visible: (showKeySummary)
+
+  - name: choicesGuide
+    title: About your choices
+    type: Html
+    visible: (showChoicesGuide)
+
+  - name: summary
+    title: Analysis summary
+    type: Table
+    rows: 0
+    refs:
+      - mokken_pkg
+      - vanderark_2007
+      - sijtsma_vanderark_2017
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - monoMinvi
+      - minsizeMode
+      - minsize
+      - iioMethod
+      - iioMinviMode
+      - iioMinvi
+      - iioAlpha
+      - iioItemSelection
+      - iioOrder
+      - iioClusterSize
+      - iioOrderText
+      - minsizeMode
+      - minsize
+      - restMinvi
+      - pmatMinvi
+      - checkMono
+      - checkIIO
+      - checkRest
+      - checkPmatrix
+      - checkCA
+    columns:
+      - name: element
+        title: "Element"
+        type: text
+      - name: value
+        title: "Value"
+        type: text
+
+  - name: monoGuide
+    title: How to read monotonicity
+    type: Html
+    visible: (showGuides && checkMono)
+
+  - name: mono
+    title: Monotonicity
+    type: Table
+    rows: 0
+    visible: (checkMono)
+    refs:
+      - junker_sijtsma_2000
+      - molenaar_sijtsma_2000
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - monoMinvi
+      - checkMono
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: hi
+        title: "Hi"
+        type: number
+        format: zto
+      - name: ac
+        title: "#ac"
+        type: integer
+      - name: vi
+        title: "#vi"
+        type: integer
+      - name: viac
+        title: "#vi/#ac"
+        type: number
+        format: zto
+      - name: maxvi
+        title: "maxvi"
+        type: number
+        format: zto
+      - name: sum
+        title: "sum"
+        type: number
+        format: zto
+      - name: sumac
+        title: "sum/#ac"
+        type: number
+        format: zto
+      - name: zmax
+        title: "zmax"
+        type: number
+      - name: zsig
+        title: "#zsig"
+        type: integer
+      - name: crit
+        title: "Crit"
+        type: integer
+      - name: verdict
+        title: "Verdict"
+        type: text
+
+  - name: monoPlot
+    title: Item response functions
+    type: Image
+    width: 700
+    height: 500
+    renderFun: .plotMono
+    visible: (checkMono && monoPlot)
+    clearWith:
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - monoMinvi
+      - checkMono
+      - monoCurves
+      - plotItems
+      - plotCI
+      - plotAlpha
+      - plotTransparency
+      - plotPalette
+
+  - name: iioGuide
+    title: How to read invariant item ordering
+    type: Html
+    visible: (showGuides && checkIIO)
+
+  - name: iio
+    title: Invariant item ordering
+    type: Table
+    rows: 0
+    visible: (checkIIO)
+    refs:
+      - ligtvoet_2010
+      - ligtvoet_2011
+      - sijtsma_2011
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - iioMethod
+      - iioMinviMode
+      - iioMinvi
+      - iioAlpha
+      - iioItemSelection
+      - iioOrder
+      - iioClusterSize
+      - iioOrderText
+      - checkIIO
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: mean
+        title: "Mean"
+        type: number
+      - name: hi
+        title: "Hi"
+        type: number
+        format: zto
+      - name: ac
+        title: "#ac"
+        type: integer
+      - name: vi
+        title: "#vi"
+        type: integer
+      - name: viac
+        title: "#vi/#ac"
+        type: number
+        format: zto
+      - name: maxvi
+        title: "maxvi"
+        type: number
+        format: zto
+      - name: sum
+        title: "sum"
+        type: number
+        format: zto
+      - name: sumac
+        title: "sum/#ac"
+        type: number
+        format: zto
+      - name: zmax
+        title: "tmax"
+        type: number
+      - name: zsig
+        title: "#tsig"
+        type: integer
+      - name: crit
+        title: "Crit"
+        type: integer
+      - name: verdict
+        title: "Verdict"
+        type: text
+      - name: removed
+        title: "Removed at step"
+        type: text
+
+  - name: iioClusters
+    title: Invariant ordering of item clusters
+    type: Table
+    rows: 0
+    visible: false
+    refs:
+      - ligtvoet_2010
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - iioMethod
+      - iioMinviMode
+      - iioMinvi
+      - iioAlpha
+      - iioItemSelection
+      - iioOrder
+      - iioClusterSize
+      - iioOrderText
+      - checkIIO
+    columns:
+      - name: cluster
+        title: "Cluster"
+        type: text
+      - name: ac
+        title: "#ac"
+        type: integer
+      - name: vi
+        title: "#vi"
+        type: integer
+      - name: viac
+        title: "#vi/#ac"
+        type: number
+        format: zto
+      - name: maxvi
+        title: "maxvi"
+        type: number
+        format: zto
+      - name: sum
+        title: "sum"
+        type: number
+        format: zto
+      - name: sumac
+        title: "sum/#ac"
+        type: number
+        format: zto
+      - name: zmax
+        title: "zmax"
+        type: number
+      - name: zsig
+        title: "#zsig"
+        type: integer
+      - name: crit
+        title: "Crit"
+        type: integer
+      - name: verdict
+        title: "Verdict"
+        type: text
+
+  - name: iioHT
+    title: Accuracy of the item ordering
+    type: Table
+    rows: 0
+    visible: (checkIIO)
+    refs:
+      - ligtvoet_2010
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - iioMethod
+      - iioMinviMode
+      - iioMinvi
+      - iioAlpha
+      - iioItemSelection
+      - iioOrder
+      - iioClusterSize
+      - iioOrderText
+      - checkIIO
+    columns:
+      - name: stat
+        title: "Statistic"
+        type: text
+      - name: value
+        title: "Value"
+        type: number
+        format: zto
+      - name: meaning
+        title: "Reading"
+        type: text
+
+  - name: iioPlot
+    title: Item pairs (invariant item ordering)
+    type: Image
+    width: 700
+    height: 500
+    renderFun: .plotPairs
+    visible: (checkIIO && iioPlot)
+    clearWith:
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - iioMethod
+      - iioMinviMode
+      - iioMinvi
+      - iioAlpha
+      - iioItemSelection
+      - iioOrder
+      - iioClusterSize
+      - iioOrderText
+      - checkIIO
+      - plotItems
+      - plotCI
+      - plotAlpha
+      - plotTransparency
+      - plotPalette
+
+  - name: restGuide
+    title: How to read the rest-score method
+    type: Html
+    visible: (showGuides && checkRest)
+
+  - name: rest
+    title: Nonintersection (rest-score method)
+    type: Table
+    rows: 0
+    visible: (checkRest)
+    refs:
+      - sijtsma_2002
+      - molenaar_sijtsma_2000
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - restMinvi
+      - checkRest
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: hi
+        title: "Hi"
+        type: number
+        format: zto
+      - name: ac
+        title: "#ac"
+        type: integer
+      - name: vi
+        title: "#vi"
+        type: integer
+      - name: viac
+        title: "#vi/#ac"
+        type: number
+        format: zto
+      - name: maxvi
+        title: "maxvi"
+        type: number
+        format: zto
+      - name: sum
+        title: "sum"
+        type: number
+        format: zto
+      - name: sumac
+        title: "sum/#ac"
+        type: number
+        format: zto
+      - name: zmax
+        title: "zmax"
+        type: number
+      - name: zsig
+        title: "#zsig"
+        type: integer
+      - name: crit
+        title: "Crit"
+        type: integer
+      - name: verdict
+        title: "Verdict"
+        type: text
+
+  - name: restPlot
+    title: Item pairs (rest-score method)
+    type: Image
+    width: 700
+    height: 500
+    renderFun: .plotPairs
+    visible: (checkRest && restPlot)
+    clearWith:
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - restMinvi
+      - checkRest
+      - plotItems
+      - plotCI
+      - plotAlpha
+      - plotTransparency
+      - plotPalette
+
+  - name: pmatGuide
+    title: How to read the P-matrix method
+    type: Html
+    visible: (showGuides && checkPmatrix)
+
+  - name: pmat
+    title: Nonintersection (P-matrix method)
+    type: Table
+    rows: 0
+    visible: (checkPmatrix)
+    refs:
+      - mokken_1971
+      - sijtsma_2002
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - pmatMinvi
+      - checkPmatrix
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: hi
+        title: "Hi"
+        type: number
+        format: zto
+      - name: ac
+        title: "#ac"
+        type: integer
+      - name: vi
+        title: "#vi"
+        type: integer
+      - name: viac
+        title: "#vi/#ac"
+        type: number
+        format: zto
+      - name: maxvi
+        title: "maxvi"
+        type: number
+        format: zto
+      - name: sum
+        title: "sum"
+        type: number
+        format: zto
+      - name: sumac
+        title: "sum/#ac"
+        type: number
+        format: zto
+      - name: zmax
+        title: "zmax"
+        type: number
+      - name: zsig
+        title: "#zsig"
+        type: integer
+      - name: crit
+        title: "Crit"
+        type: integer
+      - name: verdict
+        title: "Verdict"
+        type: text
+
+  - name: pmatPlot
+    title: P-matrix
+    type: Image
+    width: 700
+    height: 500
+    renderFun: .plotPmatrix
+    visible: (checkPmatrix && pmatPlot)
+    clearWith:
+      - plotValueLabels
+      - plotYRange
+      - plotAxisAngle
+      - plotLegend
+      - plotNcol
+      - plotLineWidth
+      - plotPointSize
+      - plotHeight
+      - plotWidth
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - pmatMinvi
+      - checkPmatrix
+      - pmatType
+      - plotItems
+      - plotCI
+      - plotAlpha
+      - plotTransparency
+      - plotPalette
+
+  - name: caGuide
+    title: How to read conditional association
+    type: Html
+    visible: (showGuides && checkCA)
+
+  - name: ca
+    title: Local independence (conditional association)
+    type: Table
+    rows: 0
+    visible: (checkCA)
+    refs:
+      - holland_1986
+      - straat_2016
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - caWindex
+      - caMinsize
+      - caMingroup
+      - caNweight
+      - caCovweight
+      - checkCA
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+
+  - name: caW
+    title: W indices of local dependence
+    type: Table
+    rows: 0
+    visible: (checkCA && caWindex)
+    refs:
+      - straat_2016
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - caWindex
+      - caMinsize
+      - caMingroup
+      - caNweight
+      - caCovweight
+      - checkCA
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: w1
+        title: "Largest W1"
+        type: number
+      - name: w1flag
+        title: "W1 flags"
+        type: integer
+      - name: w2
+        title: "W2"
+        type: number
+      - name: w2flag
+        title: "W2 flag"
+        type: text
+      - name: w3
+        title: "Largest W3"
+        type: number
+      - name: w3flag
+        title: "W3 flags"
+        type: integer
+
+  - name: critPlot
+    title: Violation profile
+    type: Image
+    width: 600
+    height: 450
+    renderFun: .plotCrit
+    visible: (critPlot)
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - minsizeMode
+      - minsize
+      - monoMinvi
+      - minsizeMode
+      - minsize
+      - iioMethod
+      - iioMinviMode
+      - iioMinvi
+      - iioAlpha
+      - iioItemSelection
+      - iioOrder
+      - iioClusterSize
+      - iioOrderText
+      - minsizeMode
+      - minsize
+      - restMinvi
+      - pmatMinvi
+      - checkMono
+      - checkIIO
+      - checkRest
+      - checkPmatrix
+      - checkCA
+      - plotWidth
+      - plotHeight
+      - plotPointSize
+      - plotLineWidth
+      - plotNcol
+      - plotLegend
+      - plotAxisAngle
+      - plotYRange
+      - plotValueLabels
+      - plotPalette
+      - caWindex
+      - caMinsize
+      - caMingroup
+      - caNweight
+      - caCovweight
+
+  - name: interpretation
+    title: Applied interpretation
+    type: Html
+
+  - name: notes
+    title: Notes
+    type: Html

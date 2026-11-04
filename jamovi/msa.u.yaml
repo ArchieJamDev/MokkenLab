@@ -1,0 +1,256 @@
+# -----------------------------------------------------------------------------
+# MokkenLab
+# A jamovi module for Mokken scale analysis and evidence-based methodological
+# decision support on nonparametric item response theory.
+#
+# Copyright (C) 2026 Arquímedes De León Chacón Chacón
+#
+# This file is part of MokkenLab.
+#
+# MokkenLab is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# MokkenLab is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with MokkenLab.
+# If not, see https://www.gnu.org/licenses/.
+# -----------------------------------------------------------------------------
+
+
+title: Mokken Scale Analysis
+name: msa
+jus: '3.0'
+stage: 0
+compilerMode: tame
+children:
+  - type: VariableSupplier
+    persistentItems: false
+    stretchFactor: 1
+    children:
+      - type: TargetLayoutBox
+        label: Items
+        children:
+          - type: VariablesListBox
+            name: vars
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Grouping variable (optional)
+        children:
+          - type: VariablesListBox
+            name: groupVar
+            maxItemCount: 1
+            isTarget: true
+      - type: TargetLayoutBox
+        label: Cluster variable (optional)
+        children:
+          - type: VariablesListBox
+            name: clusterVar
+            maxItemCount: 1
+            isTarget: true
+  - type: CollapseBox
+    label: Report Language
+    collapsed: false
+    children:
+      - type: ComboBox
+        name: reportLang
+      - type: CheckBox
+        name: showKeySummary
+      - type: CheckBox
+        name: showChoicesGuide
+      - type: CheckBox
+        name: showGuides
+  - type: CollapseBox
+    label: Data
+    collapsed: true
+    children:
+      - type: ComboBox
+        name: naHandling
+      - type: TextBox
+        name: twowaySets
+        format: number
+        enable: (naHandling:twoway)
+      - type: TextBox
+        name: twowaySeed
+        format: number
+        enable: (naHandling:twoway)
+      - type: ComboBox
+        name: scoreRange
+      - type: TextBox
+        name: scoreMin
+        format: number
+        enable: (scoreRange:manual)
+      - type: TextBox
+        name: scoreMax
+        format: number
+        enable: (scoreRange:manual)
+      - type: VariableSupplier
+        persistentItems: true
+        stretchFactor: 1
+        suggested:
+          - ordinal
+          - continuous
+        permitted:
+          - numeric
+        children:
+          - type: TargetLayoutBox
+            label: Negatively worded items
+            children:
+              - type: VariablesListBox
+                name: negItems
+                isTarget: true
+                height: small
+  - type: CollapseBox
+    label: Scalability coefficients
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: se
+      - type: CheckBox
+        name: ci
+        children:
+          - type: TextBox
+            name: ciWidth
+            format: number
+            suffix: '%'
+            enable: (ci)
+          - type: ComboBox
+            name: typeCI
+            enable: (ci)
+      - type: CheckBox
+        name: showHij
+      - type: CheckBox
+        name: showZ
+        children:
+          - type: ComboBox
+            name: typeZ
+            enable: (showZ)
+          - type: TextBox
+            name: zLowerbound
+            format: number
+            enable: (showZ)
+  - type: CollapseBox
+    label: Reliability
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: showReliability
+        children:
+          - type: CheckBox
+            name: relMS
+            enable: (showReliability)
+          - type: CheckBox
+            name: relAlpha
+            enable: (showReliability)
+          - type: CheckBox
+            name: relLambda2
+            enable: (showReliability)
+          - type: CheckBox
+            name: relLCRC
+            enable: (showReliability)
+            children:
+              - type: ComboBox
+                name: lcrcClassesMode
+                enable: (showReliability && relLCRC)
+              - type: TextBox
+                name: lcrcClasses
+                format: number
+                enable: (showReliability && relLCRC && lcrcClassesMode:manual)
+          - type: CheckBox
+            name: relIRC
+            enable: (showReliability)
+  - type: CollapseBox
+    label: Outliers
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: showErrors
+        children:
+          - type: CheckBox
+            name: errorsGplus
+            enable: (showErrors)
+          - type: CheckBox
+            name: errorsOplus
+            enable: (showErrors)
+          - type: CheckBox
+            name: errorsPlot
+            enable: (showErrors)
+      - type: Output
+        name: gplusOV
+      - type: Output
+        name: oplusOV
+  - type: CollapseBox
+    label: Bounds and norms
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: showBounds
+        children:
+          - type: TextBox
+            name: boundsQuant
+            format: number
+            enable: (showBounds)
+          - type: CheckBox
+            name: boundsLower
+            enable: (showBounds)
+          - type: CheckBox
+            name: boundsUpper
+            enable: (showBounds)
+      - type: CheckBox
+        name: showNorms
+        children:
+          - type: CheckBox
+            name: normsZ
+            enable: (showNorms)
+          - type: CheckBox
+            name: normsStanines
+            enable: (showNorms)
+          - type: CheckBox
+            name: normsPercentiles
+            enable: (showNorms)
+  - type: CollapseBox
+    label: Plots
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: hiPlot
+      - type: CheckBox
+        name: hijPlot
+      - type: CheckBox
+        name: groupPlot
+      - type: CheckBox
+        name: normsPlot
+  - type: CollapseBox
+    label: Plot settings
+    collapsed: true
+    children:
+      - type: TextBox
+        name: plotWidth
+        format: number
+      - type: TextBox
+        name: plotHeight
+        format: number
+      - type: TextBox
+        name: plotPointSize
+        format: number
+      - type: TextBox
+        name: plotLineWidth
+        format: number
+      - type: TextBox
+        name: plotNcol
+        format: number
+      - type: ComboBox
+        name: plotLegend
+      - type: ComboBox
+        name: plotAxisAngle
+      - type: ComboBox
+        name: plotYRange
+      - type: CheckBox
+        name: plotValueLabels
+      - type: ComboBox
+        name: plotPalette

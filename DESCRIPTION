@@ -1,0 +1,28 @@
+Package: MokkenLab
+Title: Mokken Scale Analysis Lab for Nonparametric Item Response Theory
+Version: 0.1.0
+Authors@R: person("Arquímedes De León", "Chacón Chacón", email = "arquimedeschacon@gmail.com", role = c("aut", "cre"), comment = c(affiliation = "Universidad Católica Andrés Bello (UCAB), Caracas, Venezuela"))
+Description: A jamovi module that exposes every capability of the mokken
+    package (scalability coefficients with standard errors and confidence
+    intervals, significance tests, automated item selection, checks of
+    monotonicity, invariant item ordering, nonintersection and conditional
+    association, reliability, Guttman-error outliers, norm statistics and
+    two-level Mokken scale analysis) and pairs every result with
+    evidence-based methodological guidance, plain-language interpretation and
+    educational support.
+License: GPL-3
+Depends:
+    R (>= 4.3.0)
+Imports:
+    jmvcore,
+    R6,
+    mokken (>= 3.1.2),
+    poLCA,
+    ggplot2,
+    grDevices,
+    stats,
+    utils
+Suggests:
+    testthat (>= 3.2.0),
+    withr
+Encoding: UTF-8

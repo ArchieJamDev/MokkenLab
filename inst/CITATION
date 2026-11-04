@@ -1,0 +1,9 @@
+bibentry(
+    bibtype = "Manual",
+    title = "MokkenLab",
+    author = person("A.", "Chacon"),
+    year = "2026",
+    note = "Version 0.1.0 [jamovi module]",
+    url = "https://github.com/ArchieJamDev/MokkenLab",
+    textVersion = "Chacon, A. (2026). MokkenLab (Version 0.1.0) [jamovi module]. https://github.com/ArchieJamDev/MokkenLab"
+)
