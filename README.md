@@ -132,7 +132,7 @@ explanation.
 | **Reliability** | How reliable is the sum score (Molenaar-Sijtsma, alpha, lambda-2, LCRC)? | ✅ 0.1.0 (in Mokken Scale Analysis) |
 | **Guttman-error outliers** | Which respondents answer far less consistently than the scale predicts? | ✅ 0.1.0 (in Mokken Scale Analysis) |
 | **Bounds and norms** | What are the bounds of *H* for dichotomous items, and the norm statistics of the sum score with standard errors? | ✅ 0.1.0 (in Mokken Scale Analysis) |
-| **Automated Item Selection** (AISP) | Into how many Mokken scales do the items split, with Mokken's procedure or a genetic algorithm, at one lower bound or across a sequence of them? | ✅ 0.1.0 |
+| **Automated Item Selection** (AISP) | Into how many Mokken scales do the items split, with Mokken's procedure or a genetic algorithm, at one lower bound or across a sequence of them, and how stable is that partition over bootstrap resamples? | ✅ 0.1.0 |
 
 ### Model fit
 
@@ -188,11 +188,12 @@ cannot be typed in an option panel; mokken's default is used). See
 
 ## Graphics
 
-Fourteen plots, all rebuilt in ggplot from mokken's own result matrices so
+Fifteen plots, all rebuilt in ggplot from mokken's own result matrices so
 they follow jamovi's theme and survive export: item scalability with
 intervals, the *H<sub>ij</sub>* heat map, *H<sub>i</sub>* by group,
 Guttman-error distributions with their fences, the percentile-rank curve with
-its band, item scalability within each selected scale, the partition across
+its band, item scalability within each selected scale, the bootstrap
+co-membership of item pairs, the partition across
 lower bounds, the violation profile (crit, with items that could not be
 evaluated marked as such, and the 40/80 zones), item response functions (IRF
 and ISRFs), item pairs for invariant item ordering and the rest-score method,
@@ -281,8 +282,14 @@ jamovi's **⋮** → **Open** → **Data Library** → **Mokken Lab**.
 - [`tests/testthat/`](tests/testthat) exercises every analysis on
   pathological input (constant, empty and non-integer items, accented names,
   missing values, tiny samples), every option and every plot setting, plus
-  regression tests for every confirmed finding of an independent audit: 132
-  expectations, all passing. The CI workflow runs them on every push.
+  regression tests for every confirmed finding of an independent audit: 151
+  expectations, all passing. The CI workflow runs them on Linux, Windows and
+  macOS.
+- Every analysis ends with a **reproducibility record**: software versions,
+  seeds and the equivalent R code with the exact mokken calls, checked to
+  reproduce the results in a clean R session.
+- mokken results are **cached** per data and statistical options, so cosmetic
+  changes (plot size, palette, language) do not recompute them.
 
 ---
 
@@ -357,7 +364,7 @@ mokken (validation/).
 Trabaja con ítems dicotómicos y politómicos ordinales. Cada opción del menú
 incluye un párrafo que explica qué hace y cuándo conviene elegirla, y los
 resultados se acompañan de un resumen de hallazgos, guías e interpretaciones
-en español o inglés. Sus catorce gráficos se parametrizan desde una misma caja
+en español o inglés. Sus quince gráficos se parametrizan desde una misma caja
 de ajustes (tamaño, puntos, líneas, paneles, leyenda, ejes, rango, etiquetas
 y paleta). Incluye cuatro conjuntos de datos públicos del paquete mokken para
 practicar.

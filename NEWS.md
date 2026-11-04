@@ -1,3 +1,22 @@
+# MokkenLab 0.1.0 (development), completing the independent audit
+
+* **Statistical cache.** jamovi re-runs an analysis on every option change;
+  mokken results are now cached per data and statistical options, so a
+  cosmetic change (plot size, palette, report language) no longer recomputes
+  them. Invariant item ordering of the 80 TROG items: 27 s on first run,
+  about 3 s after a palette change. The cache is capped at 25 MB.
+* **Reproducibility record** at the end of every analysis: MokkenLab, mokken
+  and R versions, date, seeds, and the equivalent R code with the exact
+  mokken calls (checked to reproduce the results in a clean R session).
+* **Bootstrap stability of the AISP partition**: the selection is repeated on
+  resamples of respondents (of whole clusters, with nested data), with the
+  co-membership of every item pair, the share of samples that reproduce the
+  whole partition, and a co-membership heat map.
+* Negatively worded items listed under Items in every analysis.
+* CI on Windows and macOS as well as Linux; actions/checkout v5.
+* An entirely empty dataset is tested; licence metadata say GPL (>= 3), as
+  every source header.
+
 # MokkenLab 0.1.0 (development), after the independent audit of 2026-11-04
 
 An independent review reproduced the numerical equivalence with mokken and the

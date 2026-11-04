@@ -138,8 +138,8 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             # ES: Coeficientes de escalabilidad (Categoría A si coefH()
             # falla).
             # -----------------------------------------------------------------
-            fit <- .mk_capture(mokken::coefH(X, se = TRUE, nice.output = FALSE, results = FALSE,
-                                             level.two.var = level2))
+            fit <- .mk_cached_capture(self$results$cacheStore, "coefH", list(X, se = TRUE, nice.output = FALSE, results = FALSE,
+                                             level.two.var = level2), mokken::coefH)
             if (is.null(fit$value))
                 jmvcore::reject(sprintf(txt("common", "estimation_failed"), fit$error))
             warnings <- c(warnings, fit$warnings)
@@ -166,8 +166,8 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 # The original Z test only tests against zero (Mokken, 1971).
                 # ES: La prueba Z original solo contrasta contra cero.
                 z_lb <- if (identical(type_z, "Z")) 0 else lb
-                zres <- .mk_capture(mokken::coefZ(X, lowerbound = z_lb, type.z = type_z,
-                                                  level.two.var = level2))
+                zres <- .mk_cached_capture(self$results$cacheStore, "coefZ", list(X, lowerbound = z_lb, type.z = type_z,
+                                                  level.two.var = level2), mokken::coefZ)
                 warnings <- c(warnings, zres$warnings)
                 zfit <- zres$value
                 if (is.null(zfit))
@@ -287,9 +287,9 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 table$setVisible(TRUE)
                 set_h <- numeric(0)
                 for (s in seq_along(prep$completed)) {
-                    res <- .mk_capture(mokken::coefH(as.matrix(prep$completed[[s]]), se = TRUE,
+                    res <- .mk_cached_capture(self$results$cacheStore, "coefH", list(as.matrix(prep$completed[[s]]), se = TRUE,
                                                      nice.output = FALSE, results = FALSE,
-                                                     level.two.var = level2))
+                                                     level.two.var = level2), mokken::coefH)
                     if (is.null(res$value)) {
                         .mk_add_row(table, s, list(set = s))
                         table$addFootnote(rowKey = s, col = "est", res$error)
@@ -358,6 +358,42 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.addKey("warnings", sprintf(txt("common", "key_failed"), section))
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
+
+            # Reproducibility record: versions, seeds and the equivalent R
+            # code of this run.
+            # ES: Registro de reproducibilidad: versiones, semillas y el
+            # código R equivalente de esta ejecución.
+            if (isTRUE(self$options$showRepro)) {
+                opts <- self$options
+                keep <- c(group_name, cluster_name)
+                keep <- keep[!is.null(keep) & nzchar(keep)]
+                l2 <- if (!is.null(level2)) paste0("@as.integer(factor(extra[[", encodeString(cluster_name, quote = "\""), "]]))")
+                code <- .mk_r_prep_code(prep, opts, items, keep)
+                code <- c(code, .mk_r_call("coefH", "X", list(se = TRUE, ci = if (isTRUE(opts$ci)) level,
+                    type.ci = if (isTRUE(opts$ci)) opts$typeCI, level.two.var = l2)))
+                if (isTRUE(opts$showZ))
+                    code <- c(code, .mk_r_call("coefZ", "X", list(lowerbound = if (identical(type_z, "Z")) 0 else lb,
+                                                                  type.z = type_z, level.two.var = l2)))
+                if (length(group_name) > 0 && !is.null(group_name))
+                    code <- c(code, .mk_r_call("coefH", "X", list(group.var = paste0("@as.integer(factor(extra[[",
+                        encodeString(group_name, quote = "\""), "]]))"))))
+                if (isTRUE(opts$showReliability))
+                    code <- c(code, .mk_r_call("check.reliability", "X", list(MS = isTRUE(opts$relMS),
+                        alpha = isTRUE(opts$relAlpha), lambda.2 = isTRUE(opts$relLambda2), LCRC = isTRUE(opts$relLCRC),
+                        nclass = if (identical(opts$lcrcClassesMode, "manual")) as.integer(opts$lcrcClasses) else ncol(X) - 1L,
+                        irc = isTRUE(opts$relIRC))))
+                if (isTRUE(opts$showErrors))
+                    code <- c(code, .mk_r_call("check.errors", "X", list(returnGplus = isTRUE(opts$errorsGplus),
+                                                                         returnOplus = isTRUE(opts$errorsOplus))))
+                if (isTRUE(opts$showBounds))
+                    code <- c(code, .mk_r_call("check.bounds", "X", list(quant = as.numeric(opts$boundsQuant),
+                        lower = isTRUE(opts$boundsLower), upper = isTRUE(opts$boundsUpper))))
+                if (isTRUE(opts$showNorms))
+                    code <- c(code, "check.norms(rowSums(X))")
+                seeds <- if (!is.null(prep$completed)) sprintf(tr("Two-way imputation seed: %d.", "Semilla de la imputación two-way: %d."),
+                                                              as.integer(opts$twowaySeed)) else character(0)
+                self$results$reproducibility$setContent(.mk_repro_block(lang, code, seeds))
+            }
 
             notes <- .mk_translate_notices(warnings, lang)
             if (length(notes) > 0) {
@@ -432,8 +468,8 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             res <- if (length(small) > 0) list(value = NULL, error = sprintf(txt("msa", "group_small"),
                                                                             paste(small, collapse = ", ")),
                                                warnings = character(0))
-                   else .mk_capture(mokken::coefH(X, se = TRUE, nice.output = FALSE, results = FALSE,
-                                                  group.var = as.integer(groups)))
+                   else .mk_cached_capture(self$results$cacheStore, "coefH", list(X, se = TRUE, nice.output = FALSE, results = FALSE,
+                                                  group.var = as.integer(groups)), mokken::coefH)
 
             if (is.null(res$value) || is.null(res$value$Groups)) {
                 reason <- sprintf(txt("msa", "group_failed"), if (is.null(res$error)) "" else res$error)
@@ -491,9 +527,9 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 return(NULL)
             }
             nclass <- if (identical(opts$lcrcClassesMode, "manual")) as.integer(opts$lcrcClasses) else ncol(X) - 1
-            res <- .mk_capture(mokken::check.reliability(
+            res <- .mk_cached_capture(self$results$cacheStore, "check.reliability", list(
                 X, MS = isTRUE(opts$relMS), alpha = isTRUE(opts$relAlpha), lambda.2 = isTRUE(opts$relLambda2),
-                LCRC = isTRUE(opts$relLCRC), nclass = nclass, irc = isTRUE(opts$relIRC)))
+                LCRC = isTRUE(opts$relLCRC), nclass = nclass, irc = isTRUE(opts$relIRC)), mokken::check.reliability)
 
             if (is.null(res$value)) {
                 .mk_add_row(table, 1, list(coef = txt("common", "not_computable")))
@@ -543,7 +579,7 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 table$addFootnote(rowKey = 1, col = "stat", txt("msa", "errors_none"))
                 return(NULL)
             }
-            res <- .mk_capture(mokken::check.errors(X, returnGplus = want_g, returnOplus = want_o))
+            res <- .mk_cached_capture(self$results$cacheStore, "check.errors", list(X, returnGplus = want_g, returnOplus = want_o), mokken::check.errors)
             if (is.null(res$value)) {
                 .mk_add_row(table, 1, list(stat = txt("common", "not_computable")))
                 table$addFootnote(rowKey = 1, col = "stat", sprintf(txt("msa", "errors_failed"), res$error))
@@ -610,8 +646,8 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             }
             lower <- isTRUE(self$options$boundsLower)
             upper <- isTRUE(self$options$boundsUpper)
-            res <- .mk_capture(mokken::check.bounds(X, quant = as.numeric(self$options$boundsQuant),
-                                                    lower = lower, upper = upper))
+            res <- .mk_cached_capture(self$results$cacheStore, "check.bounds", list(X, quant = as.numeric(self$options$boundsQuant),
+                                                    lower = lower, upper = upper), mokken::check.bounds)
             if (is.null(res$value) || (!lower && !upper)) {
                 .mk_add_row(table, 1, list(item1 = txt("common", "not_computable")))
                 table$addFootnote(rowKey = 1, col = "item1", if (!lower && !upper) txt("msa", "bounds_none")
@@ -677,7 +713,7 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # ---------------------------------------------------------------------
         .runNorms = function(X, lang, tr, txt) {
             y <- rowSums(X)
-            res <- .mk_capture(mokken::check.norms(y, nice.output = FALSE))
+            res <- .mk_cached_capture(self$results$cacheStore, "check.norms", list(y, nice.output = FALSE), mokken::check.norms)
             table <- self$results$normsSummary
             if (is.null(res$value)) {
                 .mk_add_row(table, 1, list(stat = txt("common", "not_computable")))

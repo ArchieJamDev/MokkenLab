@@ -73,6 +73,21 @@
             "Between": [
                 "Entre"
             ],
+            "Bootstrap co-membership of item pairs": [
+                "Co-pertenencia bootstrap de los pares de ítems"
+            ],
+            "Bootstrap samples": [
+                "Muestras bootstrap"
+            ],
+            "Bootstrap seed": [
+                "Semilla del bootstrap"
+            ],
+            "Bootstrap stability": [
+                "Estabilidad bootstrap"
+            ],
+            "Bootstrap stability of the partition": [
+                "Estabilidad bootstrap de la partición"
+            ],
             "Both": [
                 "Ambas"
             ],
@@ -99,6 +114,9 @@
             ],
             "Cluster variable (optional)": [
                 "Variable de conglomerado (opcional)"
+            ],
+            "Co-membership plot": [
+                "Gráfico de co-pertenencia"
             ],
             "Coefficient": [
                 "Coeficiente"
@@ -267,6 +285,9 @@
             ],
             "How the automated item selection works": [
                 "Cómo funciona la selección automática de ítems"
+            ],
+            "How to read bootstrap stability": [
+                "Cómo leer la estabilidad bootstrap"
             ],
             "How to read conditional association": [
                 "Cómo leer la asociación condicional"
@@ -673,11 +694,20 @@
             "Report Language": [
                 "Idioma del informe"
             ],
+            "Reproducibility": [
+                "Reproducibilidad"
+            ],
+            "Reproducibility record": [
+                "Registro de reproducibilidad"
+            ],
             "Rest-score method": [
                 "Método rest-score"
             ],
             "Right": [
                 "Derecha"
+            ],
+            "Same scale as found": [
+                "Misma escala que la encontrada"
             ],
             "Sample-size weight": [
                 "Peso por tamaño de muestra"
@@ -850,6 +880,9 @@
             "U2": [
                 "U2"
             ],
+            "Unscalable": [
+                "No escalable"
+            ],
             "Unscalable items": [
                 "Ítems no escalables"
             ],
@@ -912,6 +945,9 @@
             ],
             "Width (0 = automatic)": [
                 "Ancho (0 = automático)"
+            ],
+            "With its scale-mates": [
+                "Con sus compañeros de escala"
             ],
             "Within": [
                 "Dentro"

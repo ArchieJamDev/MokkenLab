@@ -127,7 +127,7 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                          weigh.props = isTRUE(self$options$weighProps), type.ci = self$options$typeCI,
                          cov.mat = isTRUE(self$options$showCov))
             if (isTRUE(self$options$ci)) args$ci <- level
-            fit <- .mk_capture(do.call(mokken::MLcoefH, args))
+            fit <- .mk_cached_capture(self$results$cacheStore, "MLcoefH", args, mokken::MLcoefH)
             if (is.null(fit$value))
                 jmvcore::reject(sprintf(txt("ml", "failed"), fit$error))
             warnings <- fit$warnings
@@ -135,8 +135,8 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
             zfit <- NULL
             if (isTRUE(self$options$showZ)) {
-                zres <- .mk_capture(mokken::MLcoefZ(XS, lowerbound = as.numeric(self$options$zLowerbound),
-                                                    type.z = self$options$typeZ))
+                zres <- .mk_cached_capture(self$results$cacheStore, "MLcoefZ", list(XS, lowerbound = as.numeric(self$options$zLowerbound),
+                                                    type.z = self$options$typeZ), mokken::MLcoefZ)
                 warnings <- c(warnings, zres$warnings)
                 zfit <- zres$value
                 if (is.null(zfit))
@@ -246,7 +246,7 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             # ES: Correlaciones intraclase (Categoría B).
             # -----------------------------------------------------------------
             if (isTRUE(self$options$showICC)) {
-                icc <- .mk_capture(mokken::ICC(XS))
+                icc <- .mk_cached_capture(self$results$cacheStore, "ICC", list(XS), mokken::ICC)
                 table <- self$results$icc
                 if (is.null(icc$value)) {
                     .mk_add_row(table, 1, list(item = txt("common", "not_computable")))
@@ -328,6 +328,27 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
 
+            # Reproducibility record.
+            # ES: Registro de reproducibilidad.
+            if (isTRUE(self$options$showRepro)) {
+                opts <- self$options
+                code <- .mk_r_prep_code(prep, opts, items, subject_name)
+                code <- c(code, paste0("XS <- cbind(Subject = as.integer(factor(extra[[",
+                                       encodeString(subject_name, quote = "\""), "]])), X)"),
+                          .mk_r_call("MLcoefH", "XS", list(se = TRUE, ci = if (isTRUE(opts$ci)) level,
+                              type.ci = opts$typeCI, weigh.props = isTRUE(opts$weighProps), cov.mat = isTRUE(opts$showCov))))
+                if (isTRUE(opts$showZ))
+                    code <- c(code, .mk_r_call("MLcoefZ", "XS", list(lowerbound = as.numeric(opts$zLowerbound), type.z = opts$typeZ)))
+                if (isTRUE(opts$showICC))
+                    code <- c(code, "ICC(XS)")
+                if (isTRUE(opts$showWeights))
+                    code <- c(code, paste0("MLweight(XS[, c(1, i + 1, j + 1)], minx = ", prep$range[1], ", maxx = ",
+                                           prep$range[2], ")  # for every pair of items i < j"))
+                seeds <- if (!is.null(prep$completed)) sprintf(tr("Two-way imputation seed: %d.", "Semilla de la imputación two-way: %d."),
+                                                              as.integer(opts$twowaySeed)) else character(0)
+                self$results$reproducibility$setContent(.mk_repro_block(lang, code, seeds))
+            }
+
             notes <- .mk_translate_notices(warnings, lang)
             if (length(notes) > 0) {
                 self$results$notes$setContent(.mk_html_block(
@@ -368,7 +389,7 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             for (i in seq_along(items)) for (j in seq_along(items)) {
                 if (i >= j) next
                 row <- row + 1
-                res <- .mk_capture(mokken::MLweight(XS[, c(1, i + 1, j + 1)], minx = range[1], maxx = range[2]))
+                res <- .mk_cached_capture(self$results$cacheStore, "MLweight", list(XS[, c(1, i + 1, j + 1)], minx = range[1], maxx = range[2]), mokken::MLweight)
                 warnings <- c(warnings, res$warnings)
                 values <- list(pair = paste(items[i], "–", items[j]))
                 if (!is.null(res$value))

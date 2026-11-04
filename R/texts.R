@@ -161,7 +161,8 @@
             sequence = "How to read the sequence of lower bounds", mono = "How to read monotonicity",
             iio = "How to read invariant item ordering", rest = "How to read the rest-score method",
             pmat = "How to read the P-matrix method", ca = "How to read conditional association",
-            ml = "How to read two-level scalability"
+            ml = "How to read two-level scalability",
+            boot = "How to read bootstrap stability"
         ),
 
         # Teaching blocks shown before each table (option "How to read each
@@ -250,6 +251,12 @@
                 "HW (within) is the ordinary scalability computed on each rater's own item scores: it tells whether every rater uses the items consistently. HB (between) uses item scores of different raters of the same subject: it tells whether the items order the subjects consistently across raters. For a scale that measures subjects, HB is the coefficient that matters most.",
                 "BW = HB / HW compares the two. Close to 1, raters agree almost as much with each other as with themselves; close to 0, the ordering exists within raters but not between them, and the subjects' scores depend on who rated them.",
                 "Standard errors take the nesting into account (Koopman et al., 2020; see references). Since HB is usually much smaller than HW, test whether HB is larger than zero before interpreting the scale as a measure of the subjects."
+            ),
+            boot = c(
+                "A partition found in one sample may not replicate: automated item selection is greedy and capitalizes on chance, so borderline items can move with small changes in the data.",
+                "The bootstrap repeats the selection, with the same options, on many samples drawn with replacement from your respondents (whole clusters, with nested data), the way a new sample of the same population might look.",
+                "With its scale-mates: for each item, the average proportion of samples in which it falls in the same scale as each item it was grouped with. Same scale as found: the proportion of samples in which its set of scale-mates is exactly the one found. Unscalable: how often it was left out.",
+                "There is no agreed cut-off. Values near 1 mean the grouping hardly depends on the sample; items that change scale in a large share of samples should be interpreted, and reported, as uncertain. Bootstrap stability is not replication: confirm the partition in new data."
             )
         ),
 
@@ -367,6 +374,11 @@
                 "Use it when you do not yet know whether the items form one scale, several scales or none, for example when developing a questionnaire or re-examining an existing one."
             ),
             bad_sequence = "The sequence of lower bounds is empty: From must be smaller than To. Correct the values in Selection criterion.",
+            boot_failed = "The bootstrap could not be computed: %s.",
+            boot_note = "%d bootstrap samples, seed %d (the same seed and data reproduce the same values). The whole partition was reproduced exactly in a proportion of %s of the samples.",
+            boot_failed_some = "%d of %d bootstrap samples could not be analyzed (for example, an item without variation in the resample) and were left out.",
+            key_boot_weak = "Bootstrap stability: %d item(s) keep their scale-mates in fewer than half of the samples (%s); treat their assignment as uncertain.",
+            key_boot_ok = "Bootstrap stability: every scaled item keeps its scale-mates in at least half of the samples; the whole partition reappears in a proportion of %s.",
             failed = "MokkenLab could not run the item selection: %s. Check that the items are item scores with variation, and with the genetic algorithm try a larger population or more generations.",
             z_changed = "The original Z test was replaced by the Wald-based test, because it cannot test Hi against c or account for nested data.",
             start_ga = "The genetic algorithm does not use a start set; the start set was ignored. Use Mokken's procedure to start the first scale from chosen items.",
@@ -549,7 +561,8 @@
             sequence = "Cómo leer la secuencia de cotas inferiores", mono = "Cómo leer la monotonicidad",
             iio = "Cómo leer el orden invariante de los ítems", rest = "Cómo leer el método rest-score",
             pmat = "Cómo leer el método P-matrix", ca = "Cómo leer la asociación condicional",
-            ml = "Cómo leer la escalabilidad de dos niveles"
+            ml = "Cómo leer la escalabilidad de dos niveles",
+            boot = "Cómo leer la estabilidad bootstrap"
         ),
 
         guide = list(
@@ -632,6 +645,12 @@
                 "HW (dentro) es la escalabilidad habitual calculada con los puntajes de cada evaluador: indica si cada evaluador usa los ítems de forma consistente. HB (entre) usa puntajes de distintos evaluadores del mismo sujeto: indica si los ítems ordenan a los sujetos de forma consistente entre evaluadores. Para una escala que mide sujetos, HB es el coeficiente que más importa.",
                 "BW = HB / HW compara ambos. Cerca de 1, los evaluadores concuerdan entre sí casi tanto como consigo mismos; cerca de 0, el orden existe dentro de cada evaluador pero no entre ellos, y las puntuaciones de los sujetos dependen de quién los evaluó.",
                 "Los errores estándar consideran el anidamiento (Koopman et al., 2020; ver referencias). Como HB suele ser mucho menor que HW, contraste si HB es mayor que cero antes de interpretar la escala como medida de los sujetos."
+            ),
+            boot = c(
+                "Una partición encontrada en una muestra puede no replicarse: la selección automática es voraz y capitaliza el azar, así que los ítems límite pueden cambiar de escala con pequeños cambios en los datos.",
+                "El bootstrap repite la selección, con las mismas opciones, en muchas muestras extraídas con reemplazo de sus personas (conglomerados completos, con datos anidados), como podría verse una nueva muestra de la misma población.",
+                "Con sus compañeros de escala: para cada ítem, la proporción media de muestras en que cae en la misma escala que cada ítem con el que fue agrupado. Misma escala que la encontrada: la proporción de muestras en que su conjunto de compañeros es exactamente el encontrado. No escalable: con qué frecuencia quedó fuera.",
+                "No hay un punto de corte acordado. Valores cercanos a 1 indican que la agrupación apenas depende de la muestra; los ítems que cambian de escala en una parte grande de las muestras deben interpretarse, e informarse, como inciertos. La estabilidad bootstrap no es replicación: confirme la partición con datos nuevos."
             )
         ),
 
@@ -749,6 +768,11 @@
                 "Úsela cuando aún no sabe si los ítems forman una escala, varias o ninguna, por ejemplo al desarrollar un cuestionario o al reexaminar uno existente."
             ),
             bad_sequence = "La secuencia de cotas inferiores está vacía: Desde debe ser menor que Hasta. Corrija los valores en Criterio de selección.",
+            boot_failed = "El bootstrap no pudo calcularse: %s.",
+            boot_note = "%d muestras bootstrap, semilla %d (la misma semilla y los mismos datos reproducen los mismos valores). La partición completa se reprodujo exactamente en una proporción de %s de las muestras.",
+            boot_failed_some = "%d de %d muestras bootstrap no pudieron analizarse (por ejemplo, un ítem sin variación en la remuestra) y se dejaron fuera.",
+            key_boot_weak = "Estabilidad bootstrap: %d ítem(s) conservan sus compañeros de escala en menos de la mitad de las muestras (%s); trate su asignación como incierta.",
+            key_boot_ok = "Estabilidad bootstrap: cada ítem escalado conserva sus compañeros de escala en al menos la mitad de las muestras; la partición completa reaparece en una proporción de %s.",
             failed = "MokkenLab no pudo ejecutar la selección de ítems: %s. Verifique que los ítems sean puntajes con variación y, con el algoritmo genético, pruebe una población mayor o más generaciones.",
             z_changed = "La prueba Z original se reemplazó por la prueba de Wald, porque no puede contrastar Hi contra c ni considerar datos anidados.",
             start_ga = "El algoritmo genético no usa un conjunto inicial; el conjunto inicial se ignoró. Use el procedimiento de Mokken para iniciar la primera escala con ítems elegidos.",

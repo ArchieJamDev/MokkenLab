@@ -72,6 +72,8 @@ children:
         name: showChoicesGuide
       - type: CheckBox
         name: showGuides
+      - type: CheckBox
+        name: showRepro
   - type: CollapseBox
     label: Data
     collapsed: true

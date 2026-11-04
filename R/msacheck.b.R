@@ -216,6 +216,36 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
 
+            # Reproducibility record.
+            # ES: Registro de reproducibilidad.
+            if (isTRUE(self$options$showRepro)) {
+                opts <- self$options
+                keep <- if (!is.null(cluster_name)) cluster_name else character(0)
+                l2 <- if (!is.null(level2)) paste0("@as.integer(factor(extra[[", encodeString(cluster_name, quote = "\""), "]]))")
+                code <- .mk_r_prep_code(prep, opts, items, keep)
+                if (isTRUE(opts$checkMono))
+                    code <- c(code, .mk_r_call("check.monotonicity", "X", list(minvi = as.numeric(opts$monoMinvi),
+                                                                               minsize = minsize, level.two.var = l2)))
+                if (isTRUE(opts$checkIIO)) {
+                    order <- private$.iioOrder(ncol(X), txt)$order
+                    code <- c(code, .mk_r_call("check.iio", "X", list(method = opts$iioMethod,
+                        minvi = if (identical(opts$iioMinviMode, "manual")) as.numeric(opts$iioMinvi), minsize = minsize,
+                        alpha = as.numeric(opts$iioAlpha), item.selection = isTRUE(opts$iioItemSelection),
+                        fixed.item.order = order, level.two.var = l2)))
+                }
+                if (isTRUE(opts$checkRest))
+                    code <- c(code, .mk_r_call("check.restscore", "X", list(minvi = as.numeric(opts$restMinvi), minsize = minsize)))
+                if (isTRUE(opts$checkPmatrix))
+                    code <- c(code, .mk_r_call("check.pmatrix", "X", list(minvi = as.numeric(opts$pmatMinvi))))
+                if (isTRUE(opts$checkCA))
+                    code <- c(code, .mk_r_call("check.ca", "X", list(Windex = isTRUE(opts$caWindex),
+                        MINSIZE = as.integer(opts$caMinsize), NWEIGHTOPTION = opts$caNweight,
+                        COVWEIGHTOPTION = opts$caCovweight, MINGROUP = as.integer(opts$caMingroup))))
+                seeds <- if (!is.null(prep$completed)) sprintf(tr("Two-way imputation seed: %d.", "Semilla de la imputación two-way: %d."),
+                                                              as.integer(opts$twowaySeed)) else character(0)
+                self$results$reproducibility$setContent(.mk_repro_block(lang, code, seeds))
+            }
+
             notes <- .mk_translate_notices(warnings, lang)
             if (length(notes) > 0) {
                 self$results$notes$setContent(.mk_html_block(
@@ -356,7 +386,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             table <- self$results$mono
             args <- list(X = X, minvi = as.numeric(self$options$monoMinvi), level.two.var = level2)
             if (!is.null(minsize)) args$minsize <- minsize
-            fit <- .mk_capture(do.call(mokken::check.monotonicity, args))
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.monotonicity", args, mokken::check.monotonicity)
             if (is.null(fit$value)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "mono_failed"), fit$error)))
@@ -493,7 +523,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                          fixed.item.order = order$order, level.two.var = level2)
             if (identical(self$options$iioMinviMode, "manual")) args$minvi <- as.numeric(self$options$iioMinvi)
             if (!is.null(minsize)) args$minsize <- minsize
-            fit <- .mk_capture(do.call(mokken::check.iio, args))
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.iio", args, mokken::check.iio)
             if (is.null(fit$value)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "iio_failed"), fit$error)))
@@ -671,7 +701,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             table <- self$results$rest
             args <- list(X = X, minvi = as.numeric(self$options$restMinvi))
             if (!is.null(minsize)) args$minsize <- minsize
-            fit <- .mk_capture(do.call(mokken::check.restscore, args))
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.restscore", args, mokken::check.restscore)
             if (is.null(fit$value)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "rest_failed"), fit$error)))
@@ -699,7 +729,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # ---------------------------------------------------------------------
         .runPmatrix = function(X, plot_items, lang, tr, txt) {
             table <- self$results$pmat
-            fit <- .mk_capture(mokken::check.pmatrix(X, minvi = as.numeric(self$options$pmatMinvi)))
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.pmatrix", list(X, minvi = as.numeric(self$options$pmatMinvi)), mokken::check.pmatrix)
             if (is.null(fit$value)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "pmat_failed"), fit$error)))
@@ -755,9 +785,9 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # ---------------------------------------------------------------------
         .runCA = function(X, lang, tr, txt) {
             table <- self$results$ca
-            fit <- .mk_capture(mokken::check.ca(X, Windex = isTRUE(self$options$caWindex),
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.ca", list(X, Windex = isTRUE(self$options$caWindex),
                 MINSIZE = as.integer(self$options$caMinsize), NWEIGHTOPTION = self$options$caNweight,
-                COVWEIGHTOPTION = self$options$caCovweight, MINGROUP = as.integer(self$options$caMingroup)))
+                COVWEIGHTOPTION = self$options$caCovweight, MINGROUP = as.integer(self$options$caMingroup)), mokken::check.ca)
             # check.ca() returns list(InScale =, Index =, Flagged =) when
             # Windex = TRUE, but the bare list of InScale iterations when
             # Windex = FALSE. Both are valid; normalize before reading.

@@ -137,6 +137,27 @@ msgstr "Nivel de significación de la banda"
 msgid "Between"
 msgstr "Entre"
 
+#: aisp/results/bootPlotImg.title
+msgid "Bootstrap co-membership of item pairs"
+msgstr "Co-pertenencia bootstrap de los pares de ítems"
+
+#: aisp/options/bootReps.title
+msgid "Bootstrap samples"
+msgstr "Muestras bootstrap"
+
+#: aisp/options/bootSeed.title
+msgid "Bootstrap seed"
+msgstr "Semilla del bootstrap"
+
+#: aisp/ui[6].label
+msgid "Bootstrap stability"
+msgstr "Estabilidad bootstrap"
+
+#: aisp/options/bootStability.title
+#: aisp/results/bootTable.title
+msgid "Bootstrap stability of the partition"
+msgstr "Estabilidad bootstrap de la partición"
+
 #: msacheck/options/pmatType/both.title
 msgid "Both"
 msgstr "Ambas"
@@ -189,6 +210,10 @@ msgstr "Variable de conglomerado (datos anidados)"
 #: msacheck/ui[0][2].label
 msgid "Cluster variable (optional)"
 msgstr "Variable de conglomerado (opcional)"
+
+#: aisp/options/bootPlot.title
+msgid "Co-membership plot"
+msgstr "Gráfico de co-pertenencia"
 
 #: mlmsa/results/scale.columns.title
 #: mlmsa/results/covH.columns.title
@@ -491,6 +516,10 @@ msgstr "Horizontal"
 msgid "How the automated item selection works"
 msgstr "Cómo funciona la selección automática de ítems"
 
+#: aisp/results/bootGuide.title
+msgid "How to read bootstrap stability"
+msgstr "Cómo leer la estabilidad bootstrap"
+
 #: msacheck/results/caGuide.title
 msgid "How to read conditional association"
 msgstr "Cómo leer la asociación condicional"
@@ -602,6 +631,7 @@ msgid "Invariant ordering of item clusters"
 msgstr "Orden invariante de los conglomerados de ítems"
 
 #: aisp/results/membership.columns.title
+#: aisp/results/bootTable.columns.title
 #: aisp/results/sequence.columns.title
 #: mlmsa/results/items.columns.title
 #: mlmsa/results/pairs.columns.title
@@ -1077,7 +1107,7 @@ msgstr "Z original (Mokken)"
 msgid "Outliers"
 msgstr "Atípicos"
 
-#: aisp/ui[6].label
+#: aisp/ui[7].label
 msgid "Output"
 msgstr "Salida"
 
@@ -1150,7 +1180,7 @@ msgstr "Rangos percentiles de la puntuación total"
 msgid "Plot palette"
 msgstr "Paleta de gráficos"
 
-#: aisp/ui[7].label
+#: aisp/ui[8].label
 #: mlmsa/ui[6].label
 #: msa/ui[8].label
 #: msacheck/ui[8].label
@@ -1221,6 +1251,20 @@ msgstr "Eliminado en el paso"
 msgid "Report Language"
 msgstr "Idioma del informe"
 
+#: aisp/results/reproducibility.title
+#: mlmsa/results/reproducibility.title
+#: msa/results/reproducibility.title
+#: msacheck/results/reproducibility.title
+msgid "Reproducibility"
+msgstr "Reproducibilidad"
+
+#: aisp/options/showRepro.title
+#: mlmsa/options/showRepro.title
+#: msa/options/showRepro.title
+#: msacheck/options/showRepro.title
+msgid "Reproducibility record"
+msgstr "Registro de reproducibilidad"
+
 #: msacheck/options/checkRest.title
 msgid "Rest-score method"
 msgstr "Método rest-score"
@@ -1231,6 +1275,10 @@ msgstr "Método rest-score"
 #: msacheck/options/plotLegend/right.title
 msgid "Right"
 msgstr "Derecha"
+
+#: aisp/results/bootTable.columns.title
+msgid "Same scale as found"
+msgstr "Misma escala que la encontrada"
 
 #: msacheck/options/caNweight.title
 msgid "Sample-size weight"
@@ -1281,6 +1329,7 @@ msgstr "Escalabilidad de la escala"
 
 #: aisp/results/membership.columns.title
 #: aisp/results/scales.columns.title
+#: aisp/results/bootTable.columns.title
 msgid "Scale"
 msgstr "Escala"
 
@@ -1533,6 +1582,10 @@ msgstr "U1"
 msgid "U2"
 msgstr "U2"
 
+#: aisp/results/bootTable.columns.title
+msgid "Unscalable"
+msgstr "No escalable"
+
 #: aisp/results/sequenceSummary.columns.title
 msgid "Unscalable items"
 msgstr "Ítems no escalables"
@@ -1650,6 +1703,10 @@ msgstr "Pesos para errores de Guttman de dos niveles"
 #: msacheck/options/plotWidth.title
 msgid "Width (0 = automatic)"
 msgstr "Ancho (0 = automático)"
+
+#: aisp/results/bootTable.columns.title
+msgid "With its scale-mates"
+msgstr "Con sus compañeros de escala"
 
 #: mlmsa/results/items.columns.title
 #: mlmsa/results/pairs.columns.title

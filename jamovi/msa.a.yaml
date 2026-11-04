@@ -114,6 +114,13 @@ options:
     type: Bool
     default: true
 
+  # Versions, seeds and the equivalent R code of this run.
+  # ES: Versiones, semillas y el código R equivalente de esta ejecución.
+  - name: showRepro
+    title: Reproducibility record
+    type: Bool
+    default: true
+
   # ---------------------------------------------------------------------------
   # Data handling shared by every MokkenLab analysis: missing values (mokken
   # refuses them), score range and negatively worded items (recode()).

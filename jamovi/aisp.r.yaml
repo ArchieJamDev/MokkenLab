@@ -27,6 +27,28 @@ title: Automated Item Selection
 jrs: '1.1'
 
 items:
+  # Hidden store of mokken results already computed in this session, so a
+  # cosmetic change (plot size, palette, language) does not recompute them
+  # (.mk_cached_capture() in R/shared-helpers.R). Keys hash the data and the
+  # arguments; clearWith lists the data options only to bound its size.
+  # ES: Almacén oculto de resultados de mokken ya calculados en la sesión,
+  # para que un cambio cosmético no los recalcule. Las claves resumen los
+  # datos y los argumentos; clearWith lista solo las opciones de datos para
+  # limitar su tamaño.
+  - name: cacheStore
+    type: Html
+    visible: false
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - clusterVar
+
   - name: intro
     title: Introduction
     type: Html
@@ -205,6 +227,115 @@ items:
       - name: strength
         title: "Strength"
         type: text
+
+  - name: bootGuide
+    title: How to read bootstrap stability
+    type: Html
+    visible: (showGuides && lbMode:single && bootStability)
+
+  - name: bootTable
+    title: Bootstrap stability of the partition
+    type: Table
+    rows: 0
+    visible: (lbMode:single && bootStability)
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+      - bootStability
+      - bootReps
+      - bootSeed
+    columns:
+      - name: item
+        title: "Item"
+        type: text
+      - name: scale
+        title: "Scale"
+        type: text
+      - name: together
+        title: "With its scale-mates"
+        type: number
+        format: zto
+      - name: same
+        title: "Same scale as found"
+        type: number
+        format: zto
+      - name: unscalable
+        title: "Unscalable"
+        type: number
+        format: zto
+
+  - name: bootPlotImg
+    title: Bootstrap co-membership of item pairs
+    type: Image
+    width: 600
+    height: 500
+    renderFun: .plotBoot
+    visible: (lbMode:single && bootStability && bootPlot)
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - reportLang
+      - clusterVar
+      - lbMode
+      - lowerbound
+      - lbFrom
+      - lbTo
+      - lbStep
+      - search
+      - popsize
+      - maxgensMode
+      - maxgens
+      - pxover
+      - pmutation
+      - gaSeed
+      - alpha
+      - typeZ
+      - testHi
+      - startSet
+      - bootStability
+      - bootReps
+      - bootSeed
+      - bootPlot
+      - plotWidth
+      - plotHeight
+      - plotPointSize
+      - plotLineWidth
+      - plotNcol
+      - plotLegend
+      - plotAxisAngle
+      - plotYRange
+      - plotValueLabels
+      - plotPalette
 
   - name: sequenceGuide
     title: How to read the sequence of lower bounds
@@ -393,6 +524,11 @@ items:
   - name: interpretation
     title: Applied interpretation
     type: Html
+
+  - name: reproducibility
+    title: Reproducibility
+    type: Html
+    visible: (showRepro)
 
   - name: notes
     title: Notes

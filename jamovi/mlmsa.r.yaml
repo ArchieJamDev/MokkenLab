@@ -27,6 +27,28 @@ title: Two-Level Mokken Scale Analysis
 jrs: '1.1'
 
 items:
+  # Hidden store of mokken results already computed in this session, so a
+  # cosmetic change (plot size, palette, language) does not recompute them
+  # (.mk_cached_capture() in R/shared-helpers.R). Keys hash the data and the
+  # arguments; clearWith lists the data options only to bound its size.
+  # ES: Almacén oculto de resultados de mokken ya calculados en la sesión,
+  # para que un cambio cosmético no los recalcule. Las claves resumen los
+  # datos y los argumentos; clearWith lista solo las opciones de datos para
+  # limitar su tamaño.
+  - name: cacheStore
+    type: Html
+    visible: false
+    clearWith:
+      - vars
+      - negItems
+      - naHandling
+      - twowaySets
+      - twowaySeed
+      - scoreRange
+      - scoreMin
+      - scoreMax
+      - subject
+
   - name: intro
     title: Introduction
     type: Html
@@ -449,6 +471,11 @@ items:
   - name: interpretation
     title: Applied interpretation
     type: Html
+
+  - name: reproducibility
+    title: Reproducibility
+    type: Html
+    visible: (showRepro)
 
   - name: notes
     title: Notes

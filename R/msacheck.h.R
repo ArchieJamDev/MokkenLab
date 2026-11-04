@@ -12,6 +12,7 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showKeySummary = TRUE,
             showChoicesGuide = FALSE,
             showGuides = TRUE,
+            showRepro = TRUE,
             naHandling = "listwise",
             twowaySets = 1,
             twowaySeed = 2026,
@@ -105,6 +106,10 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..showGuides <- jmvcore::OptionBool$new(
                 "showGuides",
                 showGuides,
+                default=TRUE)
+            private$..showRepro <- jmvcore::OptionBool$new(
+                "showRepro",
+                showRepro,
                 default=TRUE)
             private$..naHandling <- jmvcore::OptionList$new(
                 "naHandling",
@@ -414,6 +419,7 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showKeySummary)
             self$.addOption(private$..showChoicesGuide)
             self$.addOption(private$..showGuides)
+            self$.addOption(private$..showRepro)
             self$.addOption(private$..naHandling)
             self$.addOption(private$..twowaySets)
             self$.addOption(private$..twowaySeed)
@@ -473,6 +479,7 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         showKeySummary = function() private$..showKeySummary$value,
         showChoicesGuide = function() private$..showChoicesGuide$value,
         showGuides = function() private$..showGuides$value,
+        showRepro = function() private$..showRepro$value,
         naHandling = function() private$..naHandling$value,
         twowaySets = function() private$..twowaySets$value,
         twowaySeed = function() private$..twowaySeed$value,
@@ -531,6 +538,7 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..showKeySummary = NA,
         ..showChoicesGuide = NA,
         ..showGuides = NA,
+        ..showRepro = NA,
         ..naHandling = NA,
         ..twowaySets = NA,
         ..twowaySeed = NA,
@@ -588,6 +596,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "msacheckResults",
     inherit = jmvcore::Group,
     active = list(
+        cacheStore = function() private$.items[["cacheStore"]],
         intro = function() private$.items[["intro"]],
         keySummary = function() private$.items[["keySummary"]],
         choicesGuide = function() private$.items[["choicesGuide"]],
@@ -611,6 +620,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         caW = function() private$.items[["caW"]],
         critPlot = function() private$.items[["critPlot"]],
         interpretation = function() private$.items[["interpretation"]],
+        reproducibility = function() private$.items[["reproducibility"]],
         notes = function() private$.items[["notes"]]),
     private = list(),
     public=list(
@@ -619,6 +629,20 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Model Assumptions")
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="cacheStore",
+                visible=FALSE,
+                clearWith=list(
+                    "vars",
+                    "negItems",
+                    "naHandling",
+                    "twowaySets",
+                    "twowaySeed",
+                    "scoreRange",
+                    "scoreMin",
+                    "scoreMax",
+                    "clusterVar")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="intro",
@@ -1461,6 +1485,11 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Applied interpretation"))
             self$add(jmvcore::Html$new(
                 options=options,
+                name="reproducibility",
+                title="Reproducibility",
+                visible="(showRepro)"))
+            self$add(jmvcore::Html$new(
+                options=options,
                 name="notes",
                 title="Notes"))}))
 
@@ -1499,6 +1528,7 @@ msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param showKeySummary .
 #' @param showChoicesGuide .
 #' @param showGuides .
+#' @param showRepro .
 #' @param naHandling .
 #' @param twowaySets .
 #' @param twowaySeed .
@@ -1552,6 +1582,7 @@ msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plotPalette .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$cacheStore} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$intro} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$keySummary} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$choicesGuide} \tab \tab \tab \tab \tab a html \cr
@@ -1575,6 +1606,7 @@ msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$caW} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$critPlot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$interpretation} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$reproducibility} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$notes} \tab \tab \tab \tab \tab a html \cr
 #' }
 #'
@@ -1593,6 +1625,7 @@ msacheck <- function(
     showKeySummary = TRUE,
     showChoicesGuide = FALSE,
     showGuides = TRUE,
+    showRepro = TRUE,
     naHandling = "listwise",
     twowaySets = 1,
     twowaySeed = 2026,
@@ -1668,6 +1701,7 @@ msacheck <- function(
         showKeySummary = showKeySummary,
         showChoicesGuide = showChoicesGuide,
         showGuides = showGuides,
+        showRepro = showRepro,
         naHandling = naHandling,
         twowaySets = twowaySets,
         twowaySeed = twowaySeed,

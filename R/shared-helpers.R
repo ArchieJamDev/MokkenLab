@@ -869,3 +869,210 @@
     tr("None. Confirm that every item is scored in the same direction, and use the same reversals in every MokkenLab analysis of these items.",
        "Ninguno. Confirme que todos los ítems están puntuados en la misma dirección, y use las mismas inversiones en todos los análisis de MokkenLab con estos ítems.")
 }
+
+# -----------------------------------------------------------------------------
+# .mk_cached_capture()
+#
+# Input: store - the analysis' hidden cacheStore result; label - the mokken
+#   function name; args - its arguments as a list; fun - the function;
+#   key_extra - anything else the result depends on (a seed set outside).
+# Output: the .mk_capture() result of fun(args), computed once per distinct
+#   (label, args, key_extra) and reused afterwards.
+#
+# jamovi re-runs .run() on every option change, including cosmetic ones (plot
+# size, palette, language). Without a cache every mokken computation was
+# repeated then (independent audit, 2026-11-04). The key hashes the data and
+# every argument, so a cached result is never reused for other data or other
+# statistical options; the store's clearWith (the data options) and the cap
+# on entries only bound its size.
+#
+# ES: jamovi vuelve a ejecutar .run() con cada cambio de opción, también los
+# cosméticos (tamaño de gráfico, paleta, idioma). Sin caché, cada cálculo de
+# mokken se repetía (auditoría independiente, 2026-11-04). La clave resume
+# los datos y cada argumento, así que un resultado guardado nunca se reutiliza
+# para otros datos u otras opciones estadísticas; el clearWith del almacén
+# (las opciones de datos) y el tope de entradas solo limitan su tamaño.
+# -----------------------------------------------------------------------------
+.mk_cached_capture <- function(store, label, args, fun, key_extra = NULL, max_entries = 12,
+                               max_bytes = 25 * 1024^2) {
+    key <- tryCatch(rlang::hash(list(label, args, key_extra)), error = function(e) NULL)
+    state <- tryCatch(store$state, error = function(e) NULL)
+    if (!is.null(key) && is.list(state) && !is.null(state[[key]]))
+        return(state[[key]])
+    result <- .mk_capture(do.call(fun, args))
+    if (!is.null(key)) {
+        if (!is.list(state))
+            state <- list()
+        state[[key]] <- result
+        if (length(state) > max_entries)
+            state <- state[seq.int(length(state) - max_entries + 1, length(state))]
+        # The store is saved with the .omv file, so its total size is capped
+        # too (one check.iio of the 80 TROG items takes about 8 MB): the
+        # oldest entries go first, the newest is always kept.
+        # ES: El almacén se guarda con el archivo .omv, así que su tamaño
+        # total también tiene tope: se descartan primero las entradas más
+        # antiguas y siempre se conserva la más reciente.
+        while (length(state) > 1 && as.numeric(utils::object.size(state)) > max_bytes)
+            state <- state[-1]
+        tryCatch(store$setState(state), error = function(e) NULL)
+    }
+    result
+}
+
+# -----------------------------------------------------------------------------
+# .mk_r_vector() / .mk_r_prep_code() / .mk_repro_block()
+#
+# The reproducibility record shown at the end of every analysis: software
+# versions, date, seeds, and the equivalent R code with the exact mokken
+# calls, so a result can be reproduced outside jamovi and a student can see
+# what the menu does (independent audit, 2026-11-04: "export a reproducible
+# record with options, reversals, exclusions, seeds and versions").
+#
+# ES: El registro de reproducibilidad al final de cada análisis: versiones,
+# fecha, semillas y el código R equivalente con las llamadas exactas a
+# mokken, para reproducir un resultado fuera de jamovi y para que un
+# estudiante vea qué hace el menú.
+# -----------------------------------------------------------------------------
+.mk_r_vector <- function(x) {
+    paste0("c(", paste(encodeString(as.character(x), quote = "\""), collapse = ", "), ")")
+}
+
+.mk_r_prep_code <- function(prep, options, vars, keep = character(0)) {
+    cols <- c(keep, vars)
+    lines <- c("library(mokken)",
+               paste0("# data: the dataset, with the columns used by this analysis"),
+               paste0("X <- data[, ", .mk_r_vector(cols), "]"))
+    if (!is.null(prep$completed)) {
+        sets <- length(prep$completed)
+        lines <- c(lines, paste0("X <- X[stats::complete.cases(X[, ", .mk_r_vector(keep), "]), ]")[length(keep) > 0],
+                   if (length(keep) > 0) paste0("extra <- X[, ", .mk_r_vector(keep), ", drop = FALSE]"),
+                   paste0("X <- twoway(as.matrix(X[, ", .mk_r_vector(vars), "]), nCompletedDataSets = ", sets,
+                          ", minX = ", prep$range[1], ", maxX = ", prep$range[2], ", seed = ",
+                          as.integer(options$twowaySeed), ")"),
+                   if (sets > 1) "X <- X[[1]]  # MokkenLab's tables use the first completed data set")
+    } else {
+        lines <- c(lines, "X <- X[stats::complete.cases(X), ]  # listwise deletion",
+                   if (length(keep) > 0) paste0("extra <- X[, ", .mk_r_vector(keep), ", drop = FALSE]"),
+                   paste0("X <- as.matrix(X[, ", .mk_r_vector(vars), "])"))
+    }
+    if (length(prep$neg) > 0)
+        lines <- c(lines, paste0("X <- recode(X, items = match(", .mk_r_vector(prep$neg), ", colnames(X)), values = ",
+                                 prep$range[1], ":", prep$range[2], ")  # reverse negatively worded items"))
+    lines
+}
+
+.mk_repro_block <- function(lang, code, seeds = character(0)) {
+    tr <- function(en, es) .mk_tr(lang, en, es)
+    version <- function(pkg) tryCatch(as.character(utils::packageVersion(pkg)), error = function(e) "?")
+    p_style <- "margin: 0.15em 0 0.65em 0; line-height: 1.40;"
+    info <- c(sprintf(tr("MokkenLab %s, mokken %s, %s; run on %s.", "MokkenLab %s, mokken %s, %s; ejecutado el %s."),
+                      version("MokkenLab"), version("mokken"), R.version.string, format(Sys.Date())),
+              seeds,
+              tr("Equivalent R code (the same mokken calls this analysis made, with its current options):",
+                 "Código R equivalente (las mismas llamadas a mokken que hizo este análisis, con sus opciones actuales):"))
+    pre <- paste0("<pre style=\"font-size: 0.85em; white-space: pre-wrap; background: #f6f8fa; padding: 0.6em;\">",
+                  .mk_html_escape(paste(code, collapse = "\n")), "</pre>")
+    .mk_html_block(tr("Reproducibility", "Reproducibilidad"),
+                   c(paste0("<p style=\"", p_style, "\">", .mk_html_escape(info), "</p>"), pre), raw = TRUE)
+}
+
+# -----------------------------------------------------------------------------
+# .mk_r_call()
+#
+# Input: fun - function name; args - named list of argument values (NULL
+#   values are dropped); first - code of the first, unnamed argument.
+# Output: one line of R code, "fun(first, name = value, ...)", with every
+#   value written by deparse() exactly as the analysis passed it to mokken.
+# ES: Salida: una línea de código R con cada valor escrito por deparse()
+#   exactamente como el análisis se lo pasó a mokken.
+# -----------------------------------------------------------------------------
+.mk_r_call <- function(fun, first, args = list()) {
+    args <- args[!vapply(args, is.null, logical(1))]
+    parts <- vapply(names(args), function(n) {
+        v <- args[[n]]
+        code <- if (is.character(v) && length(v) == 1 && startsWith(v, "@")) substring(v, 2)
+                else paste(deparse(v, width.cutoff = 500L), collapse = "")
+        paste0(n, " = ", code)
+    }, character(1))
+    paste0(fun, "(", paste(c(first, parts), collapse = ", "), ")")
+}
+
+# -----------------------------------------------------------------------------
+# .mk_aisp_bootstrap()
+#
+# Input: X - item matrix; args - the aisp() arguments of the analysis
+#   (without X); reps - bootstrap samples; seed; level2 - cluster codes or
+#   NULL; original - the partition found in the full sample.
+# Output: list(together =, same =, unscalable =, exact =, failed =, reps =)
+#   with, for each item, the proportion of samples in which it is grouped with
+#   its original scale-mates (mean pairwise co-membership), in which its set
+#   of scale-mates is exactly the original one, and in which it is
+#   unscalable; the J x J co-membership proportions; the proportion of
+#   samples that reproduce the whole partition; and the failed samples.
+#
+# Respondents are resampled with replacement; with nested data whole clusters
+# are resampled, so the dependence within clusters is kept. R's random state
+# is restored afterwards, so the analysis never changes it for the user.
+#
+# ES: Se remuestrean personas con reemplazo; con datos anidados se
+# remuestrean conglomerados completos, para conservar la dependencia dentro
+# de ellos. El estado aleatorio de R se restaura después, así que el
+# análisis nunca lo altera para el usuario.
+# -----------------------------------------------------------------------------
+.mk_aisp_bootstrap <- function(X, args, reps, seed, level2, original) {
+    had_seed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
+    old_seed <- if (had_seed) get(".Random.seed", envir = globalenv()) else NULL
+    on.exit(if (had_seed) assign(".Random.seed", old_seed, envir = globalenv())
+            else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE))
+                rm(".Random.seed", envir = globalenv()))
+    set.seed(seed)
+
+    J <- ncol(X)
+    co <- matrix(0, J, J, dimnames = list(colnames(X), colnames(X)))
+    same <- numeric(J)
+    unscalable <- numeric(J)
+    exact <- 0
+    failed <- 0
+    mates <- function(p) lapply(seq_len(J), function(i) if (p[i] == 0) integer(0) else which(p == p[i]))
+    original_mates <- mates(original)
+    clusters <- if (!is.null(level2)) unique(level2) else NULL
+
+    for (b in seq_len(reps)) {
+        if (is.null(clusters)) {
+            rows <- sample.int(nrow(X), nrow(X), replace = TRUE)
+            l2 <- NULL
+        } else {
+            picked <- sample(clusters, length(clusters), replace = TRUE)
+            rows <- unlist(lapply(picked, function(cl) which(level2 == cl)))
+            l2 <- rep(seq_along(picked), vapply(picked, function(cl) sum(level2 == cl), numeric(1)))
+        }
+        call_args <- c(list(X = X[rows, , drop = FALSE]), args)
+        call_args$level.two.var <- l2
+        res <- tryCatch(suppressWarnings({
+            out <- NULL
+            utils::capture.output(out <- do.call(mokken::aisp, call_args))
+            as.integer(out[, 1])
+        }), error = function(e) NULL)
+        if (is.null(res) || length(res) != J) {
+            failed <- failed + 1
+            next
+        }
+        co <- co + outer(res, res, function(a, b) a == b & a > 0)
+        unscalable <- unscalable + (res == 0)
+        boot_mates <- mates(res)
+        hits <- vapply(seq_len(J), function(i) identical(boot_mates[[i]], original_mates[[i]]), logical(1))
+        same <- same + hits
+        if (all(hits))
+            exact <- exact + 1
+    }
+    done <- reps - failed
+    if (done == 0)
+        return(list(reps = reps, failed = failed, done = 0))
+    co <- co / done
+    together <- vapply(seq_len(J), function(i) {
+        m <- setdiff(original_mates[[i]], i)
+        if (length(m) == 0) NA_real_ else mean(co[i, m])
+    }, numeric(1))
+    list(together = together, same = same / done, unscalable = unscalable / done, co = co,
+         exact = exact / done, failed = failed, done = done, reps = reps)
+}

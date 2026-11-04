@@ -167,7 +167,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             had_seed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
             old_seed <- if (had_seed) get(".Random.seed", envir = globalenv()) else NULL
             set.seed(as.integer(self$options$gaSeed))
-            fit <- .mk_capture(do.call(mokken::aisp, args))
+            fit <- .mk_cached_capture(self$results$cacheStore, "aisp", args, mokken::aisp, key_extra = as.integer(self$options$gaSeed))
             if (had_seed) assign(".Random.seed", old_seed, envir = globalenv())
             else if (exists(".Random.seed", envir = globalenv(), inherits = FALSE))
                 rm(".Random.seed", envir = globalenv())
@@ -229,6 +229,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             # -----------------------------------------------------------------
             if (!sequence) {
                 private$.fillSingle(X, partition[, 1], level2, lang, tr, txt)
+                if (isTRUE(self$options$bootStability))
+                    warnings <- c(warnings, private$.runBoot(X, args, level2, as.integer(partition[, 1]), lang, tr, txt))
             } else {
                 private$.fillSequence(partition, lbs, lang, tr, txt)
             }
@@ -237,6 +239,35 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.addKey("warnings", sprintf(txt("common", "key_failed"), section))
             if (isTRUE(self$options$showKeySummary))
                 self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
+
+            # Reproducibility record.
+            # ES: Registro de reproducibilidad.
+            if (isTRUE(self$options$showRepro)) {
+                opts <- self$options
+                keep <- if (!is.null(cluster_name)) cluster_name else character(0)
+                code <- .mk_r_prep_code(prep, opts, items, keep)
+                if (ga)
+                    code <- c(code, paste0("set.seed(", as.integer(opts$gaSeed), ")"))
+                code <- c(code, .mk_r_call("aisp", "X", list(lowerbound = lbs, search = opts$search,
+                    alpha = as.numeric(opts$alpha), StartSet = if (length(start) > 0) start,
+                    popsize = if (ga) as.integer(opts$popsize),
+                    maxgens = if (ga && identical(opts$maxgensMode, "manual")) as.integer(opts$maxgens),
+                    pxover = if (ga) as.numeric(opts$pxover), pmutation = if (ga) as.numeric(opts$pmutation),
+                    type.z = type_z, test.Hi = isTRUE(opts$testHi),
+                    level.two.var = if (!is.null(level2)) paste0("@as.integer(factor(extra[[",
+                        encodeString(cluster_name, quote = "\""), "]]))"))))
+                if (!sequence && isTRUE(opts$bootStability))
+                    code <- c(code, sprintf(paste0("# Bootstrap stability: the same aisp() call on %d resamples of the rows ",
+                                                   "(of whole clusters, with nested data) after set.seed(%d)"),
+                                            as.integer(opts$bootReps), as.integer(opts$bootSeed)))
+                seeds <- c(if (!is.null(prep$completed)) sprintf(tr("Two-way imputation seed: %d.", "Semilla de la imputación two-way: %d."),
+                                                                 as.integer(opts$twowaySeed)),
+                           if (ga) sprintf(tr("Genetic algorithm seed: %d.", "Semilla del algoritmo genético: %d."),
+                                           as.integer(opts$gaSeed)),
+                           if (!sequence && isTRUE(opts$bootStability))
+                               sprintf(tr("Bootstrap seed: %d.", "Semilla del bootstrap: %d."), as.integer(opts$bootSeed)))
+                self$results$reproducibility$setContent(.mk_repro_block(lang, code, seeds))
+            }
 
             notes <- .mk_translate_notices(warnings, lang)
             if (length(notes) > 0) {
@@ -285,8 +316,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             for (s in scale_ids) {
                 members <- items[scale_of == s]
                 if (!isTRUE(self$options$scaleCoefs)) next
-                res <- .mk_capture(mokken::coefH(X[, members, drop = FALSE], se = TRUE, nice.output = FALSE,
-                                                 results = FALSE, level.two.var = level2))
+                res <- .mk_cached_capture(self$results$cacheStore, "coefH", list(X[, members, drop = FALSE], se = TRUE, nice.output = FALSE,
+                                                 results = FALSE, level.two.var = level2), mokken::coefH)
                 if (is.null(res$value)) {
                     .mk_add_row(table, s, list(scale = label_of(s), nItems = length(members),
                                                items = paste(members, collapse = ", ")))
@@ -446,6 +477,9 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 c("sequenceSummary", "Partition at each lower bound", "Partición en cada cota inferior"),
                 c("sequencePlot", "Scale membership across lower bounds", "Pertenencia a las escalas según la cota inferior"),
                 c("scalePlotImg", "Item scalability within each scale", "Escalabilidad de los ítems en cada escala"),
+                c("bootGuide", "How to read bootstrap stability", "Cómo leer la estabilidad bootstrap"),
+                c("bootTable", "Bootstrap stability of the partition", "Estabilidad bootstrap de la partición"),
+                c("bootPlotImg", "Bootstrap co-membership of item pairs", "Co-pertenencia bootstrap de los pares de ítems"),
                 c("interpretation", "Applied interpretation", "Interpretación aplicada"),
                 c("notes", "Notes", "Notas"))
             for (t in titles)
@@ -459,6 +493,10 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 list("scales", "lower", "Lower", "Inferior"), list("scales", "upper", "Upper", "Superior"),
                 list("scales", "minHi", "Lowest Hi", "Hi más bajo"), list("scales", "strength", "Strength", "Fuerza"),
                 list("sequence", "item", "Item", "Ítem"),
+                list("bootTable", "item", "Item", "Ítem"), list("bootTable", "scale", "Scale", "Escala"),
+                list("bootTable", "together", "With its scale-mates", "Con sus compañeros de escala"),
+                list("bootTable", "same", "Same scale as found", "Misma escala que la encontrada"),
+                list("bootTable", "unscalable", "Unscalable", "No escalable"),
                 list("sequenceSummary", "lb", "Lower bound", "Cota inferior"),
                 list("sequenceSummary", "nScales", "Scales", "Escalas"),
                 list("sequenceSummary", "nUnscalable", "Unscalable items", "Ítems no escalables"),
@@ -466,6 +504,95 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             for (cdef in cols)
                 tryCatch(self$results[[cdef[[1]]]]$getColumn(cdef[[2]])$setTitle(tr(cdef[[3]], cdef[[4]])),
                          error = function(e) NULL)
+        },
+
+        # ---------------------------------------------------------------------
+        # Bootstrap stability of the partition: the same selection on
+        # resamples (cached, so cosmetic changes do not repeat it).
+        # ES: Estabilidad bootstrap de la partición: la misma selección en
+        # remuestras (en caché, para que los cambios cosméticos no la
+        # repitan).
+        # ---------------------------------------------------------------------
+        .runBoot = function(X, args, level2, original, lang, tr, txt) {
+            if (isTRUE(self$options$showGuides))
+                self$results$bootGuide$setContent(.mk_guide_block(lang, "boot"))
+            table <- self$results$bootTable
+            reps <- as.integer(self$options$bootReps)
+            seed <- as.integer(self$options$bootSeed)
+            boot_args <- args[setdiff(names(args), c("X", "level.two.var"))]
+            boot_args$lowerbound <- boot_args$lowerbound[1]
+            res <- .mk_cached_capture(self$results$cacheStore, "aisp_bootstrap",
+                list(X = X, args = boot_args, reps = reps, seed = seed, level2 = level2, original = original),
+                .mk_aisp_bootstrap)
+            boot <- res$value
+            if (is.null(boot) || is.null(boot$done) || boot$done == 0) {
+                .mk_add_row(table, 1, list(item = txt("common", "not_computable")))
+                table$addFootnote(rowKey = 1, col = "item", sprintf(txt("aisp", "boot_failed"),
+                    if (!is.null(res$error)) res$error else ""))
+                return(res$warnings)
+            }
+            items <- colnames(X)
+            label_of <- function(s) if (s == 0) tr("Unscalable", "No escalable") else sprintf(tr("Scale %d", "Escala %d"), s)
+            for (i in seq_along(items))
+                .mk_add_row(table, items[i], list(item = items[i], scale = label_of(original[i]),
+                    together = .mk_clean_num(boot$together[i]), same = .mk_clean_num(boot$same[i]),
+                    unscalable = .mk_clean_num(boot$unscalable[i])))
+            table$setNote("boot", sprintf(txt("aisp", "boot_note"), boot$done, seed,
+                                          .mk_fmt_num(boot$exact, 2)))
+            if (boot$failed > 0)
+                table$setNote("failed", sprintf(txt("aisp", "boot_failed_some"), boot$failed, boot$reps))
+
+            weak <- items[is.finite(boot$same) & boot$same < 0.5 & original > 0]
+            private$.addKey(if (length(weak) > 0) "uncertain" else "findings", if (length(weak) > 0)
+                sprintf(txt("aisp", "key_boot_weak"), length(weak), paste(weak, collapse = ", "))
+                else sprintf(txt("aisp", "key_boot_ok"), .mk_fmt_num(boot$exact, 2)))
+
+            if (isTRUE(self$options$bootPlot)) {
+                n <- length(items)
+                .mk_set_size(self$results$bootPlotImg, self$options, max(450, 34 * n + 200), max(380, 30 * n + 160))
+                grid <- expand.grid(i = seq_len(n), j = seq_len(n))
+                order_items <- items[order(original == 0, original)]
+                self$results$bootPlotImg$setState(list(
+                    data = data.frame(item1 = items[grid$i], item2 = items[grid$j],
+                                      p = ifelse(grid$i == grid$j, NA_real_, boot$co[cbind(grid$i, grid$j)]),
+                                      stringsAsFactors = FALSE),
+                    items = order_items, labels = list(fill = tr("Same scale", "Misma escala"))))
+            }
+            res$warnings
+        },
+
+        # ---------------------------------------------------------------------
+        # Bootstrap co-membership: the proportion of resamples in which each
+        # pair of items falls in the same scale, items ordered by the
+        # partition found, so stable scales show as dark blocks.
+        # ES: Co-pertenencia bootstrap: la proporción de remuestras en que
+        # cada par de ítems cae en la misma escala, ítems ordenados por la
+        # partición encontrada, para que las escalas estables se vean como
+        # bloques oscuros.
+        # ---------------------------------------------------------------------
+        .plotBoot = function(image, ggtheme, theme, ...) {
+            state <- image$state
+            if (is.null(state) || is.null(state$data) || nrow(state$data) == 0)
+                return(FALSE)
+            df <- state$data
+            df$item1 <- factor(df$item1, levels = rev(state$items))
+            df$item2 <- factor(df$item2, levels = state$items)
+            style <- .mk_plot_style(self$options)
+            palette <- .mk_plot_series_palette(self$options$plotPalette)
+            high <- if (!is.null(palette)) palette[5] else "#2C7BB6"
+            plot <- ggplot2::ggplot(df, ggplot2::aes(x = item2, y = item1, fill = p)) +
+                ggplot2::geom_tile(color = "white", linewidth = 0.4)
+            if (style$labels || length(state$items) <= 15)
+                plot <- plot + ggplot2::geom_text(ggplot2::aes(label = ifelse(is.na(p), "", formatC(p, format = "f", digits = 2))),
+                                                  size = 2.8)
+            plot <- plot +
+                ggplot2::labs(x = NULL, y = NULL, fill = state$labels$fill) +
+                ggtheme + .mk_plot_theme(self$options) +
+                ggplot2::scale_fill_gradient(low = "white", high = high, limits = c(0, 1), na.value = "grey92")
+            if (self$options$plotLegend %in% c("bottom", "top"))
+                plot <- plot + ggplot2::theme(legend.key.width = grid::unit(1.6, "cm"))
+            print(plot)
+            TRUE
         },
 
         # ---------------------------------------------------------------------

@@ -100,6 +100,13 @@ options:
     type: Bool
     default: true
 
+  # Versions, seeds and the equivalent R code of this run.
+  # ES: Versiones, semillas y el código R equivalente de esta ejecución.
+  - name: showRepro
+    title: Reproducibility record
+    type: Bool
+    default: true
+
   # ---------------------------------------------------------------------------
   # Data handling shared by every MokkenLab analysis: missing values (mokken
   # refuses them), score range and negatively worded items (recode()).
@@ -317,6 +324,40 @@ options:
     permitted:
       - numeric
     default: []
+
+  # ---------------------------------------------------------------------------
+  # Bootstrap stability of the partition (single lower bound): the selection
+  # is repeated on resamples of respondents (of clusters, with nested data)
+  # with the same options. Resampling takes time, so it is off by default and
+  # its seed is visible (ARCHITECTURE.md §16).
+  # ES: Estabilidad bootstrap de la partición (una sola cota): la selección
+  # se repite en remuestras de personas (de conglomerados, con datos
+  # anidados) con las mismas opciones. Está desactivada por defecto y su
+  # semilla es visible.
+  # ---------------------------------------------------------------------------
+  - name: bootStability
+    title: Bootstrap stability of the partition
+    type: Bool
+    default: false
+
+  - name: bootReps
+    title: Bootstrap samples
+    type: Integer
+    min: 10
+    max: 5000
+    default: 100
+
+  - name: bootSeed
+    title: Bootstrap seed
+    type: Integer
+    min: 1
+    max: 999999999
+    default: 2026
+
+  - name: bootPlot
+    title: Co-membership plot
+    type: Bool
+    default: true
 
   - name: scaleCoefs
     title: Scalability of each scale

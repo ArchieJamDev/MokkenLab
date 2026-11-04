@@ -12,6 +12,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             showKeySummary = TRUE,
             showChoicesGuide = FALSE,
             showGuides = TRUE,
+            showRepro = TRUE,
             naHandling = "listwise",
             twowaySets = 1,
             twowaySeed = 2026,
@@ -35,6 +36,10 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             typeZ = "Z",
             testHi = FALSE,
             startSet = list(),
+            bootStability = FALSE,
+            bootReps = 100,
+            bootSeed = 2026,
+            bootPlot = TRUE,
             scaleCoefs = TRUE,
             scalePlot = TRUE,
             sequencePlot = TRUE,
@@ -90,6 +95,10 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..showGuides <- jmvcore::OptionBool$new(
                 "showGuides",
                 showGuides,
+                default=TRUE)
+            private$..showRepro <- jmvcore::OptionBool$new(
+                "showRepro",
+                showRepro,
                 default=TRUE)
             private$..naHandling <- jmvcore::OptionList$new(
                 "naHandling",
@@ -236,6 +245,26 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "numeric"),
                 default=list())
+            private$..bootStability <- jmvcore::OptionBool$new(
+                "bootStability",
+                bootStability,
+                default=FALSE)
+            private$..bootReps <- jmvcore::OptionInteger$new(
+                "bootReps",
+                bootReps,
+                min=10,
+                max=5000,
+                default=100)
+            private$..bootSeed <- jmvcore::OptionInteger$new(
+                "bootSeed",
+                bootSeed,
+                min=1,
+                max=999999999,
+                default=2026)
+            private$..bootPlot <- jmvcore::OptionBool$new(
+                "bootPlot",
+                bootPlot,
+                default=TRUE)
             private$..scaleCoefs <- jmvcore::OptionBool$new(
                 "scaleCoefs",
                 scaleCoefs,
@@ -321,6 +350,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..showKeySummary)
             self$.addOption(private$..showChoicesGuide)
             self$.addOption(private$..showGuides)
+            self$.addOption(private$..showRepro)
             self$.addOption(private$..naHandling)
             self$.addOption(private$..twowaySets)
             self$.addOption(private$..twowaySeed)
@@ -344,6 +374,10 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..typeZ)
             self$.addOption(private$..testHi)
             self$.addOption(private$..startSet)
+            self$.addOption(private$..bootStability)
+            self$.addOption(private$..bootReps)
+            self$.addOption(private$..bootSeed)
+            self$.addOption(private$..bootPlot)
             self$.addOption(private$..scaleCoefs)
             self$.addOption(private$..scalePlot)
             self$.addOption(private$..sequencePlot)
@@ -365,6 +399,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         showKeySummary = function() private$..showKeySummary$value,
         showChoicesGuide = function() private$..showChoicesGuide$value,
         showGuides = function() private$..showGuides$value,
+        showRepro = function() private$..showRepro$value,
         naHandling = function() private$..naHandling$value,
         twowaySets = function() private$..twowaySets$value,
         twowaySeed = function() private$..twowaySeed$value,
@@ -388,6 +423,10 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         typeZ = function() private$..typeZ$value,
         testHi = function() private$..testHi$value,
         startSet = function() private$..startSet$value,
+        bootStability = function() private$..bootStability$value,
+        bootReps = function() private$..bootReps$value,
+        bootSeed = function() private$..bootSeed$value,
+        bootPlot = function() private$..bootPlot$value,
         scaleCoefs = function() private$..scaleCoefs$value,
         scalePlot = function() private$..scalePlot$value,
         sequencePlot = function() private$..sequencePlot$value,
@@ -408,6 +447,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..showKeySummary = NA,
         ..showChoicesGuide = NA,
         ..showGuides = NA,
+        ..showRepro = NA,
         ..naHandling = NA,
         ..twowaySets = NA,
         ..twowaySeed = NA,
@@ -431,6 +471,10 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..typeZ = NA,
         ..testHi = NA,
         ..startSet = NA,
+        ..bootStability = NA,
+        ..bootReps = NA,
+        ..bootSeed = NA,
+        ..bootPlot = NA,
         ..scaleCoefs = NA,
         ..scalePlot = NA,
         ..sequencePlot = NA,
@@ -450,6 +494,7 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "aispResults",
     inherit = jmvcore::Group,
     active = list(
+        cacheStore = function() private$.items[["cacheStore"]],
         intro = function() private$.items[["intro"]],
         keySummary = function() private$.items[["keySummary"]],
         choicesGuide = function() private$.items[["choicesGuide"]],
@@ -457,12 +502,16 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         summary = function() private$.items[["summary"]],
         membership = function() private$.items[["membership"]],
         scales = function() private$.items[["scales"]],
+        bootGuide = function() private$.items[["bootGuide"]],
+        bootTable = function() private$.items[["bootTable"]],
+        bootPlotImg = function() private$.items[["bootPlotImg"]],
         sequenceGuide = function() private$.items[["sequenceGuide"]],
         sequence = function() private$.items[["sequence"]],
         sequenceSummary = function() private$.items[["sequenceSummary"]],
         scalePlotImg = function() private$.items[["scalePlotImg"]],
         sequencePlot = function() private$.items[["sequencePlot"]],
         interpretation = function() private$.items[["interpretation"]],
+        reproducibility = function() private$.items[["reproducibility"]],
         notes = function() private$.items[["notes"]]),
     private = list(),
     public=list(
@@ -471,6 +520,20 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="",
                 title="Automated Item Selection")
+            self$add(jmvcore::Html$new(
+                options=options,
+                name="cacheStore",
+                visible=FALSE,
+                clearWith=list(
+                    "vars",
+                    "negItems",
+                    "naHandling",
+                    "twowaySets",
+                    "twowaySeed",
+                    "scoreRange",
+                    "scoreMin",
+                    "scoreMax",
+                    "clusterVar")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="intro",
@@ -666,6 +729,120 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `type`="text"))))
             self$add(jmvcore::Html$new(
                 options=options,
+                name="bootGuide",
+                title="How to read bootstrap stability",
+                visible="(showGuides && lbMode:single && bootStability)"))
+            self$add(jmvcore::Table$new(
+                options=options,
+                name="bootTable",
+                title="Bootstrap stability of the partition",
+                rows=0,
+                visible="(lbMode:single && bootStability)",
+                clearWith=list(
+                    "vars",
+                    "negItems",
+                    "naHandling",
+                    "twowaySets",
+                    "twowaySeed",
+                    "scoreRange",
+                    "scoreMin",
+                    "scoreMax",
+                    "reportLang",
+                    "clusterVar",
+                    "lbMode",
+                    "lowerbound",
+                    "lbFrom",
+                    "lbTo",
+                    "lbStep",
+                    "search",
+                    "popsize",
+                    "maxgensMode",
+                    "maxgens",
+                    "pxover",
+                    "pmutation",
+                    "gaSeed",
+                    "alpha",
+                    "typeZ",
+                    "testHi",
+                    "startSet",
+                    "bootStability",
+                    "bootReps",
+                    "bootSeed"),
+                columns=list(
+                    list(
+                        `name`="item", 
+                        `title`="Item", 
+                        `type`="text"),
+                    list(
+                        `name`="scale", 
+                        `title`="Scale", 
+                        `type`="text"),
+                    list(
+                        `name`="together", 
+                        `title`="With its scale-mates", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="same", 
+                        `title`="Same scale as found", 
+                        `type`="number", 
+                        `format`="zto"),
+                    list(
+                        `name`="unscalable", 
+                        `title`="Unscalable", 
+                        `type`="number", 
+                        `format`="zto"))))
+            self$add(jmvcore::Image$new(
+                options=options,
+                name="bootPlotImg",
+                title="Bootstrap co-membership of item pairs",
+                width=600,
+                height=500,
+                renderFun=".plotBoot",
+                visible="(lbMode:single && bootStability && bootPlot)",
+                clearWith=list(
+                    "vars",
+                    "negItems",
+                    "naHandling",
+                    "twowaySets",
+                    "twowaySeed",
+                    "scoreRange",
+                    "scoreMin",
+                    "scoreMax",
+                    "reportLang",
+                    "clusterVar",
+                    "lbMode",
+                    "lowerbound",
+                    "lbFrom",
+                    "lbTo",
+                    "lbStep",
+                    "search",
+                    "popsize",
+                    "maxgensMode",
+                    "maxgens",
+                    "pxover",
+                    "pmutation",
+                    "gaSeed",
+                    "alpha",
+                    "typeZ",
+                    "testHi",
+                    "startSet",
+                    "bootStability",
+                    "bootReps",
+                    "bootSeed",
+                    "bootPlot",
+                    "plotWidth",
+                    "plotHeight",
+                    "plotPointSize",
+                    "plotLineWidth",
+                    "plotNcol",
+                    "plotLegend",
+                    "plotAxisAngle",
+                    "plotYRange",
+                    "plotValueLabels",
+                    "plotPalette")))
+            self$add(jmvcore::Html$new(
+                options=options,
                 name="sequenceGuide",
                 title="How to read the sequence of lower bounds",
                 visible="(showGuides && lbMode:sequence)"))
@@ -859,6 +1036,11 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 title="Applied interpretation"))
             self$add(jmvcore::Html$new(
                 options=options,
+                name="reproducibility",
+                title="Reproducibility",
+                visible="(showRepro)"))
+            self$add(jmvcore::Html$new(
+                options=options,
                 name="notes",
                 title="Notes"))}))
 
@@ -897,6 +1079,7 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param showKeySummary .
 #' @param showChoicesGuide .
 #' @param showGuides .
+#' @param showRepro .
 #' @param naHandling .
 #' @param twowaySets .
 #' @param twowaySeed .
@@ -920,6 +1103,10 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param typeZ .
 #' @param testHi .
 #' @param startSet .
+#' @param bootStability .
+#' @param bootReps .
+#' @param bootSeed .
+#' @param bootPlot .
 #' @param scaleCoefs .
 #' @param scalePlot .
 #' @param sequencePlot .
@@ -935,6 +1122,7 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plotPalette .
 #' @return A results object containing:
 #' \tabular{llllll}{
+#'   \code{results$cacheStore} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$intro} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$keySummary} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$choicesGuide} \tab \tab \tab \tab \tab a html \cr
@@ -942,12 +1130,16 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$summary} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$membership} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$scales} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$bootGuide} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$bootTable} \tab \tab \tab \tab \tab a table \cr
+#'   \code{results$bootPlotImg} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$sequenceGuide} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$sequence} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$sequenceSummary} \tab \tab \tab \tab \tab a table \cr
 #'   \code{results$scalePlotImg} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$sequencePlot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$interpretation} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$reproducibility} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$notes} \tab \tab \tab \tab \tab a html \cr
 #' }
 #'
@@ -966,6 +1158,7 @@ aisp <- function(
     showKeySummary = TRUE,
     showChoicesGuide = FALSE,
     showGuides = TRUE,
+    showRepro = TRUE,
     naHandling = "listwise",
     twowaySets = 1,
     twowaySeed = 2026,
@@ -989,6 +1182,10 @@ aisp <- function(
     typeZ = "Z",
     testHi = FALSE,
     startSet = list(),
+    bootStability = FALSE,
+    bootReps = 100,
+    bootSeed = 2026,
+    bootPlot = TRUE,
     scaleCoefs = TRUE,
     scalePlot = TRUE,
     sequencePlot = TRUE,
@@ -1026,6 +1223,7 @@ aisp <- function(
         showKeySummary = showKeySummary,
         showChoicesGuide = showChoicesGuide,
         showGuides = showGuides,
+        showRepro = showRepro,
         naHandling = naHandling,
         twowaySets = twowaySets,
         twowaySeed = twowaySeed,
@@ -1049,6 +1247,10 @@ aisp <- function(
         typeZ = typeZ,
         testHi = testHi,
         startSet = startSet,
+        bootStability = bootStability,
+        bootReps = bootReps,
+        bootSeed = bootSeed,
+        bootPlot = bootPlot,
         scaleCoefs = scaleCoefs,
         scalePlot = scalePlot,
         sequencePlot = sequencePlot,

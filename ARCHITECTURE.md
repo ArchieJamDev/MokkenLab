@@ -906,9 +906,19 @@ number of completed data sets whose spread is reported), and reverses
 negatively worded items over the declared or observed score range.
 
 **Computation time.** `check.ca()`, `check.iio()` with many items (TROG: 80
-items) and the genetic algorithm can take tens of seconds. Each runs only when
-its checkbox is ticked, and tables declare strict `clearWith` lists so
-cosmetic plot options never recompute them.
+items), the genetic algorithm and the bootstrap of the AISP partition can take
+tens of seconds. Each runs only when its checkbox is ticked. jamovi re-runs
+`.run()` on every option change, so every mokken call goes through
+`.mk_cached_capture()`: results are kept in a hidden `cacheStore` element,
+keyed by a hash of the data and of every argument (a cached result is never
+reused for other data or options), capped at 12 entries and 25 MB because the
+store is saved with the .omv file. A cosmetic change (plot size, palette,
+language) therefore recomputes nothing.
+
+**Reproducibility record.** Every analysis ends with the software versions,
+the seeds and the equivalent R code with the exact mokken calls it made
+(`.mk_repro_block()`), checked by the tests to parse and, in validation, to
+reproduce the results in a clean R session.
 
 **Reproducibility.** Two-way imputation and the genetic algorithm are
 stochastic. Both expose their seed in the interface with a fixed default; the

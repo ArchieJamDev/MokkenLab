@@ -65,6 +65,8 @@ children:
         name: showChoicesGuide
       - type: CheckBox
         name: showGuides
+      - type: CheckBox
+        name: showRepro
   - type: CollapseBox
     label: Data
     collapsed: true
@@ -167,6 +169,25 @@ children:
                 name: startSet
                 isTarget: true
                 height: small
+  - type: CollapseBox
+    label: Bootstrap stability
+    collapsed: true
+    children:
+      - type: CheckBox
+        name: bootStability
+        enable: (lbMode:single)
+        children:
+          - type: TextBox
+            name: bootReps
+            format: number
+            enable: (lbMode:single && bootStability)
+          - type: TextBox
+            name: bootSeed
+            format: number
+            enable: (lbMode:single && bootStability)
+          - type: CheckBox
+            name: bootPlot
+            enable: (lbMode:single && bootStability)
   - type: CollapseBox
     label: Output
     collapsed: true
