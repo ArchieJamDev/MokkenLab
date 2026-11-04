@@ -1,4 +1,9 @@
-# MokkenLab 0.1.0 (development), completing the independent audit
+# MokkenLab 0.1.0 (released 2026-11-04, DOI 10.5281/zenodo.23955263)
+
+First public release, archived on Zenodo. The entries below describe the
+work that led to it.
+
+## Completing the independent audit
 
 * **Statistical cache.** jamovi re-runs an analysis on every option change;
   mokken results are now cached per data and statistical options, so a

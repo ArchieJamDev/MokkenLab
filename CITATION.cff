@@ -13,6 +13,8 @@ authors:
 repository-code: "https://github.com/ArchieJamDev/MokkenLab"
 license: "GPL-3.0-or-later"
 version: "0.1.0"
+doi: "10.5281/zenodo.23955263"
+date-released: "2026-11-04"
 abstract: >
   MokkenLab is an open-source jamovi module that brings every capability of
   the mokken R package for Mokken scale analysis (nonparametric item response
