@@ -65,3 +65,11 @@ test_that("bundled datasets run end to end", {
                       iioItemSelection = FALSE, iioOrder = "clusters", iioClusterSize = 4L)
     expect_equal(nrow(c3$results$iioClusters$asDF), 6)
 })
+
+test_that("an entirely empty dataset stops with a MokkenLab message", {
+    empty <- edgeScaleData()[0, ]
+    for (name in c("msa", "aisp", "msacheck"))
+        expect_error(runAnalysis(name, empty, vars = names(empty)), "No data are available", info = name)
+    two <- edgeTwoLevelData()[0, ]
+    expect_error(runAnalysis("mlmsa", two, subject = "Subject", vars = paste0("r", 1:5)), "No data are available")
+})

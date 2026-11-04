@@ -11,7 +11,7 @@ authors:
     affiliation: "Universidad Católica Andrés Bello (UCAB), Caracas, Venezuela"
     orcid: "https://orcid.org/0000-0002-7014-7513"
 repository-code: "https://github.com/ArchieJamDev/MokkenLab"
-license: "GPL-3.0-only"
+license: "GPL-3.0-or-later"
 version: "0.1.0"
 abstract: >
   MokkenLab is an open-source jamovi module that brings every capability of

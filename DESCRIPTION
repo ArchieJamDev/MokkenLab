@@ -10,7 +10,7 @@ Description: A jamovi module that exposes every capability of the mokken
     two-level Mokken scale analysis) and pairs every result with
     evidence-based methodological guidance, plain-language interpretation and
     educational support.
-License: GPL-3
+License: GPL (>= 3)
 Depends:
     R (>= 4.3.0)
 Imports:
