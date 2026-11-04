@@ -7,7 +7,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a>
-  <img src="https://img.shields.io/badge/mokken-%E2%89%A5%203.1.2-D55E00" alt="mokken ≥ 3.1.2">
+  <img src="https://img.shields.io/badge/mokken-%E2%89%A5%203.1.2-A6427F" alt="mokken ≥ 3.1.2">
   <img src="https://img.shields.io/badge/jamovi-%E2%89%A5%201.0.8-0072B2" alt="jamovi ≥ 1.0.8">
 </p>
 

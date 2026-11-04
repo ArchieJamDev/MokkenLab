@@ -29,6 +29,6 @@
   <circle cx="162" cy="200" r="5" fill="#D5DEEA"/>
   <circle cx="196" cy="200" r="5" fill="#D5DEEA"/>
   </g>
-  <text x="250" y="128" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="94" font-weight="700" fill="#1F2A44" letter-spacing="-1"><tspan fill="#D55E00">Mokken</tspan>Lab</text>
+  <text x="250" y="128" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="94" font-weight="700" fill="#1F2A44" letter-spacing="-1"><tspan fill="#A6427F">Mokken</tspan>Lab</text>
   <text x="254" y="172" font-family="Segoe UI, Helvetica Neue, Arial, sans-serif" font-size="25" fill="#5B6B85" letter-spacing="0.5">Mokken scale analysis for jamovi</text>
 </svg>
