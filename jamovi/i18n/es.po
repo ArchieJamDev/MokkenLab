@@ -184,9 +184,9 @@ msgstr "Conglomerado"
 msgid "Cluster variable (nested data)"
 msgstr "Variable de conglomerado (datos anidados)"
 
-#: aisp/ui[0][1].label
-#: msa/ui[0][2].label
-#: msacheck/ui[0][1].label
+#: aisp/ui[0][2].label
+#: msa/ui[0][3].label
+#: msacheck/ui[0][2].label
 msgid "Cluster variable (optional)"
 msgstr "Variable de conglomerado (opcional)"
 
@@ -425,7 +425,7 @@ msgstr "Grupo"
 msgid "Grouping variable"
 msgstr "Variable de agrupación"
 
-#: msa/ui[0][1].label
+#: msa/ui[0][2].label
 msgid "Grouping variable (optional)"
 msgstr "Variable de agrupación (opcional)"
 
@@ -1001,15 +1001,18 @@ msgid "Mutation probability"
 msgstr "Probabilidad de mutación"
 
 #: aisp/options/negItems.title
-#: aisp/ui[2][6][0].label
 #: mlmsa/options/negItems.title
-#: mlmsa/ui[2][6][0].label
 #: msa/options/negItems.title
-#: msa/ui[2][6][0].label
 #: msacheck/options/negItems.title
-#: msacheck/ui[2][6][0].label
 msgid "Negatively worded items"
 msgstr "Ítems redactados en negativo"
+
+#: aisp/ui[0][1].label
+#: mlmsa/ui[0][2].label
+#: msa/ui[0][1].label
+#: msacheck/ui[0][1].label
+msgid "Negatively worded items (reversed)"
+msgstr "Ítems redactados en negativo (se invierten)"
 
 #: msacheck/options/caNweight/noweight.title
 msgid "None (each covariance weight 1)"

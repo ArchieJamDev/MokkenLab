@@ -30,7 +30,7 @@ stage: 0
 compilerMode: tame
 children:
   - type: VariableSupplier
-    persistentItems: false
+    persistentItems: true
     stretchFactor: 1
     children:
       - type: TargetLayoutBox
@@ -39,6 +39,13 @@ children:
           - type: VariablesListBox
             name: vars
             isTarget: true
+      - type: TargetLayoutBox
+        label: Negatively worded items (reversed)
+        children:
+          - type: VariablesListBox
+            name: negItems
+            isTarget: true
+            height: small
       - type: TargetLayoutBox
         label: Cluster variable (optional)
         children:
@@ -82,22 +89,6 @@ children:
         name: scoreMax
         format: number
         enable: (scoreRange:manual)
-      - type: VariableSupplier
-        persistentItems: true
-        stretchFactor: 1
-        suggested:
-          - ordinal
-          - continuous
-        permitted:
-          - numeric
-        children:
-          - type: TargetLayoutBox
-            label: Negatively worded items
-            children:
-              - type: VariablesListBox
-                name: negItems
-                isTarget: true
-                height: small
   - type: CollapseBox
     label: Selection criterion
     collapsed: false
