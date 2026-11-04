@@ -32,6 +32,7 @@ behind it and the next step to take.
 ## Contents
 
 - [Why MokkenLab?](#why-mokkenlab)
+- [Screenshots](#screenshots)
 - [Analyses](#analyses)
 - [Coverage of mokken](#coverage-of-mokken)
 - [Graphics](#graphics)
@@ -76,6 +77,43 @@ the whole toolkit in jamovi's point-and-click interface:
   control over items, confidence bands, size and layout.
 - **Native citations.** Every method-backed table cites its own source in
   jamovi's numbered reference format.
+
+---
+
+## Screenshots
+
+<p align="center">
+  <img src="docs/screenshots/demo.gif" width="100%" alt="MokkenLab demo">
+</p>
+
+<table width="100%">
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/scalability.png" width="100%" alt="Item scalability">
+      <p><em>Item scalability with confidence intervals, with the Mokken Lab menu in jamovi</em></p>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/hij-heatmap.png" width="100%" alt="Item-pair scalability heat map">
+      <p><em>Item-pair scalability (H<sub>ij</sub>): the two subscales of the DS14 show as two blocks</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/guttman-errors.png" width="100%" alt="Guttman errors">
+      <p><em>Guttman-error outliers with Tukey and skew-adjusted fences</em></p>
+    </td>
+    <td align="center" width="50%">
+      <img src="docs/screenshots/norms.png" width="100%" alt="Norm statistics">
+      <p><em>Percentile ranks of the total score with their uncertainty, and the applied interpretation</em></p>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" colspan="2">
+      <img src="docs/screenshots/two-level.png" width="50%" alt="Two-level Mokken scale analysis">
+      <p><em>Two-level scalability: students (raters) nested in their teachers (subjects)</em></p>
+    </td>
+  </tr>
+</table>
 
 ---
 
