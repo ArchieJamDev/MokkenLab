@@ -442,7 +442,7 @@ listwise deletion or two-way imputation, reversal of negatively worded items)
 ↓
 
 mokken call wrapped in .mk_capture() (errors -> reject or Category B,
-warnings -> translated Notes, console output discarded)
+warnings -> translated jamovi notices, console output discarded)
 
 ↓
 
@@ -552,9 +552,9 @@ follows the user's own jamovi Theme/Palette settings. Derive fixed colors
 reference pattern. Every plot also reads the shared plot settings through `.mk_plot_style()`,
 `.mk_plot_theme()` and `.mk_set_size()` (ARCHITECTURE.md §10); a new plot must
 honor all of them.
-Offer a module-level `plotPalette` option only for choices jamovi does not
-itself provide (colorblind-safe, viridis) — never a `plotStyle` option,
-which only duplicates jamovi's own Theme control. When a manual N-category
+Series colours come from jamovi's palette through `.mk_global_palette()`
+(`jmvcore::colorPalette()`); never add a module palette or `plotStyle`
+option, which would duplicate jamovi's own Theme and Palette controls. When a manual N-category
 scale is needed, apply it via `scale_color_manual()`/`scale_fill_manual()`
 placed *after* `+ ggtheme` in the chain — ggtheme's own discrete scale
 otherwise silently wins.
@@ -574,10 +574,10 @@ a nivel de módulo. Toda función de render tiene la firma
 tiene configurados en jamovi. Derivar los colores fijos (punto, línea,
 alerta, referencia) desde `theme$color`/`theme$fill` mediante un pequeño
 ayudante `.plotColors(theme)` — ver `logcheck.b.R` de AssumptionsLab como patrón de
-referencia. Ofrecer una opción `plotPalette` a nivel de módulo solo para
-opciones que jamovi mismo no ofrece (apta para daltonismo, viridis) —
-nunca una opción `plotStyle`, que solo duplica el propio control de Tema
-de jamovi. Cuando se necesite una escala manual de N categorías, aplicarla
+referencia. Los colores de las series vienen de la paleta de jamovi
+mediante `.mk_global_palette()` (`jmvcore::colorPalette()`); nunca agregar
+una opción de paleta o `plotStyle` propia, que duplicaría los controles de
+Tema y Paleta de jamovi. Cuando se necesite una escala manual de N categorías, aplicarla
 vía `scale_color_manual()`/`scale_fill_manual()` colocada *después* de
 `+ ggtheme` en la cadena — de lo contrario, la escala discreta propia de
 ggtheme gana en silencio.
@@ -644,40 +644,33 @@ English
 
 Spanish
 
-MokkenLab has three separate bilingual mechanisms — do not confuse
+MokkenLab has two separate bilingual mechanisms — do not confuse
 them.
 
 1. **Source comments.** Every `.R`/`.yaml` comment: English, then a
    Spanish `# ES:` block immediately below. Governed by CODE_STYLE.md.
-2. **Report content.** The `reportLang` option, `tr()`, and `texts.R`.
-   Controls the language of the analytical content the user sees inside a
-   running analysis's results — chosen per-analysis by the user,
-   independent of jamovi's own interface language.
-3. **Interface catalog.** jamovi's own native i18n mechanism
-   (`jamovi/i18n/catalog.pot` + `es.po`). Controls option-panel titles,
-   descriptions, and result/table headers — follows jamovi's own
-   UI-language setting, entirely independent of `reportLang`. See
-   ARCHITECTURE.md §12.
+2. **Interface and report.** jamovi's own native i18n mechanism
+   (`jamovi/i18n/catalog.pot` + `es.po`). It covers option-panel titles,
+   descriptions, result and table headers, and every `.()` string of the
+   report (`R/texts.R`). Everything follows jamovi's language setting;
+   there is no module language option. See ARCHITECTURE.md §12.
 
 -------------------------------------------------------------------------------
 
 # ES:
 
-MokkenLab tiene tres mecanismos bilingües separados — no
+MokkenLab tiene dos mecanismos bilingües separados — no
 confundirlos.
 
 1. **Comentarios de código fuente.** Cada comentario `.R`/`.yaml`: inglés,
    seguido de un bloque `# ES:` en español inmediatamente debajo. Regido
    por CODE_STYLE.md.
-2. **Contenido del informe.** La opción `reportLang`, `tr()` y `texts.R`.
-   Controla el idioma del contenido analítico que el usuario ve dentro de
-   los resultados de un análisis en ejecución — elegido por el usuario
-   para cada análisis, independiente del idioma de interfaz de jamovi.
-3. **Catálogo de interfaz.** El propio mecanismo nativo de i18n de jamovi
-   (`jamovi/i18n/catalog.pot` + `es.po`). Controla los títulos del panel
-   de opciones, descripciones y encabezados de resultado/tabla — sigue el
-   propio ajuste de idioma de interfaz de jamovi, totalmente independiente
-   de `reportLang`. Ver ARCHITECTURE.md §12.
+2. **Interfaz e informe.** El propio mecanismo nativo de i18n de jamovi
+   (`jamovi/i18n/catalog.pot` + `es.po`). Cubre los títulos del panel de
+   opciones, las descripciones, los encabezados de resultados y tablas, y
+   cada string `.()` del informe (`R/texts.R`). Todo sigue el idioma
+   configurado en jamovi; el módulo no tiene opción de idioma. Ver
+   ARCHITECTURE.md §12.
 
 -------------------------------------------------------------------------------
 
@@ -755,9 +748,9 @@ Before releasing any module verify
 □ User interface reviewed.
 
 □ Plots render correctly under jamovi's default theme and at least one
-  non-default palette (colorblind-safe or viridis).
+  other jamovi palette.
 
-□ If any `.a.yaml`/`.u.yaml`/`.r.yaml` text changed, `jmvtools::i18nUpdate("es")`
+□ If any `.a.yaml`/`.u.yaml`/`.r.yaml` text or any `.("...")` string in `R/` changed, `jmvtools::i18nUpdate("es")`
   was run and every new string has a translation.
 
 -------------------------------------------------------------------------------
@@ -845,7 +838,7 @@ Before publishing a new version verify
 □ Repository synchronized.
 
 □ `jamovi/i18n/catalog.pot`/`es.po` regenerated if any interface text
-  changed (`jmvtools::i18nUpdate("es")`).
+  or report text changed (`jmvtools::i18nUpdate("es")`).
 
 □ `R/*.h.R` and `R/00jmv.R` regenerated with `jmvtools::prepare()` after any
   `.yaml` change.

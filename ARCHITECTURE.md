@@ -571,10 +571,12 @@ Every plot reads one shared set of plot settings through `.mk_plot_style()`,
 `.mk_plot_theme()` and `.mk_set_size()`: width and height (or automatic,
 scaled to the number of panels), point size, line width, panels per row,
 legend position, x-axis label angle, y-axis range (full theoretical range or
-fitted to the data), value labels, and a palette option that adds only what
-jamovi does not ship (Okabe-Ito, viridis). mokken's own plot arguments are
-all exposed: items and item pairs (Items to plot), curves (IRF, ISRFs or
-both), ci, alpha, transparancy (band opacity) and color (palette).
+fitted to the data) and value labels. Colours come from jamovi's own palette
+through `.mk_global_palette()` (`jmvcore::colorPalette()`), so plots match
+every other module; there is no module palette option. mokken's own plot
+arguments are exposed: items and item pairs (Items to plot), curves (IRF,
+ISRFs or both), ci, alpha and transparancy (band opacity); mokken's `color`
+argument is covered by jamovi's palette.
 
 -------------------------------------------------------------------------------
 
@@ -595,8 +597,11 @@ distintos; un eje categórico común los ubicaría mal.
 Todos los gráficos leen un mismo conjunto de ajustes mediante
 `.mk_plot_style()`, `.mk_plot_theme()` y `.mk_set_size()`: ancho y alto (o
 automático), tamaño de punto, grosor de línea, paneles por fila, leyenda,
-ángulo del eje X, rango del eje Y, etiquetas de valor y paleta. Todos los
-argumentos de los métodos plot de mokken están expuestos.
+ángulo del eje X, rango del eje Y y etiquetas de valor. Los colores vienen de
+la paleta de jamovi mediante `.mk_global_palette()`
+(`jmvcore::colorPalette()`), así que coinciden con los de los demás módulos;
+no hay opción de paleta propia. Los argumentos de los métodos plot de mokken
+están expuestos, y `color` lo cubre la paleta de jamovi.
 
 -------------------------------------------------------------------------------
 
@@ -604,12 +609,14 @@ argumentos de los métodos plot de mokken están expuestos.
 
 Teaching lives inside every analysis rather than in a separate library
 analysis: each table is preceded by a "How to read" block (option "How to
-read each table", on by default) that says what the statistic measures, how
+read each table" in the Report Content box, off by default so the output
+stays compact) that says what the statistic measures, how
 it works, what values to expect and the most common misreading; an "About
 your choices" block explains every decision currently selected and when an
 alternative fits better; and the interpretation answers the four questions
-of §9. All of this is `reportLang` text in `texts.R` (sections `guide`,
-`choices` and one per analysis), so it switches language instantly.
+of §9. All of this is text in `texts.R` (sections `guide`, `choices` and one
+per analysis), wrapped in `.()` and translated through jamovi's catalog
+(§12).
 
 Per-analysis citations use jamovi's native mechanism (`jamovi/00refs.yaml` +
 `refs:` on each `Table`). The complete APA 7th edition reference list lives in
@@ -620,12 +627,12 @@ Per-analysis citations use jamovi's native mechanism (`jamovi/00refs.yaml` +
 # Biblioteca metodológica
 
 La enseñanza vive dentro de cada análisis y no en un análisis de biblioteca
-aparte: cada tabla va precedida de un bloque "Cómo leer" (opción activada por
-defecto) que dice qué mide el estadístico, cómo funciona, qué valores esperar
+aparte: cada tabla va precedida de un bloque "Cómo leer" (opción de la caja Contenido del informe,
+desactivada por defecto para que la salida sea compacta) que dice qué mide el estadístico, cómo funciona, qué valores esperar
 y la lectura errónea más común; un bloque "Acerca de sus elecciones" explica
 cada decisión seleccionada y cuándo conviene otra; y la interpretación
-responde las cuatro preguntas de §9. Todo es texto `reportLang` en `texts.R`,
-así que cambia de idioma al instante.
+responde las cuatro preguntas de §9. Todo es texto de `texts.R`, envuelto en
+`.()` y traducido con el catálogo de jamovi (§12).
 
 Las citas por análisis usan el mecanismo nativo de jamovi
 (`jamovi/00refs.yaml` + `refs:` en cada `Table`). La lista completa en APA 7.ª
@@ -635,130 +642,99 @@ edición vive en `docs/Bibliography.md`.
 
 # 12. Internationalization
 
-MokkenLab follows a bilingual philosophy, implemented as three
-separate mechanisms that must not be confused with one another.
+MokkenLab follows a bilingual philosophy, implemented as two separate
+mechanisms that must not be confused with one another.
 
 ```
-Source code                Report content              Interface
-comments                   (reportLang)                 (jamovi i18n)
+Source code                    Interface and report
+comments                       (jamovi i18n)
 
-English, then       Chosen per-analysis by    Follows jamovi's own
-a Spanish "# ES:"    the user, independent     UI-language setting,
-block below          of jamovi's own UI        independent of
-(CODE_STYLE.md)       language (tr()/          reportLang
-                       texts.R)
-                                                jamovi/i18n/catalog.pot
-                                                + es.po, auto-extracted
-                                                from every title/
-                                                description/label in
-                                                .a.yaml/.u.yaml/.r.yaml/
-                                                0000.yaml — no markup
-                                                needed in the yaml
-                                                itself
+English, then a Spanish        Follows jamovi's own language setting.
+"# ES:" block below            jamovi/i18n/catalog.pot + es.po hold:
+(CODE_STYLE.md)                 - every title/description/label in
+                                  .a.yaml/.u.yaml/.r.yaml/0000.yaml,
+                                  extracted with no markup;
+                                - every .("...") string in R/*.R
+                                  (texts.R, *.b.R, shared-helpers.R).
+                               inst/i18n/es.json is built from es.po.
 ```
 
-The interface catalog is jamovi's own native mechanism, not a custom
-reimplementation: its compiler scans every yaml definition file and
-extracts translatable strings automatically. `jmvtools::i18nCreate("es")`
-seeds a translation file; `jmvtools::i18nUpdate("es")` re-syncs it as
-strings change. Because gettext's model is one source string to one
-translation, every yaml source string must be written in one consistent
-language (English) — a module with mixed-language yaml text produces a
-mixed-language catalog no translation file can fix.
+Both the interface and the report use jamovi's own catalog, not a custom
+reimplementation. The compiler extracts the yaml strings and every `.()`
+literal in the R sources; `jmvtools::i18nUpdate("es")` re-syncs `es.po` as
+strings change, and `jmvtools::prepare()` writes `inst/i18n/es.json`. Because
+gettext's model is one source string to one translation, every source string
+is written in English; when one English word needs two Spanish translations,
+it carries a context (`.("Wald-based [inline]")`).
 
-A future language added to any of the three mechanisms should not require
-architectural modification — source comments simply gain no new language
-(bilingual is fixed), report content gains a new `reportLang` choice plus
-`texts.R` entries, and the interface gains one more `.po` file.
+Report text lives in `R/texts.R` as `.mk_text_table(.)`, a function of the
+translator, so every entry is a `.()` literal the compiler can see. Each run
+builds it once with `.mk_lang(options)` and reads it with `.mk_text(lang,
+section, key)`.
 
-## Why report content keeps its own `reportLang`, on purpose
+`.()` does not freeze. `jmvcore::Options$translate()` creates its translator
+for each `Options` object, from the language jamovi sends with each run, and
+`createTranslator()` caches one translator per package and language. A change
+of jamovi's language therefore reaches the next run without a restart.
+`tests/testthat/test-msa.R` runs the same analysis in Spanish, English and
+Spanish again in one process. An earlier version of this section said the
+opposite and kept a per-analysis `reportLang` option; reading jmvcore 2.7.38
+showed that claim was wrong, and the option was removed in 1.0.0.
 
-`reportLang`/`tr()`/`texts.R` is not a stopgap waiting to be replaced by
-jamovi's native `.()` catalog. `.()` is only safe for text jamovi's
-compiler extracts from yaml — `jmvcore::Options$translate()` builds its
-translator once per R engine process and never invalidates it, so text
-assembled dynamically in R and routed through `.()` freezes at whatever
-language was active when that process started; nothing short of
-restarting jamovi picks up a change. Confirmed by reading `jmvcore`
-directly after the regression first shipped (and was reverted) in a
-sibling module, FiabilityLab.
+A future language needs only one more `.po` file.
 
-Instant, reliable switching also serves the module's teaching mission
-directly, not just its mechanics. MokkenLab is built to teach
-methodology to novice researchers and students. Seeing the same
-analytical paragraph in Spanish and then, with one click, in English is
-itself part of that lesson — it shows a student early why precise
-methodological vocabulary matters, since that precision is what
-eventually gets read and published. A mechanism that cannot guarantee an
-instant, reliable switch would undermine that, not just inconvenience it.
+The module has no language option of its own: to read the results in
+another language, the user changes jamovi's language in its settings.
 
 -------------------------------------------------------------------------------
 
 # Internacionalización
 
-La arquitectura de MokkenLab sigue una filosofía bilingüe,
-implementada como tres mecanismos separados que no deben confundirse entre
-sí.
+La arquitectura de MokkenLab sigue una filosofía bilingüe, implementada como
+dos mecanismos separados que no deben confundirse entre sí.
 
 ```
-Comentarios de           Contenido del informe        Interfaz
-código fuente             (reportLang)                 (i18n de jamovi)
+Comentarios de                 Interfaz e informe
+código fuente                  (i18n de jamovi)
 
-Inglés, seguido de   Elegido por el usuario     Sigue el propio ajuste
-un bloque "# ES:"     para cada análisis,        de idioma de interfaz
-en español debajo     independiente del idioma   de jamovi, independiente
-(CODE_STYLE.md)        de interfaz de jamovi      de reportLang
-                        (tr()/texts.R)
-                                                   jamovi/i18n/catalog.pot
-                                                   + es.po, extraídos
-                                                   automáticamente de
-                                                   cada title/
-                                                   description/label en
-                                                   .a.yaml/.u.yaml/
-                                                   .r.yaml/0000.yaml —
-                                                   sin necesitar ninguna
-                                                   marca en el yaml
+Inglés, seguido de un          Sigue el ajuste de idioma de jamovi.
+bloque "# ES:" en español      jamovi/i18n/catalog.pot + es.po guardan:
+(CODE_STYLE.md)                 - cada title/description/label de
+                                  .a.yaml/.u.yaml/.r.yaml/0000.yaml,
+                                  extraídos sin ninguna marca;
+                                - cada string .("...") de R/*.R
+                                  (texts.R, *.b.R, shared-helpers.R).
+                               inst/i18n/es.json se genera desde es.po.
 ```
 
-El catálogo de interfaz es el propio mecanismo nativo de jamovi, no una
-reimplementación propia: su compilador escanea cada archivo de definición
-yaml y extrae los strings traducibles automáticamente.
-`jmvtools::i18nCreate("es")` siembra un archivo de traducción;
-`jmvtools::i18nUpdate("es")` lo resincroniza a medida que cambian los
-strings. Como el modelo de gettext es un string fuente por cada
-traducción, todo string fuente del yaml debe escribirse en un solo idioma
-consistente (inglés) — un módulo con texto yaml en idiomas mezclados
-produce un catálogo mezclado que ningún archivo de traducción puede
-arreglar.
+La interfaz y el informe usan el catálogo propio de jamovi, no una
+reimplementación. El compilador extrae los strings del yaml y cada literal
+`.()` de los fuentes R; `jmvtools::i18nUpdate("es")` resincroniza `es.po`
+cuando cambian los strings, y `jmvtools::prepare()` escribe
+`inst/i18n/es.json`. Como el modelo de gettext es un string fuente por cada
+traducción, todo string fuente se escribe en inglés; cuando una palabra
+inglesa necesita dos traducciones, lleva un contexto
+(`.("Wald-based [inline]")`).
 
-Un idioma futuro agregado a cualquiera de los tres mecanismos no debería
-requerir modificación arquitectónica — los comentarios de código
-simplemente no ganan un idioma nuevo (el bilingüismo es fijo), el
-contenido del informe gana una nueva opción de `reportLang` más entradas
-en `texts.R`, y la interfaz gana un archivo `.po` más.
+El texto del informe vive en `R/texts.R` como `.mk_text_table(.)`, una
+función del traductor, así que cada entrada es un literal `.()` visible para
+el compilador. Cada ejecución lo construye una vez con `.mk_lang(options)` y
+lo lee con `.mk_text(lang, section, key)`.
 
-## Por qué el contenido del informe conserva su propio `reportLang`, a propósito
+`.()` no se congela. `jmvcore::Options$translate()` crea su traductor para
+cada objeto `Options`, con el idioma que jamovi envía en cada ejecución, y
+`createTranslator()` guarda un traductor por paquete e idioma. Un cambio del
+idioma de jamovi llega a la siguiente ejecución sin reiniciar.
+`tests/testthat/test-msa.R` ejecuta el mismo análisis en español, inglés y de
+nuevo español en un solo proceso. Una versión anterior de esta sección decía
+lo contrario y mantenía una opción `reportLang` por análisis; la lectura de
+jmvcore 2.7.38 mostró que esa afirmación era errónea, y la opción se quitó en
+la versión 1.0.0.
 
-`reportLang`/`tr()`/`texts.R` no es una solución provisional a la espera
-de ser reemplazada por el catálogo nativo `.()` de jamovi. `.()` solo es
-seguro para texto que el compilador de jamovi extrae del yaml —
-`jmvcore::Options$translate()` construye su traductor una sola vez por
-proceso del motor de R y nunca lo invalida, así que el texto ensamblado
-dinámicamente en R y enrutado por `.()` queda congelado en el idioma que
-estaba activo cuando ese proceso arrancó; nada salvo reiniciar jamovi
-recoge un cambio. Confirmado leyendo `jmvcore` directamente después de que
-la regresión se publicara (y se revirtiera) en un módulo hermano,
-FiabilityLab.
+Un idioma futuro solo necesita un archivo `.po` más.
 
-El cambio de idioma instantáneo y confiable también sirve directamente a
-la misión pedagógica del módulo, no solo a su mecánica. MokkenLab
-está construido para enseñar metodología a investigadores noveles y
-estudiantes. Ver el mismo párrafo analítico en español y luego, con un
-clic, en inglés es en sí mismo parte de esa lección — le muestra al
-estudiante desde temprano por qué importa la precisión del vocabulario
-metodológico, ya que esa precisión es lo que eventualmente se lee y se
-publica. Un mecanismo que no puede garantizar un cambio instantáneo y
-confiable socavaría eso, no solo lo haría menos cómodo.
+El módulo no tiene opción de idioma propia: para leer los resultados en otro
+idioma, el usuario cambia el idioma de jamovi en sus preferencias.
 
 -------------------------------------------------------------------------------
 
@@ -911,9 +887,11 @@ tens of seconds. Each runs only when its checkbox is ticked. jamovi re-runs
 `.run()` on every option change, so every mokken call goes through
 `.mk_cached_capture()`: results are kept in a hidden `cacheStore` element,
 keyed by a hash of the data and of every argument (a cached result is never
-reused for other data or options), capped at 12 entries and 25 MB because the
-store is saved with the .omv file. A cosmetic change (plot size, palette,
-language) therefore recomputes nothing.
+reused for other data or options). Only the parts of each result that the
+report reads are stored (the `extract` argument, built with `.mk_keep()`), and
+the store is capped at 8 entries and 2 MB because it is saved with the .omv
+file. A cosmetic change (plot size, labels, guides) therefore recomputes
+nothing.
 
 **Reproducibility record.** Every analysis ends with the software versions,
 the seeds and the equivalent R code with the exact mokken calls it made

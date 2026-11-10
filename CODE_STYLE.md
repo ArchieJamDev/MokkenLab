@@ -396,10 +396,9 @@ Never by plotting library.
 
 Never reimplement jamovi's own Theme/Palette controls. Every render function
 receives `ggtheme`/`theme` from jamovi itself — build on `+ ggtheme`, never
-a parallel `plotStyle` option. A module-level palette option is only
-justified when it is genuinely additive to what jamovi already offers (a
-colorblind-safe or viridis set jamovi does not ship) — verify with
-`jmvcore::colorPalette()` before adding one, don't assume.
+a parallel `plotStyle` option. Series colours come from jamovi's own
+palette through `jmvcore::colorPalette()` (`.mk_global_palette()`); the
+module has no palette option of its own.
 
 A manual `scale_color_manual()`/`scale_fill_manual()` must be added to the
 plot *after* `+ ggtheme`, never before — ggtheme carries its own discrete
@@ -411,11 +410,10 @@ scale, and whichever scale is added last to the ggplot object wins.
 
 Nunca reimplementar los propios controles de Tema/Paleta de jamovi. Cada
 función de render recibe `ggtheme`/`theme` desde el propio jamovi —
-construir sobre `+ ggtheme`, nunca una opción `plotStyle` paralela. Una
-opción de paleta a nivel de módulo solo se justifica cuando es genuinamente
-aditiva respecto a lo que jamovi ya ofrece (un conjunto apto para
-daltonismo o viridis que jamovi no trae) — verificar con
-`jmvcore::colorPalette()` antes de agregar una, no asumir.
+construir sobre `+ ggtheme`, nunca una opción `plotStyle` paralela. Los
+colores de las series vienen de la paleta de jamovi mediante
+`jmvcore::colorPalette()` (`.mk_global_palette()`); el módulo no tiene
+opción de paleta propia.
 
 Un `scale_color_manual()`/`scale_fill_manual()` manual debe agregarse al
 gráfico *después* de `+ ggtheme`, nunca antes — ggtheme trae su propia
@@ -510,14 +508,14 @@ changes.
 
 An `Html` result's static `content:` field (resolved natively, like
 `title`) is the right place for text that never changes once compiled —
-`AssumptionsLab's Assumption Library`'s category guides are the precedent: fully static
-glossary text, translated through `jamovi/i18n/es.po` instead of
-`reportLang`, with zero risk of the `.()`-from-R caching bug (§21), since
-nothing is ever assembled in R for it. The moment text needs to vary at
-runtime (per row, per computed value, per dataset), it no longer qualifies
-for a static `content:` field and must go through `tr()`/`reportLang`
-like everything else in this project — never through `.()` called from
-`.b.R`.
+`AssumptionsLab's Assumption Library`'s category guides are the precedent.
+Text assembled in R (per row, per computed value, per dataset) is written
+as an English `.("...")` literal: report text goes in `R/texts.R`
+(`.mk_text_table(.)`), short labels may sit in `.b.R`. The compiler
+extracts every literal into the same catalog, and the text follows
+jamovi's language. Never build the argument of `.()` with `paste()` or
+`sprintf()`: translate the template, then fill it
+(`sprintf(.("%d items"), n)`).
 
 -------------------------------------------------------------------------------
 
@@ -537,14 +535,13 @@ incluido el inglés. Regenerar el catálogo
 El campo `content:` estático de un resultado `Html` (resuelto de forma
 nativa, igual que `title`) es el lugar correcto para texto que nunca
 cambia una vez compilado — las guías por categoría de `Assumption
-Library` son el precedente: texto de glosario completamente estático,
-traducido vía `jamovi/i18n/es.po` en vez de `reportLang`, sin ningún
-riesgo del bug de caché de `.()` llamado desde R (§21), porque nada se
-ensambla en R para ese contenido. En el momento en que el texto necesita
-variar en tiempo de ejecución (por fila, por valor calculado, por
-dataset), ya no califica para un `content:` estático y debe pasar por
-`tr()`/`reportLang` como todo lo demás en este proyecto — nunca por
-`.()` llamado desde `.b.R`.
+Library` son el precedente. El texto que se arma en R (por fila, por
+valor calculado, por dataset) se escribe como literal `.("...")` en
+inglés: el texto del informe va en `R/texts.R` (`.mk_text_table(.)`), y
+las etiquetas cortas pueden quedar en `.b.R`. El compilador extrae cada
+literal al mismo catálogo, y el texto sigue el idioma de jamovi. Nunca
+construir el argumento de `.()` con `paste()` o `sprintf()`: traducir la
+plantilla y luego llenarla (`sprintf(.("%d items"), n)`).
 
 -------------------------------------------------------------------------------
 

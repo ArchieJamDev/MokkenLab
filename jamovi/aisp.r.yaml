@@ -84,7 +84,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -113,7 +112,7 @@ items:
   - name: membership
     title: Scale membership
     type: Table
-    rows: 0
+    rows: (vars)
     visible: (lbMode:single)
     refs:
       - mokken_1971
@@ -128,7 +127,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -150,6 +148,7 @@ items:
       - name: item
         title: "Item"
         type: text
+        content: ($key)
       - name: scale
         title: "Scale"
         type: text
@@ -175,7 +174,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -247,7 +245,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -304,7 +301,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -335,7 +331,6 @@ items:
       - plotAxisAngle
       - plotYRange
       - plotValueLabels
-      - plotPalette
 
   - name: sequenceGuide
     title: How to read the sequence of lower bounds
@@ -345,7 +340,7 @@ items:
   - name: sequence
     title: Scale membership across lower bounds
     type: Table
-    rows: 0
+    rows: (vars)
     visible: (lbMode:sequence)
     refs:
       - hemker_1995
@@ -359,7 +354,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -381,6 +375,7 @@ items:
       - name: item
         title: "Item"
         type: text
+        content: ($key)
 
   - name: sequenceSummary
     title: Partition at each lower bound
@@ -396,7 +391,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -439,7 +433,6 @@ items:
     clearWith:
       - scaleCoefs
       - scalePlot
-      - plotPalette
       - plotValueLabels
       - plotYRange
       - plotAxisAngle
@@ -457,7 +450,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -484,7 +476,6 @@ items:
     renderFun: .plotSequence
     visible: (lbMode:sequence && sequencePlot)
     clearWith:
-      - plotPalette
       - plotValueLabels
       - plotYRange
       - plotAxisAngle
@@ -502,7 +493,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - clusterVar
       - lbMode
       - lowerbound
@@ -530,6 +520,7 @@ items:
     type: Html
     visible: (showRepro)
 
-  - name: notes
-    title: Notes
-    type: Html
+  - name: reproducibilityCode
+    title: Equivalent R code
+    type: Preformatted
+    visible: (showRepro)

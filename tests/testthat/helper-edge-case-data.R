@@ -113,6 +113,16 @@ edgeTwoLevelData <- function(subjects = 15, raters = 12) {
 # functions can be called on the result.
 # ES: Ejecutar un análisis a través de su clase R6 (como jamovi), para poder
 # llamar a las funciones privadas de render sobre el resultado.
+# Run an analysis with jamovi's language set to `lang`, as jamovi does when
+# its interface language is Spanish (jmvcore reads LANGUAGE when no language
+# is sent with the options).
+# ES: Ejecutar un análisis con el idioma de jamovi fijado en `lang`, como
+# hace jamovi cuando su interfaz está en español.
+runAnalysisIn <- function(lang, name, data, ...) {
+    withr::local_envvar(c(LANGUAGE = lang))
+    runAnalysis(name, data, ...)
+}
+
 runAnalysis <- function(name, data, ...) {
     cls <- get(paste0(name, "Class"), envir = asNamespace("MokkenLab"))
     opts <- get(paste0(name, "Options"), envir = asNamespace("MokkenLab"))

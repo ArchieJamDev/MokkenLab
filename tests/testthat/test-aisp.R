@@ -57,8 +57,8 @@ test_that("aisp genetic algorithm is reproducible with the same seed", {
 
 test_that("aisp accepts a start set, Hi tests and nested data", {
     data <- edgeTwoLevelData()
-    a <- runAnalysis("aisp", data, vars = paste0("r", 1:5), clusterVar = "Subject", startSet = c("r1", "r2"),
-                     testHi = TRUE, reportLang = "es")
+    a <- runAnalysisIn("es", "aisp", data, vars = paste0("r", 1:5), clusterVar = "Subject", startSet = c("r1", "r2"),
+                       testHi = TRUE)
     expect_true(a$results$membership$isFilled())
     expect_false(grepl("[missing text", a$results$interpretation$content, fixed = TRUE))
 })

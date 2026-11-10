@@ -8,10 +8,9 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             clusterVar = NULL,
-            reportLang = "en",
             showKeySummary = TRUE,
             showChoicesGuide = FALSE,
-            showGuides = TRUE,
+            showGuides = FALSE,
             showRepro = TRUE,
             naHandling = "listwise",
             twowaySets = 1,
@@ -62,8 +61,7 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plotLegend = "bottom",
             plotAxisAngle = "a45",
             plotYRange = "full",
-            plotValueLabels = FALSE,
-            plotPalette = "jamovi", ...) {
+            plotValueLabels = FALSE, ...) {
 
             super$initialize(
                 package="MokkenLab",
@@ -88,13 +86,6 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "factor",
                     "numeric"))
-            private$..reportLang <- jmvcore::OptionList$new(
-                "reportLang",
-                reportLang,
-                options=list(
-                    "en",
-                    "es"),
-                default="en")
             private$..showKeySummary <- jmvcore::OptionBool$new(
                 "showKeySummary",
                 showKeySummary,
@@ -106,7 +97,7 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..showGuides <- jmvcore::OptionBool$new(
                 "showGuides",
                 showGuides,
-                default=TRUE)
+                default=FALSE)
             private$..showRepro <- jmvcore::OptionBool$new(
                 "showRepro",
                 showRepro,
@@ -404,18 +395,9 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plotValueLabels",
                 plotValueLabels,
                 default=FALSE)
-            private$..plotPalette <- jmvcore::OptionList$new(
-                "plotPalette",
-                plotPalette,
-                options=list(
-                    "jamovi",
-                    "colorblind",
-                    "viridis"),
-                default="jamovi")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..clusterVar)
-            self$.addOption(private$..reportLang)
             self$.addOption(private$..showKeySummary)
             self$.addOption(private$..showChoicesGuide)
             self$.addOption(private$..showGuides)
@@ -470,12 +452,10 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plotAxisAngle)
             self$.addOption(private$..plotYRange)
             self$.addOption(private$..plotValueLabels)
-            self$.addOption(private$..plotPalette)
         }),
     active = list(
         vars = function() private$..vars$value,
         clusterVar = function() private$..clusterVar$value,
-        reportLang = function() private$..reportLang$value,
         showKeySummary = function() private$..showKeySummary$value,
         showChoicesGuide = function() private$..showChoicesGuide$value,
         showGuides = function() private$..showGuides$value,
@@ -529,12 +509,10 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plotLegend = function() private$..plotLegend$value,
         plotAxisAngle = function() private$..plotAxisAngle$value,
         plotYRange = function() private$..plotYRange$value,
-        plotValueLabels = function() private$..plotValueLabels$value,
-        plotPalette = function() private$..plotPalette$value),
+        plotValueLabels = function() private$..plotValueLabels$value),
     private = list(
         ..vars = NA,
         ..clusterVar = NA,
-        ..reportLang = NA,
         ..showKeySummary = NA,
         ..showChoicesGuide = NA,
         ..showGuides = NA,
@@ -588,8 +566,7 @@ msacheckOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plotLegend = NA,
         ..plotAxisAngle = NA,
         ..plotYRange = NA,
-        ..plotValueLabels = NA,
-        ..plotPalette = NA)
+        ..plotValueLabels = NA)
 )
 
 msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -621,7 +598,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         critPlot = function() private$.items[["critPlot"]],
         interpretation = function() private$.items[["interpretation"]],
         reproducibility = function() private$.items[["reproducibility"]],
-        notes = function() private$.items[["notes"]]),
+        reproducibilityCode = function() private$.items[["reproducibilityCode"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -675,7 +652,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -732,7 +708,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -743,6 +718,11 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="item", 
                         `title`="Item", 
                         `type`="text"),
+                    list(
+                        `name`="level", 
+                        `title`="Level", 
+                        `type`="text", 
+                        `visible`="(clusterVar)"),
                     list(
                         `name`="hi", 
                         `title`="Hi", 
@@ -818,7 +798,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -828,8 +807,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotItems",
                     "plotCI",
                     "plotAlpha",
-                    "plotTransparency",
-                    "plotPalette")))
+                    "plotTransparency")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="iioGuide",
@@ -854,7 +832,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -872,6 +849,11 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                         `name`="item", 
                         `title`="Item", 
                         `type`="text"),
+                    list(
+                        `name`="level", 
+                        `title`="Level", 
+                        `type`="text", 
+                        `visible`="(clusterVar)"),
                     list(
                         `name`="mean", 
                         `title`="Mean", 
@@ -946,7 +928,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -1025,7 +1006,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -1078,7 +1058,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -1094,8 +1073,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotItems",
                     "plotCI",
                     "plotAlpha",
-                    "plotTransparency",
-                    "plotPalette")))
+                    "plotTransparency")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="restGuide",
@@ -1119,7 +1097,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -1205,7 +1182,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -1214,8 +1190,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotItems",
                     "plotCI",
                     "plotAlpha",
-                    "plotTransparency",
-                    "plotPalette")))
+                    "plotTransparency")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="pmatGuide",
@@ -1239,7 +1214,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "pmatMinvi",
                     "checkPmatrix"),
@@ -1323,7 +1297,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "pmatMinvi",
                     "checkPmatrix",
@@ -1331,8 +1304,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotItems",
                     "plotCI",
                     "plotAlpha",
-                    "plotTransparency",
-                    "plotPalette")))
+                    "plotTransparency")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="caGuide",
@@ -1356,7 +1328,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "caWindex",
                     "caMinsize",
@@ -1386,7 +1357,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "caWindex",
                     "caMinsize",
@@ -1440,7 +1410,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "minsizeMode",
                     "minsize",
@@ -1473,7 +1442,6 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotAxisAngle",
                     "plotYRange",
                     "plotValueLabels",
-                    "plotPalette",
                     "caWindex",
                     "caMinsize",
                     "caMingroup",
@@ -1488,10 +1456,11 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="reproducibility",
                 title="Reproducibility",
                 visible="(showRepro)"))
-            self$add(jmvcore::Html$new(
+            self$add(jmvcore::Preformatted$new(
                 options=options,
-                name="notes",
-                title="Notes"))}))
+                name="reproducibilityCode",
+                title="Equivalent R code",
+                visible="(showRepro)"))}))
 
 msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "msacheckBase",
@@ -1501,7 +1470,7 @@ msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 package = "MokkenLab",
                 name = "msacheck",
-                version = c(0,1,0),
+                version = c(1,0,0),
                 options = options,
                 results = msacheckResults$new(options=options),
                 data = data,
@@ -1524,7 +1493,6 @@ msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param vars .
 #' @param clusterVar .
-#' @param reportLang .
 #' @param showKeySummary .
 #' @param showChoicesGuide .
 #' @param showGuides .
@@ -1579,7 +1547,6 @@ msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plotAxisAngle .
 #' @param plotYRange .
 #' @param plotValueLabels .
-#' @param plotPalette .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$cacheStore} \tab \tab \tab \tab \tab a html \cr
@@ -1607,7 +1574,7 @@ msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$critPlot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$interpretation} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$reproducibility} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$notes} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$reproducibilityCode} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -1621,10 +1588,9 @@ msacheck <- function(
     data,
     vars,
     clusterVar = NULL,
-    reportLang = "en",
     showKeySummary = TRUE,
     showChoicesGuide = FALSE,
-    showGuides = TRUE,
+    showGuides = FALSE,
     showRepro = TRUE,
     naHandling = "listwise",
     twowaySets = 1,
@@ -1675,8 +1641,7 @@ msacheck <- function(
     plotLegend = "bottom",
     plotAxisAngle = "a45",
     plotYRange = "full",
-    plotValueLabels = FALSE,
-    plotPalette = "jamovi") {
+    plotValueLabels = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("msacheck requires jmvcore to be installed (restart may be required)")
@@ -1697,7 +1662,6 @@ msacheck <- function(
     options <- msacheckOptions$new(
         vars = vars,
         clusterVar = clusterVar,
-        reportLang = reportLang,
         showKeySummary = showKeySummary,
         showChoicesGuide = showChoicesGuide,
         showGuides = showGuides,
@@ -1751,8 +1715,7 @@ msacheck <- function(
         plotLegend = plotLegend,
         plotAxisAngle = plotAxisAngle,
         plotYRange = plotYRange,
-        plotValueLabels = plotValueLabels,
-        plotPalette = plotPalette)
+        plotValueLabels = plotValueLabels)
 
     analysis <- msacheckClass$new(
         options = options,

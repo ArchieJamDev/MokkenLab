@@ -28,15 +28,15 @@
 #
 # Every image must receive a state in .run() (CODE_STYLE: plots render from
 # image$state, so they survive export) and draw under jamovi's ggtheme with
-# every palette and plot setting.
+# every plot setting.
 # ES: Cada imagen debe recibir un estado en .run() y dibujarse con el
-# ggtheme de jamovi con cada paleta y ajuste de gráfico.
+# ggtheme de jamovi con cada ajuste de gráfico.
 # -----------------------------------------------------------------------------
 
 settings <- list(
     list(),
-    list(plotPalette = "colorblind", plotValueLabels = TRUE, plotLegend = "right", plotAxisAngle = "a90"),
-    list(plotPalette = "viridis", plotYRange = "data", plotNcol = 1L, plotWidth = 800L, plotHeight = 600L,
+    list(plotValueLabels = TRUE, plotLegend = "right", plotAxisAngle = "a90"),
+    list(plotYRange = "data", plotNcol = 1L, plotWidth = 800L, plotHeight = 600L,
          plotPointSize = 0, plotLineWidth = 2)
 )
 

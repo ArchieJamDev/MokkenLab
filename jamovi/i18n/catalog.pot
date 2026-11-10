@@ -7,6 +7,14 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "Language: c\n"
 
+#: R/aisp.b.R
+msgid "; Hi tested against c"
+msgstr ""
+
+#: R/shared-helpers.R
+msgid "; results from completed data set 1 of %d, not pooled"
+msgstr ""
+
 #: msacheck/results/mono.columns.title
 #: msacheck/results/iio.columns.title
 #: msacheck/results/iioClusters.columns.title
@@ -47,6 +55,101 @@ msgstr ""
 msgid "%"
 msgstr ""
 
+#: R/mlmsa.b.R
+msgid "%d (%s)"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "%d (mokken default for N = %d)"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"%d bootstrap samples, seed %d (the same seed and data reproduce the same "
+"values). The whole partition was reproduced exactly in a proportion of %s of "
+"the samples."
+msgstr ""
+
+#: R/shared-helpers.R
+msgid "%d of %d (listwise deletion)"
+msgstr ""
+
+#: R/shared-helpers.R
+msgid "%d of %d (two-way imputation of %d missing scores; %d complete cases)"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"%d of %d bootstrap samples could not be analyzed (for example, an item "
+"without variation in the resample) and were left out."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"%d of %d respondents have more Guttman errors than the skew-adjusted fence "
+"U2. Their response patterns are unusually inconsistent with the item "
+"ordering: possible careless responding, misunderstanding or a different "
+"response process. Inspect them before deciding; do not remove them "
+"automatically."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"%d subject(s) have a single rater; they contribute nothing to between-rater "
+"coefficients."
+msgstr ""
+
+#: R/msa.b.R
+msgid "%s (%d clusters; standard errors account for nesting)"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid ""
+"%s (%d clusters; two-level fit statistics for monotonicity and invariant "
+"item ordering)"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "%s (%d clusters)"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "%s to %s in steps of %s (%d values)"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "%s, alpha = %s%s"
+msgstr ""
+
+#: R/texts.R
+msgid "%s: %d item(s) could not be evaluated."
+msgstr ""
+
+#: R/texts.R
+msgid "%s: %d items, H = %s (%s)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"%s: could not be computed, see the footnote of that table. Results that "
+"could not be computed are not evidence in favor of the scale."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"%s: items with doubtful violations (crit 40-80) (%d): %s. Inspect their "
+"curves before deciding; with large samples small, irrelevant violations "
+"become significant."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"%s: the check could not be evaluated for %d item(s): %s. This is not "
+"evidence that they satisfy the assumption; it usually means too few "
+"respondents in the rest-score groups. Lower the minimum group size or "
+"collect more data."
+msgstr ""
+
 #: aisp/options/plotAxisAngle/a45.title
 #: mlmsa/options/plotAxisAngle/a45.title
 #: msa/options/plotAxisAngle/a45.title
@@ -61,6 +164,50 @@ msgstr ""
 msgid "95% confidence interval"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"A correlation outside its bounds is evidence against one monotone latent "
+"variable for that pair, even when the scalability coefficients look "
+"acceptable."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"A decrease of the response function smaller than this value is ignored as "
+"negligible; larger ones are counted and tested. The default .03 follows "
+"Molenaar and Sijtsma (2000; see references). Lowering it makes the check "
+"more sensitive and flags more, mostly trivial, violations."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"A negative Hij means the two items order respondents in opposite directions: "
+"usually an unreversed negatively worded item or an item that measures a "
+"different attribute."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"A one-line summary of the results below, each line naming the section it "
+"comes from. Read the sections for the details and the reasons."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"A partition found in one sample may not replicate: automated item selection "
+"is greedy and capitalizes on chance, so borderline items can move with small "
+"changes in the data."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"A respondent's Guttman errors (G+) count the pairs of item steps they "
+"answered in the unexpected order: passing a step that most people fail while "
+"failing a step that most people pass. Respondents with many errors answer "
+"inconsistently with the item ordering of the rest of the sample."
+msgstr ""
+
+#: R/texts.R
 #: aisp/options/showChoicesGuide.title
 #: aisp/results/choicesGuide.title
 #: mlmsa/options/showChoicesGuide.title
@@ -80,6 +227,20 @@ msgstr ""
 msgid "Accuracy of the item ordering"
 msgstr ""
 
+#: R/texts.R
+msgid "Accuracy of the item ordering: HT = %s (%s)."
+msgstr ""
+
+#: R/texts.R
+msgid "Accuracy of the ordering between clusters"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Across the completed data sets, H ranges from %s to %s. A narrow range means "
+"the conclusions do not depend on the imputed scores."
+msgstr ""
+
 #: aisp/results/summary.title
 #: mlmsa/results/summary.title
 #: msa/results/summary.title
@@ -87,11 +248,33 @@ msgstr ""
 msgid "Analysis summary"
 msgstr ""
 
+#: R/texts.R
 #: aisp/results/interpretation.title
 #: mlmsa/results/interpretation.title
 #: msa/results/interpretation.title
 #: msacheck/results/interpretation.title
 msgid "Applied interpretation"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"At c = .30, Mokken's usual criterion, the selection gives %d scale(s) and %d "
+"unscalable item(s)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"At no lower bound did a second scale appear: as c rises items only become "
+"unscalable. This is the pattern of one attribute measured by items of "
+"different quality."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"At the extremes of the score range, the Wald-based interval of a percentile "
+"rank can pass 0 or 100 (Oosterhuis et al., 2017). The values are shown as "
+"mokken computes them; read such limits as 0 or 100. The plot draws the band "
+"within the possible range."
 msgstr ""
 
 #: package/analyses/aisp.title
@@ -104,6 +287,26 @@ msgstr ""
 #: package/analyses/aisp.menuTitle
 #: aisp/options.menuTitle
 msgid "Automated Item Selection (AISP)"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Automated item selection answers a question that comes before evaluating a "
+"scale: which of these items belong together in one or more Mokken scales? It "
+"is an exploratory tool, comparable in purpose to exploratory factor analysis "
+"but built on scalability instead of correlations."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Automated item selection partitions a set of items into Mokken scales: "
+"groups of items in which every item has scalability Hi of at least a lower "
+"bound c, plus a set of unscalable items (Mokken, 1971; Sijtsma & Molenaar, "
+"2002; see references)."
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Automatic"
 msgstr ""
 
 #: msa/options/lcrcClassesMode/auto.title
@@ -120,6 +323,10 @@ msgstr ""
 msgid "Autonomy support (259 students rating 14 teachers)"
 msgstr ""
 
+#: R/mlmsa.b.R
+msgid "Averaged"
+msgstr ""
+
 #: msacheck/options/iioItemSelection.title
 msgid "Backward item selection"
 msgstr ""
@@ -132,9 +339,55 @@ msgstr ""
 msgid "Band significance level"
 msgstr ""
 
+#: R/msacheck.b.R
 #: mlmsa/results/items.columns.title
 #: mlmsa/results/pairs.columns.title
 msgid "Between"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Between (HBi)"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Between raters (HB)"
+msgstr ""
+
+#: aisp/results/bootPlotImg.title
+msgid "Bootstrap co-membership of item pairs"
+msgstr ""
+
+#: aisp/options/bootReps.title
+msgid "Bootstrap samples"
+msgstr ""
+
+#: aisp/options/bootSeed.title
+msgid "Bootstrap seed"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "Bootstrap seed: %d."
+msgstr ""
+
+#: aisp/ui[6].label
+msgid "Bootstrap Stability"
+msgstr ""
+
+#: aisp/options/bootStability.title
+#: aisp/results/bootTable.title
+msgid "Bootstrap stability of the partition"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Bootstrap stability: %d item(s) keep their scale-mates in fewer than half of "
+"the samples (%s); treat their assignment as uncertain."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Bootstrap stability: every scaled item keeps its scale-mates in at least "
+"half of the samples; the whole partition reappears in a proportion of %s."
 msgstr ""
 
 #: msacheck/options/pmatType/both.title
@@ -157,7 +410,34 @@ msgid "Boundary"
 msgstr ""
 
 #: msa/ui[6].label
-msgid "Bounds and norms"
+msgid "Bounds and Norms"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"BW = %s: the closer to 1, the more raters of the same subject agree with "
+"each other relative to their own consistency; low values mean the subject's "
+"score depends substantially on who rated them, so average several raters per "
+"subject."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"BW = HB / HW compares the two. Close to 1, raters agree almost as much with "
+"each other as with themselves; close to 0, the ordering exists within raters "
+"but not between them, and the subjects' scores depend on who rated them."
+msgstr ""
+
+#: R/aisp.b.R
+#: R/msa.b.R
+#: R/msacheck.b.R
+msgid "Cases used"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Check monotonicity first. Check invariant item ordering, nonintersection and "
+"local independence when your use of the scale needs them."
 msgstr ""
 
 #: package/analyses/msacheck.description
@@ -167,6 +447,12 @@ msgid ""
 "models: monotonicity, invariant item ordering, nonintersection (rest-score "
 "and P-matrix methods) and local independence (conditional association), with "
 "item response function plots and plain-language interpretation."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Choose the c at which the partition is stable and theoretically "
+"interpretable, usually between .30 and .45, and justify it in the report."
 msgstr ""
 
 #: msacheck/results/iioClusters.columns.title
@@ -179,10 +465,20 @@ msgstr ""
 msgid "Cluster variable (nested data)"
 msgstr ""
 
-#: aisp/ui[0][1].label
-#: msa/ui[0][2].label
-#: msacheck/ui[0][1].label
-msgid "Cluster variable (optional)"
+#: aisp/ui[0][2].label
+#: msa/ui[0][3].label
+#: msacheck/ui[0][2].label
+msgid "Cluster Variable (Optional)"
+msgstr ""
+
+#: R/aisp.b.R
+#: R/msa.b.R
+#: R/msacheck.b.R
+msgid "Clusters"
+msgstr ""
+
+#: aisp/options/bootPlot.title
+msgid "Co-membership plot"
 msgstr ""
 
 #: mlmsa/results/scale.columns.title
@@ -194,11 +490,43 @@ msgstr ""
 msgid "Coefficient"
 msgstr ""
 
-#: aisp/options/plotPalette/colorblind.title
-#: mlmsa/options/plotPalette/colorblind.title
-#: msa/options/plotPalette/colorblind.title
-#: msacheck/options/plotPalette/colorblind.title
-msgid "Colorblind-safe (Okabe-Ito)"
+#: R/texts.R
+msgid ""
+"Common misreading: a few Hij below .30 are not a problem by themselves; the "
+".30 criterion applies to Hi and H. What matters at the pair level is the "
+"sign."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Common misreading: a scale can be perfectly usable without IIO. To order "
+"respondents by the total score, what matters is the monotone homogeneity "
+"model (one attribute, local independence and monotonicity); IIO is an "
+"additional requirement only when the order of the items itself is "
+"interpreted."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Common misreading: a selected scale is not yet a validated scale. The "
+"selection only guarantees scalability; monotonicity, invariant item ordering "
+"and the theoretical coherence of the items still have to be checked."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Common misreading: an outlier is a signal to inspect, not a reason to "
+"delete. Unusual patterns can come from careless responding, but also from "
+"respondents for whom the attribute works differently, and removing them "
+"changes what the scale means."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Common misreading: H is not a reliability coefficient and not a correlation. "
+"A long scale can be very reliable (high alpha) and still have weak "
+"scalability, because reliability rewards the number of items while H "
+"measures how consistently they order people."
 msgstr ""
 
 #: msa/results/completedSets.columns.title
@@ -212,8 +540,37 @@ msgstr ""
 msgid "Completed data sets"
 msgstr ""
 
+#: R/texts.R
+msgid "Conditional association"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Conditional association (CA) gives testable consequences of local "
+"independence. For each pair of items, covariances conditional on sum scores "
+"of other items are inspected: W1 and W3 flag positive local dependence and "
+"W2 negative local dependence, using outlier rules on these indices."
+msgstr ""
+
 #: msacheck/options/checkCA.title
 msgid "Conditional association (local independence)"
+msgstr ""
+
+#: R/texts.R
+msgid "Conditional association could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Conditional association: %d item(s) were removed for local dependence: %s. "
+"Check whether they share content, wording or a stimulus with other items; "
+"locally dependent items inflate scalability and reliability."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Conditional association: no item was flagged for local dependence with these "
+"settings, which is consistent with local independence (not a proof of it)."
 msgstr ""
 
 #: msacheck/options/plotCI.title
@@ -227,9 +584,14 @@ msgstr ""
 msgid "Confidence interval"
 msgstr ""
 
+#: R/texts.R
 #: mlmsa/options/ci.title
 #: msa/options/ci.title
 msgid "Confidence intervals"
+msgstr ""
+
+#: R/texts.R
+msgid "Confidence intervals: %s%%, %s."
 msgstr ""
 
 #: mlmsa/options/ciWidth.title
@@ -237,12 +599,40 @@ msgstr ""
 msgid "Confidence level"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Consecutive items form clusters with a tied position in the order, and the "
+"analysis checks the ordering between clusters as well as between items, as "
+"in the clustered-item analysis of the TROG data (Koopman & Braeken). Use it "
+"when items come in blocks that share a stimulus or difficulty level."
+msgstr ""
+
+#: R/texts.R
+msgid "Consistency of each rater's own item ordering"
+msgstr ""
+
+#: R/texts.R
+msgid "Consistency of the subjects' ordering across raters"
+msgstr ""
+
 #: msa/options/showBounds.title
 msgid "Correlation bounds (dichotomous items)"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Correlation bounds (Ellis, 2014) are defined only for dichotomous items; "
+"these items have more than two score categories."
+msgstr ""
+
 #: msa/results/bounds.title
 msgid "Correlation bounds for dichotomous items"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Correlation bounds: %d item pair(s) violate the bounds expected under one "
+"monotone latent variable."
 msgstr ""
 
 #: mlmsa/options/showCov.title
@@ -273,12 +663,31 @@ msgstr ""
 msgid "Crit"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Crit (Molenaar & Sijtsma, 2000): below 40 no serious violation, 40-80 "
+"doubtful, above 80 serious. #ac: active comparisons; #vi: violations larger "
+"than the minimum; #zsig (or #tsig): significant violations."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Crit combines all the violation statistics into one value (Molenaar & "
+"Sijtsma, 2000): below 40 no serious violation, 40 to 80 doubtful, above 80 a "
+"serious violation. It is a heuristic, not a test."
+msgstr ""
+
+#: R/msa.b.R
 #: msa/options/relAlpha.title
 msgid "Cronbach's alpha"
 msgstr ""
 
 #: aisp/options/pxover.title
 msgid "Crossover probability"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Curve"
 msgstr ""
 
 #: msacheck/options/monoCurves.title
@@ -292,11 +701,25 @@ msgstr ""
 msgid "Data"
 msgstr ""
 
+#: R/shared-helpers.R
 #: aisp/options/scoreRange/manual.title
 #: mlmsa/options/scoreRange/manual.title
 #: msa/options/scoreRange/manual.title
 #: msacheck/options/scoreRange/manual.title
 msgid "Declared"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "default"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Design: each row is a rater, and the subject variable identifies the person "
+"or object those raters scored (students rating their teacher, observers "
+"rating a classroom). A grouping such as sex, school grade or country is not "
+"a subject: the analysis runs, but HB and BW then have no meaning. To compare "
+"groups, use the grouping variable of Mokken Scale Analysis."
 msgstr ""
 
 #: mlmsa/results/icc.columns.title
@@ -307,12 +730,69 @@ msgstr ""
 msgid "df2"
 msgstr ""
 
+#: R/msa.b.R
+msgid "Dichotomous"
+msgstr ""
+
 #: msa/results/errorsPlot.title
 msgid "Distribution of Guttman errors"
 msgstr ""
 
 #: msa/options/errorsPlot.title
 msgid "Distribution plot"
+msgstr ""
+
+#: R/msacheck.b.R
+#: R/texts.R
+msgid "Doubtful"
+msgstr ""
+
+#: R/texts.R
+msgid "Each cell is the scale an item joins at that lower bound; 0 means unscalable."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Each cell is the weight of one score pattern of the item pair in two-level "
+"Guttman errors (Koopman et al., 2017): 0 for patterns consistent with the "
+"item-step ordering, larger for more serious errors. Ties in item-step "
+"popularity are averaged over the possible orderings."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Each column shows the partition obtained with one lower bound c; each cell "
+"is the scale an item joins (0 = unscalable)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Each decision below is explained for the option currently selected, with "
+"guidance on when an alternative would fit your data better."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Each row is a cluster of items with a tied position in the fixed order; the "
+"statistics check whether the clusters keep their order for every rest-score "
+"group."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Each row is one data set completed by two-way imputation with a different "
+"random error. Every other table of this analysis comes from the first set "
+"only; this table is a sensitivity check, not pooled multiple-imputation "
+"inference: no combination rule is applied, because their validity for Mokken "
+"statistics has not been established."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Each step removes the item with the worst local-dependence flags and checks "
+"the rest again (Straat et al., 2016). Kept: items in the final set, where "
+"the procedure flags no further local dependence; a stepwise procedure does "
+"not guarantee the largest such set."
 msgstr ""
 
 #: package/datasets/TestforReceptionofGrammarTROG(n=210).description
@@ -330,18 +810,25 @@ msgstr ""
 msgid "Element"
 msgstr ""
 
-#: aisp/options/reportLang/en.title
-#: mlmsa/options/reportLang/en.title
-#: msa/options/reportLang/en.title
-#: msacheck/options/reportLang/en.title
-msgid "English"
+#: R/texts.R
+msgid ""
+"Ellis (2014) showed that, if dichotomous items measure one attribute with "
+"monotone response functions, the correlation of any two items cannot be "
+"arbitrarily small or large: it must lie between bounds computed from their "
+"associations with the other items."
 msgstr ""
 
-#: aisp/options/reportLang/es.title
-#: mlmsa/options/reportLang/es.title
-#: msa/options/reportLang/es.title
-#: msacheck/options/reportLang/es.title
-msgid "Español"
+#: aisp/results/reproducibilityCode.title
+#: mlmsa/results/reproducibilityCode.title
+#: msa/results/reproducibilityCode.title
+#: msacheck/results/reproducibilityCode.title
+msgid "Equivalent R code"
+msgstr ""
+
+#: R/shared-helpers.R
+msgid ""
+"Equivalent R code (the same mokken calls this analysis made, with its "
+"current options):"
 msgstr ""
 
 #: mlmsa/results/scale.columns.title
@@ -351,6 +838,47 @@ msgstr ""
 
 #: msacheck/options/iioOrder/estimated.title
 msgid "Estimated from the item means"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Estimated with %d latent classes (%s). LCRC can change with the number of "
+"classes and with the starting values of the latent class model; re-run it "
+"with another number of classes and report the range if the values differ."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Every item admitted to a scale must have Hi of at least c (and the scale H "
+"of at least c). The usual value is .30, Mokken's minimum for a scale; higher "
+"values give fewer, stronger and shorter scales."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Every item has Hi of at least .30, so each item contributes to ordering "
+"respondents."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Every item joined one single scale with c = %s. This supports treating the "
+"items as one scale; check its strength in the table above and its "
+"assumptions in Model Assumptions."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Fewer than two cases remain after removing incomplete cases. Switch Missing "
+"values to two-way imputation, or review the missing-data pattern."
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Final set"
+msgstr ""
+
+#: R/texts.R
+msgid "Findings"
 msgstr ""
 
 #: aisp/options/plotYRange/data.title
@@ -367,6 +895,14 @@ msgstr ""
 msgid "Fixed"
 msgstr ""
 
+#: R/texts.R
+msgid "fixed by you"
+msgstr ""
+
+#: R/texts.R
+msgid "Fixed item order (codes in the order of the item list): %s."
+msgstr ""
+
 #: msacheck/options/iioOrder/listed.title
 msgid "Fixed, as listed"
 msgstr ""
@@ -377,6 +913,26 @@ msgstr ""
 
 #: msacheck/options/iioOrder/custom.title
 msgid "Fixed, typed codes"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Flagged"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"For %d item pair(s), mokken returned an upper bound outside the range of a "
+"correlation (-1 to 1). Such a bound cannot be crossed or respected in any "
+"meaningful way, so it is shown but not used in the verdict, which then rests "
+"on the lower bounds."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"For every pair of items, respondents are grouped by the rest score on the "
+"remaining items, and the order of the two items' step proportions is "
+"compared across groups. A reversal larger than the minimum violation is "
+"counted and tested, and crit summarizes the evidence as for monotonicity."
 msgstr ""
 
 #: package/datasets/TypeDScaleDS14(n=541).description
@@ -390,6 +946,13 @@ msgstr ""
 msgid "From"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"From c = %s on, the items split into more than one scale (up to %d). This is "
+"the pattern of several related attributes: interpret the groupings that "
+"remain stable over neighbouring c values."
+msgstr ""
+
 #: aisp/options/plotYRange/full.title
 #: mlmsa/options/plotYRange/full.title
 #: msa/options/plotYRange/full.title
@@ -397,26 +960,52 @@ msgstr ""
 msgid "Full theoretical range"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"G+ counts each respondent's Guttman errors, weighted by item-step "
+"popularity; O+ counts infrequent item-score patterns (Zijlstra et al., 2007; "
+"see references). U1 is Tukey's upper fence (Q3 + 1.5 IQR) and U2 the "
+"medcouple-adjusted fence for skewed distributions (Hubert & Vandervieren, "
+"2008; see references). Respondents above U2 are the clearest outlier "
+"candidates."
+msgstr ""
+
 #: aisp/options/maxgensMode.title
 msgid "Generations"
 msgstr ""
 
+#: R/aisp.b.R
 #: aisp/options/search/ga.title
 msgid "Genetic algorithm"
 msgstr ""
 
+#: R/aisp.b.R
+msgid "Genetic algorithm seed: %d."
+msgstr ""
+
+#: R/msa.b.R
 #: msa/results/groups.columns.title
 msgid "Group"
+msgstr ""
+
+#: R/mlmsa.b.R
+#: R/texts.R
+msgid "Group proportions"
 msgstr ""
 
 #: msa/options/groupVar.title
 msgid "Grouping variable"
 msgstr ""
 
-#: msa/ui[0][1].label
-msgid "Grouping variable (optional)"
+#: msa/ui[0][2].label
+msgid "Grouping Variable (Optional)"
 msgstr ""
 
+#: R/texts.R
+msgid "groups with fewer than two cases: %s"
+msgstr ""
+
+#: R/msa.b.R
 #: msa/results/gplusOV.title
 msgid "Guttman errors (G+)"
 msgstr ""
@@ -426,8 +1015,36 @@ msgstr ""
 msgid "Guttman errors (outliers)"
 msgstr ""
 
+#: R/texts.R
+msgid "Guttman errors: %d respondent(s) above the skew-adjusted fence."
+msgstr ""
+
+#: R/msa.b.R
 #: msa/options/relLambda2.title
 msgid "Guttman's lambda-2"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"HB is positive and its confidence interval excludes zero: the items order "
+"the subjects consistently across raters, which supports using the scale to "
+"compare subjects."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"HB is positive but its confidence interval includes zero, so this sample "
+"does not show that the items order subjects consistently across raters. More "
+"subjects (not only more raters per subject) would make HB more precise."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"HB is zero or negative: the items do not order the subjects consistently "
+"across raters. The scale may still describe each rater's own perceptions "
+"(HW), but it does not measure differences between subjects. Review rater "
+"training, item wording, or whether the attribute is really a property of the "
+"subject."
 msgstr ""
 
 #: aisp/options/plotHeight.title
@@ -446,8 +1063,20 @@ msgstr ""
 msgid "Hi"
 msgstr ""
 
+#: R/msa.b.R
+msgid "Hi by group"
+msgstr ""
+
 #: aisp/results/membership.columns.title
 msgid "Hi in its scale"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Hi is the same idea for one item against all the others, and H for the whole "
+"set. Mokken's criteria: every Hi and H at least .30; .30-.40 weak, .40-.50 "
+"moderate, .50 or more strong. These are conventions, not laws: always read "
+"them with their confidence intervals."
 msgstr ""
 
 #: aisp/options/plotLegend/none.title
@@ -455,6 +1084,10 @@ msgstr ""
 #: msa/options/plotLegend/none.title
 #: msacheck/options/plotLegend/none.title
 msgid "Hidden"
+msgstr ""
+
+#: R/texts.R
+msgid "High ordering accuracy (HT ≥ .50)"
 msgstr ""
 
 #: aisp/options/scoreMax.title
@@ -468,6 +1101,14 @@ msgstr ""
 msgid "Hij"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Hij is the scalability of one pair of items: the Guttman errors of that pair "
+"relative to those expected by chance. Under the model every Hij is "
+"non-negative in the population; in a sample, small negative estimates can "
+"arise by chance, so judge their size and uncertainty."
+msgstr ""
+
 #: aisp/options/plotAxisAngle/a0.title
 #: mlmsa/options/plotAxisAngle/a0.title
 #: msa/options/plotAxisAngle/a0.title
@@ -475,14 +1116,30 @@ msgstr ""
 msgid "Horizontal"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"How it works: H = 1 - (observed Guttman errors / Guttman errors expected if "
+"the items were unrelated). H = 1 means no errors at all (a perfect Guttman "
+"scale); H = 0 means as many errors as pure chance; negative values mean more "
+"errors than chance."
+msgstr ""
+
+#: R/texts.R
 #: aisp/results/aispGuide.title
 msgid "How the automated item selection works"
 msgstr ""
 
+#: R/texts.R
+#: aisp/results/bootGuide.title
+msgid "How to read bootstrap stability"
+msgstr ""
+
+#: R/texts.R
 #: msacheck/results/caGuide.title
 msgid "How to read conditional association"
 msgstr ""
 
+#: R/texts.R
 #: msa/results/boundsGuide.title
 msgid "How to read correlation bounds"
 msgstr ""
@@ -494,52 +1151,100 @@ msgstr ""
 msgid "How to read each table"
 msgstr ""
 
+#: R/texts.R
 #: msa/results/errorsGuide.title
 msgid "How to read Guttman errors"
 msgstr ""
 
+#: R/texts.R
 #: msacheck/results/iioGuide.title
 msgid "How to read invariant item ordering"
 msgstr ""
 
+#: R/texts.R
 #: msa/results/hijGuide.title
 msgid "How to read item pairs"
 msgstr ""
 
+#: R/texts.R
 #: msacheck/results/monoGuide.title
 msgid "How to read monotonicity"
 msgstr ""
 
+#: R/texts.R
 #: msa/results/normsGuide.title
 msgid "How to read norm statistics"
 msgstr ""
 
+#: R/texts.R
 #: msa/results/reliabilityGuide.title
 msgid "How to read reliability"
 msgstr ""
 
+#: R/texts.R
 #: msa/results/scaleGuide.title
 msgid "How to read scalability"
 msgstr ""
 
+#: R/texts.R
 #: msacheck/results/pmatGuide.title
 msgid "How to read the P-matrix method"
 msgstr ""
 
+#: R/texts.R
 #: msacheck/results/restGuide.title
 msgid "How to read the rest-score method"
 msgstr ""
 
+#: R/texts.R
 #: aisp/results/sequenceGuide.title
 msgid "How to read the sequence of lower bounds"
 msgstr ""
 
+#: R/texts.R
 #: mlmsa/results/mlGuide.title
 msgid "How to read two-level scalability"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"HT = %s: %s. HT tells how far apart the item response functions are, and so "
+"how reliably the items are ordered."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"HT is computed on the items left after the backward selection (Ligtvoet et "
+"al., 2010). Below .30 inaccurate, .30-.40 weak, .40-.50 medium, .50 or "
+"higher high."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"HT summarizes how accurately the remaining items are ordered: below .30 the "
+"order is too inaccurate to use, .30 to .40 weak, .40 to .50 medium, .50 or "
+"more high (Ligtvoet et al., 2010). Report HT only after the backward "
+"selection has removed violating items."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"HW (within) is the ordinary scalability computed on each rater's own item "
+"scores: it tells whether every rater uses the items consistently. HB "
+"(between) uses item scores of different raters of the same subject: it tells "
+"whether the items order the subjects consistently across raters. For a scale "
+"that measures subjects, HB is the coefficient that matters most."
+msgstr ""
+
 #: mlmsa/results/icc.columns.title
 msgid "ICC"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"ICC: proportion of the variance that lies between subjects (Snijders & "
+"Bosker, 2012). The F test for the total score checks whether subjects differ "
+"at all."
 msgstr ""
 
 #: aisp/options/twowaySeed.title
@@ -549,18 +1254,80 @@ msgstr ""
 msgid "Imputation seed"
 msgstr ""
 
+#: R/msacheck.b.R
+msgid "In"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"In a unidimensional monotone model, each inter-item correlation must lie "
+"between bounds derived from the other items (Ellis, 2014; see references). "
+"L1 and U1 overestimate the lower and upper bound, L2 and U2 underestimate "
+"them, so a correlation below L2 or above U1 is a clear violation and one "
+"below L1 or above U2 only a possible one."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"In the plot, curves should rise from left to right. Small dips within the "
+"confidence band are sampling noise; a clear, sustained fall is a real "
+"violation."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"In the plot, each line is one item step: lines of P(++) should only go down "
+"and lines of P(--) only go up."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"In the plot, the two curves of each pair should run side by side without "
+"crossing."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"In two-level data several raters score the same subject: students rate their "
+"teacher, nurses rate a patient, observers rate a classroom. The scale is "
+"meant to order the subjects, not the raters."
+msgstr ""
+
+#: R/texts.R
+msgid "Inaccurate ordering (HT < .30)"
+msgstr ""
+
 #: msacheck/options/iioMethod/IT.title
 msgid "Increasingness in transposition (IT)"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Increasingness in transposition (IT) checks the ordering through the joint "
+"distribution of each pair of items (Ligtvoet et al., 2011; see references). "
+"It is the most demanding property and needs large samples."
+msgstr ""
+
+#: R/msa.b.R
 #: msa/options/errorsOplus.title
 #: msa/results/oplusOV.title
 msgid "Infrequent scores (O+)"
 msgstr ""
 
+#: R/mlmsa.b.R
+#: R/msa.b.R
+msgctxt "inline"
+msgid "Wald-based"
+msgstr ""
+
 #: mlmsa/options/typeCI.title
 #: msa/options/typeCI.title
 msgid "Interval type"
+msgstr ""
+
+#: R/msa.b.R
+msgctxt "intervals"
+msgid "range-preserving"
 msgstr ""
 
 #: mlmsa/options/showICC.title
@@ -569,7 +1336,15 @@ msgid "Intraclass correlations"
 msgstr ""
 
 #: mlmsa/ui[4].label
-msgid "Intraclass correlations and weights"
+msgid "Intraclass Correlations and Weights"
+msgstr ""
+
+#: R/texts.R
+msgid "Intraclass correlations could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Intraclass correlations: ICC of the total score = %s."
 msgstr ""
 
 #: aisp/results/intro.title
@@ -579,17 +1354,84 @@ msgstr ""
 msgid "Introduction"
 msgstr ""
 
+#: R/msacheck.b.R
+#: R/texts.R
 #: msacheck/options/checkIIO.title
-#: msacheck/ui[4].label
 #: msacheck/results/iio.title
 msgid "Invariant item ordering"
+msgstr ""
+
+#: msacheck/ui[4].label
+msgid "Invariant Item Ordering"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Invariant item ordering (IIO) means that the items are ordered by difficulty "
+"in the same way for every respondent, whatever their attribute level. It is "
+"needed when you interpret the item order itself, for example in "
+"developmental or hierarchical scales, or when you compare people on "
+"individual items."
+msgstr ""
+
+#: R/texts.R
+msgid "Invariant item ordering could not be checked: %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Invariant item ordering method"
+msgstr ""
+
+#: R/texts.R
+msgid "Invariant item ordering: %d item(s) removed by the backward selection."
+msgstr ""
+
+#: R/texts.R
+msgid "Invariant item ordering: %d item(s) with doubtful violations."
+msgstr ""
+
+#: R/texts.R
+msgid "Invariant item ordering: %d item(s) with serious violations (%s)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Invariant item ordering: items with serious violations (crit > 80) (%d): %s. "
+"Their position in the difficulty order changes with the attribute level."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Invariant item ordering: no item shows a serious violation, so the items "
+"keep the same order of difficulty across the attribute range."
+msgstr ""
+
+#: R/texts.R
+msgid "Invariant item ordering: no serious violations."
 msgstr ""
 
 #: msacheck/results/iioClusters.title
 msgid "Invariant ordering of item clusters"
 msgstr ""
 
+#: R/msacheck.b.R
+msgid "IRF (mean item score)"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "ISRFs P(X ≥ k)"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"It splits scalability into a within-rater part (HW), a between-rater part "
+"(HB) and their ratio (BW). Select the variable that identifies the rated "
+"subject, then the items."
+msgstr ""
+
+#: R/msacheck.b.R
 #: aisp/results/membership.columns.title
+#: aisp/results/bootTable.columns.title
 #: aisp/results/sequence.columns.title
 #: mlmsa/results/items.columns.title
 #: mlmsa/results/pairs.columns.title
@@ -612,6 +1454,7 @@ msgstr ""
 msgid "Item list"
 msgstr ""
 
+#: R/texts.R
 #: msacheck/options/iioOrder.title
 msgid "Item order"
 msgstr ""
@@ -630,6 +1473,15 @@ msgstr ""
 msgid "Item pairs (rest-score method)"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Item pairs with a negative estimated Hij (%d): %s. In the population the "
+"monotone homogeneity model requires every Hij to be non-negative. A clearly "
+"negative estimate usually signals an item that has not been reversed or that "
+"measures a different attribute; an estimate close to zero may be sampling "
+"error, so judge its size and standard error before drawing conclusions."
+msgstr ""
+
 #: msacheck/options/monoCurves/IRF.title
 msgid "Item response function (IRF)"
 msgstr ""
@@ -639,9 +1491,14 @@ msgstr ""
 msgid "Item response functions"
 msgstr ""
 
+#: R/mlmsa.b.R
 #: msa/results/items.title
 #: msa/results/hiPlot.title
 msgid "Item scalability"
+msgstr ""
+
+#: R/msa.b.R
+msgid "Item scalability (Hi)"
 msgstr ""
 
 #: msa/results/groupItems.title
@@ -657,8 +1514,32 @@ msgstr ""
 msgid "Item scalability plot"
 msgstr ""
 
+#: aisp/results/scalePlotImg.title
+msgid "Item scalability within each scale"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "Item scalability within its scale (Hi)"
+msgstr ""
+
+#: R/texts.R
+msgid "Item scalability: %d item(s) not significantly above %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Item scalability: %d item(s) with Hi below .30 (%s)."
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Item step"
+msgstr ""
+
 #: msacheck/options/monoCurves/ISRF.title
 msgid "Item step response functions (ISRFs)"
+msgstr ""
+
+#: R/msa.b.R
+msgid "Item type"
 msgstr ""
 
 #: mlmsa/options/showHij.title
@@ -678,6 +1559,10 @@ msgstr ""
 msgid "Item-pair scalability (Hij)"
 msgstr ""
 
+#: R/texts.R
+msgid "Item-pair scalability: %d pair(s) with negative Hij."
+msgstr ""
+
 #: msa/options/relIRC.title
 #: msa/results/irc.title
 msgid "Item-rest correlations"
@@ -687,6 +1572,10 @@ msgstr ""
 msgid "Item-rest r"
 msgstr ""
 
+#: R/aisp.b.R
+#: R/mlmsa.b.R
+#: R/msa.b.R
+#: R/msacheck.b.R
 #: aisp/options/vars.title
 #: aisp/ui[0][0].label
 #: aisp/results/scales.columns.title
@@ -697,6 +1586,20 @@ msgstr ""
 #: msacheck/options/vars.title
 #: msacheck/ui[0][0].label
 msgid "Items"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Items are admitted only when Hi is significantly larger than c, not just "
+"when its point estimate reaches c (Koopman et al., 2022; see references). "
+"This is stricter and protects against admitting items whose Hi exceeds c "
+"only by sampling error, especially in small samples."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Items are admitted when their point estimate Hi reaches c and Hi is "
+"significantly larger than zero. This is Mokken's original rule."
 msgstr ""
 
 #: aisp/results/sequenceSummary.columns.title
@@ -712,16 +1615,42 @@ msgid "Items to plot"
 msgstr ""
 
 #: msacheck/ui[7][5][0].label
-msgid "Items to plot (empty = first six)"
+msgid "Items to Plot (Empty = First Six)"
 msgstr ""
 
-#: aisp/options/plotPalette/jamovi.title
-#: mlmsa/options/plotPalette/jamovi.title
-#: msa/options/plotPalette/jamovi.title
-#: msacheck/options/plotPalette/jamovi.title
-msgid "jamovi theme"
+#: R/texts.R
+msgid ""
+"Items whose between-rater scalability is zero or negative (%d): %s. Raters "
+"do not agree on how these items order the subjects; they contribute little "
+"to measuring the subjects."
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Items whose Hi is not significantly larger than %s (%d): %s. Their point "
+"estimates may meet the criterion, but the sample does not provide enough "
+"evidence; a larger sample or the removal of weaker items would clarify it."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Items with Hi below .30 (%d): %s. In this item set, each of them orders "
+"respondents less consistently with the rest than Mokken's criterion "
+"requires. Before removing any, check whether it needs reversing and whether "
+"the set mixes subscales: an item can fit its own subscale well and still "
+"have a low Hi in a mixed set. If you remove items, do it one at a time and "
+"re-run the analysis, because every Hi changes when an item is removed."
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Joint proportion"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Kept"
+msgstr ""
+
+#: R/texts.R
 #: aisp/options/showKeySummary.title
 #: aisp/results/keySummary.title
 #: mlmsa/options/showKeySummary.title
@@ -741,12 +1670,23 @@ msgstr ""
 msgid "L2"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"L2 and U1 are the conservative bounds: only crossing them is a clear "
+"violation. L1 and U2 are lenient: crossing only them is a possible violation "
+"that deserves a second look."
+msgstr ""
+
 #: msacheck/results/caW.columns.title
 msgid "Largest W1"
 msgstr ""
 
 #: msacheck/results/caW.columns.title
 msgid "Largest W3"
+msgstr ""
+
+#: R/msa.b.R
+msgid "Latent class reliability (LCRC, %d classes)"
 msgstr ""
 
 #: msa/options/relLCRC.title
@@ -764,6 +1704,12 @@ msgstr ""
 msgid "Legend"
 msgstr ""
 
+#: R/mlmsa.b.R
+#: msacheck/results/mono.columns.title
+#: msacheck/results/iio.columns.title
+msgid "Level"
+msgstr ""
+
 #: aisp/options/plotLineWidth.title
 #: mlmsa/options/plotLineWidth.title
 #: msa/options/plotLineWidth.title
@@ -771,6 +1717,7 @@ msgstr ""
 msgid "Line width"
 msgstr ""
 
+#: R/shared-helpers.R
 #: aisp/options/naHandling/listwise.title
 #: mlmsa/options/naHandling/listwise.title
 #: msa/options/naHandling/listwise.title
@@ -778,12 +1725,46 @@ msgstr ""
 msgid "Listwise deletion"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Listwise deletion keeps only respondents who answered every selected item, "
+"because mokken does not accept missing scores. It is appropriate when few "
+"cases are incomplete and missingness is unrelated to the trait. With many "
+"incomplete cases it wastes information and may bias the results; two-way "
+"imputation is then preferable."
+msgstr ""
+
 #: msacheck/ui[6].label
-msgid "Local independence"
+msgid "Local Independence"
 msgstr ""
 
 #: msacheck/results/ca.title
 msgid "Local independence (conditional association)"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Local independence is checked through three special cases of conditional "
+"association (Holland & Rosenbaum, 1986; see references): covariances between "
+"items must not be negative conditional on sum scores of other items. The "
+"worst offending item is removed and the check repeated, until no item is "
+"flagged (Straat et al., 2016; see references)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Local independence means that, once the attribute is taken into account, "
+"item responses are unrelated. Locally dependent items (for example, items "
+"sharing a stimulus or almost identical wording) inflate scalability and "
+"reliability."
+msgstr ""
+
+#: R/texts.R
+msgid "Local independence: %d item(s) removed (%s)."
+msgstr ""
+
+#: R/texts.R
+msgid "Local independence: no item flagged."
 msgstr ""
 
 #: aisp/results/scales.columns.title
@@ -798,11 +1779,20 @@ msgstr ""
 msgid "Lower"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Lower and Upper: 95% Wald-based confidence interval of H. Run Mokken Scale "
+"Analysis on each scale's items for intervals, tests and item-level detail."
+msgstr ""
+
+#: R/msa.b.R
 #: aisp/options/lbMode.title
 #: aisp/results/sequenceSummary.columns.title
 msgid "Lower bound"
 msgstr ""
 
+#: R/aisp.b.R
+#: R/texts.R
 #: aisp/options/lowerbound.title
 msgid "Lower bound c"
 msgstr ""
@@ -825,6 +1815,14 @@ msgstr ""
 
 #: msacheck/options/iioMethod/MIIO.title
 msgid "Manifest IIO (MIIO)"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Manifest invariant item ordering (MIIO) compares the mean scores of every "
+"pair of items in each rest-score group: if item A is easier than item B for "
+"the whole sample, its mean should be higher in every group (Ligtvoet et al., "
+"2010; see references). It is the standard method for polytomous items."
 msgstr ""
 
 #: msacheck/options/iioMethod/MSCPM.title
@@ -851,18 +1849,42 @@ msgstr ""
 msgid "maxvi"
 msgstr ""
 
+#: R/msa.b.R
 #: msa/results/items.columns.title
 #: msa/results/errors.columns.title
 #: msacheck/results/iio.columns.title
 msgid "Mean"
 msgstr ""
 
+#: R/msacheck.b.R
+msgid "Mean item score"
+msgstr ""
+
 #: msa/results/errors.columns.title
 msgid "Median"
 msgstr ""
 
+#: R/texts.R
+msgid "Medium ordering (.40 ≤ HT < .50)"
+msgstr ""
+
+#: R/texts.R
+msgid "Messages from MokkenLab"
+msgstr ""
+
 #: msacheck/options/iioMethod.title
 msgid "Method"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"MIIO checks it pair by pair: within each rest-score group, the easier item "
+"must have the higher mean. Items with too many violations are removed one by "
+"one (backward selection) until the remaining set has an invariant order."
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "minimum %d, median %s, maximum %d"
 msgstr ""
 
 #: msacheck/options/caMinsize.title
@@ -877,10 +1899,13 @@ msgstr ""
 msgid "Minimum number of groups"
 msgstr ""
 
+#: R/msacheck.b.R
+#: R/texts.R
 #: msacheck/options/minsizeMode.title
 msgid "Minimum rest-score group size"
 msgstr ""
 
+#: R/texts.R
 #: msacheck/options/monoMinvi.title
 #: msacheck/options/iioMinviMode.title
 #: msacheck/options/restMinvi.title
@@ -892,6 +1917,13 @@ msgstr ""
 msgid "Minimum violation value"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Missing scores were completed by two-way imputation; report the number of "
+"imputed scores and the seed with the results."
+msgstr ""
+
+#: R/texts.R
 #: aisp/options/naHandling.title
 #: mlmsa/options/naHandling.title
 #: msa/options/naHandling.title
@@ -913,6 +1945,10 @@ msgstr ""
 msgid "Model fit"
 msgstr ""
 
+#: R/texts.R
+msgid "moderate scale (.40 ≤ H < .50)"
+msgstr ""
+
 #: package.title
 #: package/analyses/msa.menuGroup
 #: package/analyses/aisp.menuGroup
@@ -925,6 +1961,12 @@ msgstr ""
 msgid "Mokken Lab"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"mokken returned a number of item pairs that does not match the selected "
+"items, so the pairs cannot be labeled safely."
+msgstr ""
+
 #: package/analyses/msa.title
 #: package/analyses/msa.menuTitle
 #: msa/options.title
@@ -934,8 +1976,39 @@ msgstr ""
 msgid "Mokken Scale Analysis"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Mokken scale analysis evaluates whether a set of items forms a scale that "
+"orders respondents on one attribute, using nonparametric item response "
+"theory: it assumes only that the probability of a higher item score "
+"increases with the attribute, not a particular response function (Mokken, "
+"1971; Sijtsma & Molenaar, 2002; see references)."
+msgstr ""
+
+#: R/aisp.b.R
+msgid "Mokken's automated item selection procedure"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "Mokken's procedure"
+msgstr ""
+
 #: aisp/options/search/normal.title
 msgid "Mokken's procedure (normal)"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Mokken's procedure starts the first scale with the pair of items with the "
+"highest Hij, then adds, one at a time, the item that most increases H, as "
+"long as the item's Hi stays at or above c and its scalability is "
+"significant. When no item can be added it starts a second scale with the "
+"remaining items, and so on. It is fast and transparent, but greedy: an early "
+"choice cannot be undone, so it may miss the best partition."
+msgstr ""
+
+#: R/shared-helpers.R
+msgid "MokkenLab %s, mokken %s, %s; run on %s."
 msgstr ""
 
 #: package.description
@@ -956,29 +2029,213 @@ msgid ""
 "documentation."
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"MokkenLab could not compute the scalability coefficients: %s. This usually "
+"means an item has scores in only one category for every pair of items, or a "
+"variable that is not an item score was selected. Check the selected items "
+"and their scores."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"MokkenLab could not compute the two-level coefficients: %s. Check that each "
+"subject has several raters and that the items vary within subjects."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"MokkenLab could not run the item selection: %s. Check that the items are "
+"item scores with variation, and with the genetic algorithm try a larger "
+"population or more generations."
+msgstr ""
+
+#: R/msa.b.R
 #: msa/options/relMS.title
 msgid "Molenaar-Sijtsma (MS)"
 msgstr ""
 
+#: R/msacheck.b.R
+#: R/texts.R
 #: msacheck/options/checkMono.title
 #: msacheck/ui[3].label
 #: msacheck/results/mono.title
 msgid "Monotonicity"
 msgstr ""
 
+#: R/texts.R
+msgid "Monotonicity could not be checked: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Monotonicity means that the probability of a higher item score never "
+"decreases as the attribute increases. It is the core assumption of Mokken's "
+"models: without it, a higher total score would not mean more of the "
+"attribute."
+msgstr ""
+
+#: R/texts.R
+msgid "Monotonicity: %d item(s) with doubtful violations."
+msgstr ""
+
+#: R/texts.R
+msgid "Monotonicity: %d item(s) with serious violations (%s)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Monotonicity: items with serious violations (crit > 80) (%d): %s. For these "
+"items a higher rest score does not consistently mean a higher item score. "
+"Inspect their response functions: a sustained fall suggests an ambiguous or "
+"multidimensional item, which should be revised or removed."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Monotonicity: no serious violation was detected with these settings. This "
+"supports, but does not by itself establish, ordering respondents by the "
+"total score: the monotone homogeneity model also requires one attribute and "
+"local independence, and with polytomous items the total score orders "
+"respondents only in a weaker, average sense (Hemker et al., 1997; see "
+"references)."
+msgstr ""
+
+#: R/texts.R
+msgid "Monotonicity: no serious violations."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"MS (Molenaar-Sijtsma) is the reliability estimate native to Mokken scale "
+"analysis: it uses the estimated item-step response functions and is less "
+"biased than alpha when invariant item ordering holds. Lambda-2 and alpha are "
+"lower bounds to reliability; lambda-2 is never smaller than alpha. LCRC "
+"estimates reliability from a latent class model and is usually the least "
+"biased when its assumptions hold."
+msgstr ""
+
 #: aisp/options/pmutation.title
 msgid "Mutation probability"
 msgstr ""
 
+#: R/texts.R
 #: aisp/options/negItems.title
-#: aisp/ui[2][6][0].label
 #: mlmsa/options/negItems.title
-#: mlmsa/ui[2][6][0].label
 #: msa/options/negItems.title
-#: msa/ui[2][6][0].label
 #: msacheck/options/negItems.title
-#: msacheck/ui[2][6][0].label
 msgid "Negatively worded items"
+msgstr ""
+
+#: R/aisp.b.R
+#: R/mlmsa.b.R
+#: R/msa.b.R
+#: R/msacheck.b.R
+msgid "Negatively worded items (reversed)"
+msgstr ""
+
+#: aisp/ui[0][1].label
+#: mlmsa/ui[0][2].label
+#: msa/ui[0][1].label
+#: msacheck/ui[0][1].label
+msgid "Negatively Worded Items (Reversed)"
+msgstr ""
+
+#: R/texts.R
+msgid "Nested data"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Next step: check the model assumptions (monotonicity, and invariant item "
+"ordering if you need items ordered the same way for every respondent) in "
+"Model Assumptions before using the sum score."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Next step: choose the lower bound at which the partition is stable and "
+"interpretable, run the selection with that single value, and evaluate each "
+"scale with Mokken Scale Analysis and Model Assumptions."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Next step: report HW, HB and BW with their standard errors, the number of "
+"subjects and raters per subject, and check monotonicity in Model Assumptions "
+"with the subject as cluster variable."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Next step: revise or remove items with serious violations, re-run Mokken "
+"Scale Analysis and these checks on the remaining items, and report crit, the "
+"removed items and HT (if invariant item ordering matters for your use)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Next step: run Automated Item Selection with the same items to find the "
+"subsets that do form Mokken scales, then check the model assumptions for "
+"each scale."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Next step: run Mokken Scale Analysis on the items of each scale to obtain "
+"intervals and tests, then Model Assumptions to check monotonicity and, if "
+"needed, invariant item ordering."
+msgstr ""
+
+#: R/texts.R
+msgid "No check was selected."
+msgstr ""
+
+#: R/texts.R
+msgid "No data are available."
+msgstr ""
+
+#: R/texts.R
+msgid "No findings to report."
+msgstr ""
+
+#: R/texts.R
+msgid "No points of uncertainty were detected."
+msgstr ""
+
+#: R/texts.R
+msgid "No reliability coefficient was selected."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"No respondent has more Guttman errors than the skew-adjusted fence U2, so no "
+"response pattern is extreme once the skewness of the error counts is taken "
+"into account. %d respondent(s) pass only Tukey's fence U1, which assumes a "
+"symmetric distribution and over-flags skewed counts; inspect them only if "
+"you have a substantive reason."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"No scale could be formed with c = %s: no pair of items has a significant Hij "
+"of at least that value. The items do not share enough common ordering to "
+"form a Mokken scale. Lower c to explore weaker structures, review whether "
+"negatively worded items need reversing, or reconsider whether the items "
+"measure a common attribute."
+msgstr ""
+
+#: R/msacheck.b.R
+#: R/texts.R
+msgid "No serious violation"
+msgstr ""
+
+#: R/texts.R
+msgid "No violations"
+msgstr ""
+
+#: R/texts.R
+msgid "No warnings."
 msgstr ""
 
 #: msacheck/options/caNweight/noweight.title
@@ -987,6 +2244,12 @@ msgstr ""
 
 #: msacheck/options/caCovweight/noweight.title
 msgid "None (negative covariance counts 1)"
+msgstr ""
+
+#: R/shared-helpers.R
+msgid ""
+"None. Confirm that every item is scored in the same direction, and use the "
+"same reversals in every MokkenLab analysis of these items."
 msgstr ""
 
 #: msacheck/ui[5].label
@@ -1009,19 +2272,77 @@ msgstr ""
 msgid "Norm statistics of the total score"
 msgstr ""
 
-#: aisp/results/notes.title
-#: mlmsa/results/notes.title
-#: msa/results/notes.title
-#: msacheck/results/notes.title
-msgid "Notes"
+#: R/texts.R
+msgid ""
+"Norms are estimates from a sample, so they have standard errors too "
+"(Oosterhuis et al., 2017; see references). Wide intervals mean the norm "
+"sample is too small for precise decisions at that score."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Norms translate a total score into a position in a reference population: a "
+"standard score (z), a stanine (nine bands of the normal distribution) or a "
+"percentile rank (percentage of the norm group scoring lower, counting half "
+"of those with the same score)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Not checked in this run: %s. Their absence from the warnings says nothing "
+"about them."
+msgstr ""
+
+#: R/texts.R
+msgid "Not computable"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Not computable for this pair: two or more of its item steps are equally "
+"popular, and mokken 3.1.2 fails when it averages the weights over the tied "
+"orderings (an error inside MLweight, not a problem of your data). The other "
+"pairs are unaffected."
+msgstr ""
+
+#: R/msacheck.b.R
+#: R/texts.R
+msgid "Not evaluable"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "not evaluable"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Not every item uses the same number of score categories in these data. "
+"Either some categories were never chosen in this sample, or the items have "
+"different numbers of categories by design; in the latter case the total "
+"score cannot be used as an ordinal measurement (mokken notice)."
 msgstr ""
 
 #: msa/options/errorsGplus.title
 msgid "Number of Guttman errors (G+)"
 msgstr ""
 
+#: R/texts.R
+msgid "number of items minus one, mokken's default"
+msgstr ""
+
 #: msa/options/lcrcClasses.title
 msgid "Number of latent classes"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"O+ counts how many of the respondent's item-score combinations are rare in "
+"the sample. Both are person-fit statistics: they assess the respondent, not "
+"the item."
+msgstr ""
+
+#: R/shared-helpers.R
+msgid "Observed"
 msgstr ""
 
 #: aisp/options/scoreRange/observed.title
@@ -1031,8 +2352,21 @@ msgstr ""
 msgid "Observed in the data"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Only %d subjects. Between-rater coefficients describe how items order the "
+"subjects, so their precision depends mainly on the number of subjects, not "
+"of raters; with this few, read HB and BW as very imprecise and confirm that "
+"the subject variable is really the rated person or object."
+msgstr ""
+
 #: msacheck/options/iioOrderText.title
 msgid "Order codes (one per item)"
+msgstr ""
+
+#: R/aisp.b.R
+#: R/msa.b.R
+msgid "Original Z"
 msgstr ""
 
 #: aisp/options/typeZ/Z.title
@@ -1040,11 +2374,15 @@ msgstr ""
 msgid "Original Z (Mokken)"
 msgstr ""
 
+#: R/msacheck.b.R
+msgid "Other item steps, from most to least popular"
+msgstr ""
+
 #: msa/ui[5].label
 msgid "Outliers"
 msgstr ""
 
-#: aisp/ui[6].label
+#: aisp/ui[7].label
 msgid "Output"
 msgstr ""
 
@@ -1053,8 +2391,29 @@ msgstr ""
 msgid "P-matrix"
 msgstr ""
 
+#: R/texts.R
 #: msacheck/options/checkPmatrix.title
 msgid "P-matrix method"
+msgstr ""
+
+#: R/texts.R
+msgid "P-matrix method: %d item(s) with doubtful violations."
+msgstr ""
+
+#: R/texts.R
+msgid "P-matrix method: %d item(s) with serious violations (%s)."
+msgstr ""
+
+#: R/texts.R
+msgid "P-matrix method: items with serious violations (crit > 80) (%d): %s."
+msgstr ""
+
+#: R/texts.R
+msgid "P-matrix method: no item shows a serious violation of nonintersection."
+msgstr ""
+
+#: R/texts.R
+msgid "P-matrix method: no serious violations."
 msgstr ""
 
 #: msacheck/options/pmatType/pmm.title
@@ -1076,6 +2435,18 @@ msgstr ""
 msgid "Partition across lower bounds plot"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Partition across lower bounds: never more than one scale (one-attribute "
+"pattern)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Partition across lower bounds: the items split into several scales from c = "
+"%s (up to %d)."
+msgstr ""
+
 #: aisp/results/sequenceSummary.title
 msgid "Partition at each lower bound"
 msgstr ""
@@ -1089,6 +2460,21 @@ msgid ""
 "plain-language interpretation."
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Pattern of one attribute: at low c all items form one scale, and as c rises "
+"items leave that scale one by one and become unscalable, but no second scale "
+"appears."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Pattern of several attributes: as c rises, the single scale splits into two "
+"or more scales that keep their items over a range of c values. Stable "
+"groupings across neighbouring c values are the ones to interpret."
+msgstr ""
+
+#: R/msa.b.R
 #: msa/results/normsPerc.columns.title
 msgid "Percentile rank"
 msgstr ""
@@ -1106,18 +2492,11 @@ msgstr ""
 msgid "Percentile ranks of the total score"
 msgstr ""
 
-#: aisp/options/plotPalette.title
-#: mlmsa/options/plotPalette.title
-#: msa/options/plotPalette.title
-#: msacheck/options/plotPalette.title
-msgid "Plot palette"
-msgstr ""
-
-#: aisp/ui[7].label
+#: aisp/ui[8].label
 #: mlmsa/ui[6].label
 #: msa/ui[8].label
 #: msacheck/ui[8].label
-msgid "Plot settings"
+msgid "Plot Settings"
 msgstr ""
 
 #: mlmsa/ui[5].label
@@ -1133,8 +2512,28 @@ msgstr ""
 msgid "Point size"
 msgstr ""
 
+#: R/texts.R
+msgid "Points of uncertainty"
+msgstr ""
+
+#: R/msa.b.R
+msgid "Polytomous (%d observed categories)"
+msgstr ""
+
+#: R/msa.b.R
+msgid "Polytomous (%d to %d observed categories)"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "population %d, %s generations, crossover %s, mutation %s, seed %d"
+msgstr ""
+
 #: aisp/options/popsize.title
 msgid "Population size"
+msgstr ""
+
+#: R/msa.b.R
+msgid "Possible violation"
 msgstr ""
 
 #: msacheck/options/caCovweight/pnorm.title
@@ -1145,6 +2544,8 @@ msgstr ""
 msgid "Quantile for L2"
 msgstr ""
 
+#: R/mlmsa.b.R
+#: R/msa.b.R
 #: aisp/options/typeZ/RP.title
 #: mlmsa/options/typeCI/RP.title
 #: mlmsa/options/typeZ/RP.title
@@ -1153,9 +2554,52 @@ msgstr ""
 msgid "Range-preserving"
 msgstr ""
 
+#: R/mlmsa.b.R
+#: R/msa.b.R
+msgid "range-preserving"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Range-preserving intervals are built on the log(1 - H) scale and transformed "
+"back, so they never exceed 1 and are asymmetric near the ceiling (Koopman et "
+"al., 2021; see references). They are preferable for strong scales or small "
+"samples, where Wald-based intervals can cross 1."
+msgstr ""
+
+#: R/texts.R
+msgid "Rater agreement relative to rater consistency"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Raters (rows) used"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Raters per subject"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Ratio (BW = HB / HW)"
+msgstr ""
+
 #: mlmsa/results/items.columns.title
 #: mlmsa/results/pairs.columns.title
 msgid "Ratio BW"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Read the matrix by rows: an item whose row has many low or negative values "
+"is the one that does not fit. A single negative Hij is usually the trace of "
+"an item that still needs reversing."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Read the results in this order: the scale H with its interval and test, the "
+"item Hi values, item pairs with negative Hij, and then reliability, outliers "
+"and norms."
 msgstr ""
 
 #: mlmsa/results/scale.columns.title
@@ -1169,23 +2613,116 @@ msgstr ""
 msgid "Reliability"
 msgstr ""
 
+#: R/texts.R
+msgid "Reliability could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Reliability is the proportion of total-score variance that is not "
+"measurement error: how consistently the sum score would rank respondents if "
+"the test were repeated."
+msgstr ""
+
+#: R/texts.R
+msgid "Reliability: MS = %s."
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Removed"
+msgstr ""
+
 #: msacheck/results/iio.columns.title
 msgid "Removed at step"
 msgstr ""
 
-#: aisp/options/reportLang.title
-#: aisp/ui[1].label
-#: mlmsa/options/reportLang.title
-#: mlmsa/ui[1].label
-#: msa/options/reportLang.title
-#: msa/ui[1].label
-#: msacheck/options/reportLang.title
-#: msacheck/ui[1].label
-msgid "Report Language"
+#: R/texts.R
+msgid ""
+"Removed items are candidates for local dependence, not automatically bad "
+"items: inspect their content before deleting them."
 msgstr ""
 
+#: aisp/ui[1].label
+#: mlmsa/ui[1].label
+#: msa/ui[1].label
+#: msacheck/ui[1].label
+msgid "Report Content"
+msgstr ""
+
+#: R/shared-helpers.R
+#: aisp/results/reproducibility.title
+#: mlmsa/results/reproducibility.title
+#: msa/results/reproducibility.title
+#: msacheck/results/reproducibility.title
+msgid "Reproducibility"
+msgstr ""
+
+#: aisp/options/showRepro.title
+#: mlmsa/options/showRepro.title
+#: msa/options/showRepro.title
+#: msacheck/options/showRepro.title
+msgid "Reproducibility record"
+msgstr ""
+
+#: R/msa.b.R
+msgid "Respondents"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Respondents are grouped by their rest score (total score without the item "
+"checked), and adjacent rest scores are merged until each group has at least "
+"this many respondents. Larger groups give more stable proportions but fewer "
+"points on each curve. mokken's default grows with the sample: N/10 from 500 "
+"respondents, N/5 from 250, and max(N/3, 50) below 250."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Respondents are nested in the clusters of this variable. The coefficients "
+"are estimated as usual, but their standard errors, intervals and tests take "
+"the dependence between respondents of the same cluster into account (Koopman "
+"et al., 2020, 2022; see references). Ignoring nesting makes standard errors "
+"too small and tests too liberal."
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Response function"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Rest score (group midpoint)"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Rest-score"
+msgstr ""
+
+#: R/texts.R
 #: msacheck/options/checkRest.title
 msgid "Rest-score method"
+msgstr ""
+
+#: R/texts.R
+msgid "Rest-score method: %d item(s) with doubtful violations."
+msgstr ""
+
+#: R/texts.R
+msgid "Rest-score method: %d item(s) with serious violations (%s)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Rest-score method: items with serious violations of nonintersection (crit > "
+"80) (%d): %s. Their item step response functions cross those of other items."
+msgstr ""
+
+#: R/texts.R
+msgid "Rest-score method: no item shows a serious violation of nonintersection."
+msgstr ""
+
+#: R/texts.R
+msgid "Rest-score method: no serious violations."
 msgstr ""
 
 #: aisp/options/plotLegend/right.title
@@ -1193,6 +2730,23 @@ msgstr ""
 #: msa/options/plotLegend/right.title
 #: msacheck/options/plotLegend/right.title
 msgid "Right"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Running the selection for a sequence of c values, rather than one, shows how "
+"the partition changes as the criterion tightens. This is the exploration "
+"recommended by Hemker et al. (1995; see references) and by the tutorial of "
+"Sijtsma and van der Ark (2017; see references), because one c value can hide "
+"whether the items measure one attribute or several."
+msgstr ""
+
+#: R/aisp.b.R
+msgid "Same scale"
+msgstr ""
+
+#: aisp/results/bootTable.columns.title
+msgid "Same scale as found"
 msgstr ""
 
 #: msacheck/options/caNweight.title
@@ -1215,8 +2769,12 @@ msgstr ""
 msgid "Scalability by group"
 msgstr ""
 
+#: R/texts.R
+msgid "Scalability by group: H ranges from %2$s to %3$s across %1$d groups."
+msgstr ""
+
 #: msa/ui[3].label
-msgid "Scalability coefficients"
+msgid "Scalability Coefficients"
 msgstr ""
 
 #: package/analyses/msa.description
@@ -1237,9 +2795,34 @@ msgstr ""
 msgid "Scalability of the scale"
 msgstr ""
 
+#: R/texts.R
+msgid "Scalability of the scale: H = %s, %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Scalability of the scale: the confidence interval of H reaches below .30."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Scalability shows that items order respondents consistently; this analysis "
+"checks whether the assumptions behind using their total score hold (Sijtsma "
+"& Molenaar, 2002; Sijtsma & van der Ark, 2017; see references)."
+msgstr ""
+
+#: R/aisp.b.R
 #: aisp/results/membership.columns.title
 #: aisp/results/scales.columns.title
+#: aisp/results/bootTable.columns.title
 msgid "Scale"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "Scale %d"
+msgstr ""
+
+#: R/msa.b.R
+msgid "Scale H"
 msgstr ""
 
 #: aisp/results/membership.title
@@ -1249,6 +2832,38 @@ msgstr ""
 #: aisp/results/sequence.title
 #: aisp/results/sequencePlot.title
 msgid "Scale membership across lower bounds"
+msgstr ""
+
+#: aisp/options/scalePlot.title
+msgid "Scale membership plot"
+msgstr ""
+
+#: R/texts.R
+msgid "Scale membership: %d scales formed."
+msgstr ""
+
+#: R/texts.R
+msgid "Scale membership: %d unscalable item(s) (%s)."
+msgstr ""
+
+#: R/texts.R
+msgid "Scale membership: all items form one scale."
+msgstr ""
+
+#: R/texts.R
+msgid "Scale membership: no Mokken scale could be formed."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Scale numbers are labels in order of formation, not of quality. Hi is the "
+"scalability of the item within its own scale."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Scale numbers are labels in order of formation, not quality: scale 1 is "
+"simply the first one built, usually the largest."
 msgstr ""
 
 #: aisp/results/sequenceSummary.columns.title
@@ -1262,6 +2877,16 @@ msgstr ""
 msgid "Scaling"
 msgstr ""
 
+#: R/msa.b.R
+msgid "Score"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Score pattern (first, second item)"
+msgstr ""
+
+#: R/msa.b.R
+#: R/texts.R
 #: aisp/options/scoreRange.title
 #: mlmsa/options/scoreRange.title
 #: msa/options/scoreRange.title
@@ -1284,21 +2909,61 @@ msgstr ""
 msgid "SE"
 msgstr ""
 
+#: R/aisp.b.R
+msgid "Search"
+msgstr ""
+
+#: R/texts.R
 #: aisp/options/search.title
-#: aisp/ui[4].label
 msgid "Search procedure"
+msgstr ""
+
+#: aisp/ui[4].label
+msgid "Search Procedure"
 msgstr ""
 
 #: aisp/options/gaSeed.title
 msgid "Seed"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Select at least three items. This check compares each item with the rest of "
+"the scale, which needs at least three items."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Select at least two items. Scalability coefficients describe how "
+"consistently items order respondents, which needs at least one pair of items."
+msgstr ""
+
+#: R/texts.R
+msgid "Select G+ or O+ to compute outlier statistics."
+msgstr ""
+
+#: R/texts.R
+msgid "Select lower bounds, upper bounds or both."
+msgstr ""
+
 #: aisp/ui[3].label
-msgid "Selection criterion"
+msgid "Selection Criterion"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "Sequence"
 msgstr ""
 
 #: aisp/options/lbMode/sequence.title
 msgid "Sequence of values"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Serious"
+msgstr ""
+
+#: R/texts.R
+msgid "Serious violation"
 msgstr ""
 
 #: package/datasets/Autonomysupport(259studentsrating14teachers).description
@@ -1306,6 +2971,10 @@ msgid ""
 "Seven 5-point items on which 259 students rated the autonomy support of "
 "their teacher (two-level data: students nested in teachers), from the mokken "
 "package - see data/README.md"
+msgstr ""
+
+#: R/texts.R
+msgid "Share of the ordering accuracy carried by the clusters"
 msgstr ""
 
 #: aisp/options/alpha.title
@@ -1317,6 +2986,7 @@ msgstr ""
 msgid "Single value"
 msgstr ""
 
+#: R/msa.b.R
 #: msa/results/errors.columns.title
 msgid "Skew-adjusted fence (U2)"
 msgstr ""
@@ -1325,9 +2995,27 @@ msgstr ""
 msgid "Square root of group size"
 msgstr ""
 
+#: R/msa.b.R
+msgid "Standard deviation"
+msgstr ""
+
 #: mlmsa/options/se.title
 #: msa/options/se.title
 msgid "Standard errors"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Standard errors show how much H would vary from sample to sample. The z test "
+"tells you whether a coefficient is reliably above the lower bound, which is "
+"stronger evidence than a point estimate that happens to exceed .30."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Standard errors take the nesting into account (Koopman et al., 2020; see "
+"references). Since HB is usually much smaller than HW, test whether HB is "
+"larger than zero before interpreting the scale as a measure of the subjects."
 msgstr ""
 
 #: msa/options/normsZ.title
@@ -1335,14 +3023,26 @@ msgstr ""
 msgid "Standard scores"
 msgstr ""
 
+#: R/msa.b.R
+msgid "Stanine %s"
+msgstr ""
+
 #: msa/options/normsStanines.title
 #: msa/results/normsSta9.title
 msgid "Stanine boundaries"
 msgstr ""
 
+#: R/aisp.b.R
+#: R/texts.R
+msgid "Start set"
+msgstr ""
+
 #: aisp/options/startSet.title
-#: aisp/ui[5][3][0].label
 msgid "Start set (first scale)"
+msgstr ""
+
+#: aisp/ui[5][3][0].label
+msgid "Start Set (First Scale)"
 msgstr ""
 
 #: msa/results/errors.columns.title
@@ -1355,14 +3055,38 @@ msgstr ""
 msgid "Step"
 msgstr ""
 
+#: R/msacheck.b.R
+msgid "Step %d"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Step 1: the pair of items with the highest significant Hij starts the first "
+"scale. Step 2: the item that most increases H is added, if its Hi with the "
+"selected items is at least the lower bound c and significant. Step 3: step 2 "
+"repeats until no item qualifies. Step 4: the remaining items start a second "
+"scale, and so on. Items that never qualify are unscalable (scale 0)."
+msgstr ""
+
 #: aisp/results/scales.columns.title
 #: msa/results/scale.columns.title
 msgid "Strength"
 msgstr ""
 
+#: R/texts.R
+msgid "strong scale (H ≥ .50)"
+msgstr ""
+
 #: mlmsa/options/subject.title
-#: mlmsa/ui[0][0].label
 msgid "Subject (rated person)"
+msgstr ""
+
+#: mlmsa/ui[0][0].label
+msgid "Subject (Rated Person)"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Subjects"
 msgstr ""
 
 #: msacheck/results/mono.columns.title
@@ -1394,8 +3118,387 @@ msgstr ""
 msgid "Test Hi against the lower bound"
 msgstr ""
 
-#: aisp/ui[5].label
+#: R/aisp.b.R
+#: R/msa.b.R
+msgctxt "test"
+msgid "Range-preserving"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Testing Hi against the lower bound needs the Wald-based Z test, so mokken "
+"replaced the original Z test by it."
+msgstr ""
+
+#: R/aisp.b.R
 msgid "Tests during selection"
+msgstr ""
+
+#: aisp/ui[5].label
+msgid "Tests During Selection"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The attribute is unobserved, so it is replaced by the rest score: the total "
+"score on the other items. Respondents are grouped by rest score and, for "
+"each item step, the proportion P(X ≥ k) is compared across groups. Every "
+"decrease larger than the minimum violation (#vi) is tested; #zsig counts the "
+"significant ones."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The backward selection removed %d item(s), in this order: %s. With them "
+"removed, the procedure detects no further violations under these settings; "
+"that is not proof that the remaining items have an invariant ordering."
+msgstr ""
+
+#: R/texts.R
+msgid "The bootstrap could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The bootstrap repeats the selection, with the same options, on many samples "
+"drawn with replacement from your respondents (whole clusters, with nested "
+"data), the way a new sample of the same population might look."
+msgstr ""
+
+#: R/texts.R
+msgid "The check could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The coefficients could not be computed by group: %s. Each group needs enough "
+"cases with variation on every item."
+msgstr ""
+
+#: R/texts.R
+msgid "The correlation bounds could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The declared score range (%s to %s) does not contain every observed score "
+"(observed range %s to %s), or its lowest value is not below its highest. "
+"Correct the declared range, or use the range observed in the data."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The fences are outlier thresholds. Tukey's fence (U1) assumes a roughly "
+"symmetric distribution; error counts are usually skewed, so the "
+"medcouple-adjusted fence (U2) is the better guide."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The first scale starts from the items you chose instead of from the pair "
+"with the highest Hij. Use it to build a scale around items that define the "
+"attribute theoretically, and check that the result does not depend on that "
+"choice by running the selection without a start set."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The following items have fewer than two observed scores and cannot be "
+"analyzed: %s. Remove them from the analysis."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The following items have non-integer scores: %s. Mokken scale analysis works "
+"with ordered item scores (0, 1, 2, ...). Check that these variables are item "
+"scores and not scale means or other derived values."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The following items have zero variance in the cases analyzed (every "
+"respondent gave the same score): %s. A constant item cannot order "
+"respondents, so its scalability is undefined. Remove it from the analysis."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The genetic algorithm does not use a start set; the start set was ignored. "
+"Use Mokken's procedure to start the first scale from chosen items."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The genetic algorithm searches many candidate partitions at once, "
+"recombining and mutating them across generations, and keeps the partition "
+"with the largest scales that meet the criteria (Straat et al., 2013; see "
+"references). It is less likely than Mokken's procedure to get trapped by an "
+"early choice, at the price of computing time and some randomness; the seed "
+"makes the result reproducible. Compare both: agreement strengthens the "
+"conclusion."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The item order is estimated from the item means in this sample, which is the "
+"usual choice when no ordering is hypothesized."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The item order is fixed as the order of the item list, as a hypothesis to "
+"test (for example, items designed from easy to hard). Items listed first are "
+"expected to be the most popular."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The item-rest correlation is the correlation of each item with the sum of "
+"the other items. A low value marks an item that contributes little to the "
+"total score."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The item-score proportions of each subject are averaged, so every subject "
+"counts equally whatever its number of raters. This reproduces the original "
+"estimator of Snijders (2001) and Koopman et al. (2020); with unequal group "
+"sizes the weighted version is preferred."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The item-score proportions of each subject are weighted by the number of "
+"raters, so subjects rated by many raters count more. This is mokken's "
+"current default, which corrects a bias of averaged proportions when group "
+"sizes differ (Koopman et al., 2022; see references)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The lower limit of the confidence interval of H (%s) is below .30, so this "
+"sample does not rule out that the scale is unscalable. Interpret its "
+"strength with caution, and prefer a test against .30 (Wald-based or "
+"range-preserving) to the point estimate."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The lowest and highest scores observed in the data define the score range "
+"used to reverse negatively worded items and to bound imputed scores. If an "
+"extreme category was never chosen in this sample, declare the range instead, "
+"so reversal maps each score to its true mirror."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The manifest scale cumulative probability model (MSCPM) compares the item "
+"step response functions instead of the item means, so it checks a stronger "
+"property: that every item step keeps its order (Ligtvoet et al., 2011; see "
+"references). Use it when you need the ordering at the level of response "
+"categories."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The Molenaar-Sijtsma reliability of the total score is %s. MS uses the "
+"item-step response functions estimated under the double monotonicity model, "
+"so it is most trustworthy when invariant item ordering holds (check it in "
+"Model Assumptions). High reliability does not show that the total score "
+"measures a single attribute: a sum of two correlated subscales can be very "
+"reliable."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The monotone homogeneity model (one attribute, local independence, "
+"monotonicity) justifies ordering respondents by their total score. The "
+"double monotonicity model adds nonintersecting item step response functions, "
+"which also justifies ordering the items in the same way for everyone "
+"(invariant item ordering)."
+msgstr ""
+
+#: R/texts.R
+msgid "The norm statistics could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The order codes must be %d whole numbers, one per item, separated by commas "
+"or spaces."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The order codes you typed fix the position of each item; equal codes form "
+"clusters of tied items. Use it to test a hypothesized order that is not the "
+"list order."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The original Z test (Mokken, 1971; see references) tests whether each "
+"coefficient is larger than zero. It cannot test against a lower bound such "
+"as .30 (the value %s you typed is used only by the other tests); choose the "
+"Wald-based or range-preserving test to check whether coefficients exceed a "
+"lower bound."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The original Z test was replaced by the Wald-based test, because it cannot "
+"test Hi against c or account for nested data."
+msgstr ""
+
+#: R/texts.R
+msgid "The outlier statistics could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The P-matrix method checks nonintersection with two matrices: P(++) holds "
+"the proportion of respondents passing each pair of item steps, and P(--) the "
+"proportion failing both."
+msgstr ""
+
+#: R/texts.R
+msgid "The P-matrix method could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The procedure removes the item with the worst flags, then repeats the check "
+"on the remaining items, until none is flagged. Being stepwise, it does not "
+"guarantee the largest possible set without flagged items."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The range you declared defines how negatively worded items are reversed "
+"(lowest + highest - score) and bounds imputed scores. Declare the range of "
+"the response format, for example 0 to 4 for a five-point item scored from 0."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The range-preserving test compares log(1 - H) with log(1 - %s), using a "
+"standard error on that scale, so it stays accurate near the ceiling (Koopman "
+"et al., 2021; see references). Prefer it to the Wald-based test for strong "
+"scales or small samples."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The rest-score method checks nonintersection of the item step response "
+"functions, which the double monotonicity model requires: for any two items, "
+"the curves of their item steps must not cross."
+msgstr ""
+
+#: R/texts.R
+msgid "The rest-score method could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The scalability coefficient H compares the observed Guttman errors (a "
+"respondent passing a harder item step but failing an easier one) with the "
+"number expected if items were unrelated. Hij describes an item pair, Hi an "
+"item and H the whole scale. Mokken's rule of thumb: a scale needs H and "
+"every Hi of at least .30; .30 to .40 is weak, .40 to .50 moderate, .50 or "
+"higher strong."
+msgstr ""
+
+#: R/texts.R
+msgid "The scalability of this scale could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The scale H could not be estimated, so the scale cannot be evaluated. Check "
+"the item scores and the messages in Notes."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The scale H is %s, below Mokken's minimum of .30. The items do not order "
+"respondents consistently enough to be summed into one scale score: there are "
+"almost as many Guttman errors as would be expected if the items were "
+"unrelated. This usually happens when the items measure more than one "
+"attribute or include items unrelated to the rest. Run Automated Item "
+"Selection to see whether the items split into separate scales."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The scale H is %s: a %s. Taken together, the items order respondents more "
+"consistently than unrelated items would. This is necessary but not "
+"sufficient for using their sum score: a single H does not show that the "
+"items measure one attribute (a set made of two strong subscales can still "
+"reach it; check Automated Item Selection) nor that the model assumptions "
+"hold (check Model Assumptions)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The selection formed %d scales with c = %s. The items order respondents "
+"consistently within each group but not across groups, which suggests related "
+"but distinct attributes, or method effects such as item wording."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The selection is exploratory and capitalizes on chance: with another sample "
+"the borderline items may move. Confirm the partition in new data, with the "
+"genetic algorithm, or with a sequence of lower bounds."
+msgstr ""
+
+#: R/texts.R
+msgid "The selection was run for %d lower bounds from %s to %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The sequence of lower bounds is empty: From must be smaller than To. Correct "
+"the values in Selection criterion."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The subject variable has fewer than two subjects. Two-level scalability "
+"compares raters of different subjects; select the variable that identifies "
+"the rated person or object."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The Wald-based test divides the difference between each coefficient and the "
+"lower bound %s by its standard error. A significant one-sided result means "
+"the coefficient is larger than the bound, which is stronger evidence than a "
+"point estimate above it (Koopman et al., 2022; see references)."
+msgstr ""
+
+#: R/texts.R
+msgid "The weights could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"There is no agreed cut-off. Values near 1 mean the grouping hardly depends "
+"on the sample; items that change scale in a large share of samples should be "
+"interpreted, and reported, as uncertain. Bootstrap stability is not "
+"replication: confirm the partition in new data."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"These items were reversed before the analysis (lowest + highest - score, as "
+"mokken::recode()), so that a higher score means more of the attribute on "
+"every item. Unreversed negatively worded items produce negative scalability "
+"coefficients and break the scale."
+msgstr ""
+
+#: R/texts.R
+msgid "This coefficient could not be estimated for these data."
 msgstr ""
 
 #: msacheck/results/iio.columns.title
@@ -1413,16 +3516,27 @@ msgstr ""
 msgid "Top"
 msgstr ""
 
+#: R/mlmsa.b.R
+#: R/msa.b.R
 #: msa/results/normsZ.columns.title
 #: msa/results/normsSta9.columns.title
 #: msa/results/normsPerc.columns.title
 msgid "Total score"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Total score = sum of the %d item scores (negatively worded items reversed). "
+"These are norm statistics of this sample, not norms for a population; they "
+"become norms only if the sample represents the population you compare people "
+"with. Standard errors follow Oosterhuis et al. (2017; see references)."
+msgstr ""
+
 #: package/datasets/Transitivereasoning(n=425).name
 msgid "Transitive reasoning (n=425)"
 msgstr ""
 
+#: R/msa.b.R
 #: msa/results/errors.columns.title
 msgid "Tukey fence (U1)"
 msgstr ""
@@ -1434,7 +3548,7 @@ msgid ""
 msgstr ""
 
 #: mlmsa/ui[3].label
-msgid "Two-level coefficients"
+msgid "Two-Level Coefficients"
 msgstr ""
 
 #: package/analyses/mlmsa.menuSubgroup
@@ -1442,8 +3556,18 @@ msgstr ""
 msgid "Two-level data"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Two-level design: only %d subjects; between-rater coefficients are very "
+"imprecise."
+msgstr ""
+
 #: mlmsa/results/items.title
 msgid "Two-level item scalability"
+msgstr ""
+
+#: R/texts.R
+msgid "Two-level item scalability: %d item(s) with non-positive HBi."
 msgstr ""
 
 #: mlmsa/results/pairs.title
@@ -1459,15 +3583,62 @@ msgstr ""
 msgid "Two-Level Mokken Scale Analysis"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Two-level Mokken scale analysis evaluates a scale whose items are scored by "
+"several raters per subject, such as students rating their teacher (Snijders, "
+"2001; Crisan et al., 2016; see references)."
+msgstr ""
+
 #: mlmsa/results/scale.title
 msgid "Two-level scalability of the scale"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Two-level scalability: HB is not positive; the scale does not order subjects "
+"across raters."
+msgstr ""
+
+#: R/texts.R
+msgid "Two-level scalability: HW = %s, HB = %s, BW = %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Two-level scalability: the interval of HB includes zero."
+msgstr ""
+
+#: R/shared-helpers.R
 #: aisp/options/naHandling/twoway.title
 #: mlmsa/options/naHandling/twoway.title
 #: msa/options/naHandling/twoway.title
 #: msacheck/options/naHandling/twoway.title
 msgid "Two-way imputation"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Two-way imputation could not complete the data: %s. Switch Missing values to "
+"listwise deletion, or review the missing-data pattern."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Two-way imputation fills each missing score from the respondent's mean, the "
+"item's mean and the overall mean, plus a random error (van Ginkel et al., "
+"2007; see references). In simulations it preserved scalability coefficients "
+"and item selection well when up to about 10%% of the scores were missing at "
+"random. MokkenLab produced %d completed data set(s) with seed %d; the same "
+"seed and data always reproduce the same imputation. With several sets, the "
+"main results come from the first and a table shows how much H varies between "
+"them."
+msgstr ""
+
+#: R/aisp.b.R
+#: R/mlmsa.b.R
+#: R/msa.b.R
+#: R/msacheck.b.R
+msgid "Two-way imputation seed: %d."
 msgstr ""
 
 #: package/datasets/TypeDScaleDS14(n=541).name
@@ -1482,8 +3653,35 @@ msgstr ""
 msgid "U2"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Under the double monotonicity model, when the columns are ordered from the "
+"most to the least popular item step, every row of P(++) must decrease and "
+"every row of P(--) must increase. A reversal is a violation."
+msgstr ""
+
+#: R/aisp.b.R
+#: aisp/results/bootTable.columns.title
+msgid "Unscalable"
+msgstr ""
+
+#: R/texts.R
+msgid "unscalable (H < .30)"
+msgstr ""
+
 #: aisp/results/sequenceSummary.columns.title
 msgid "Unscalable items"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Unscalable items (%d): %s. They did not reach Hi of c with any scale. Review "
+"their content: they may measure a different attribute, be poorly worded, or "
+"need reversing."
+msgstr ""
+
+#: R/aisp.b.R
+msgid "Unscalable: %s"
 msgstr ""
 
 #: aisp/results/scales.columns.title
@@ -1502,6 +3700,19 @@ msgstr ""
 msgid "Upper bounds"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Use it when you do not yet know whether the items form one scale, several "
+"scales or none, for example when developing a questionnaire or re-examining "
+"an existing one."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Use these norms only if this sample represents the population you want to "
+"compare people with; otherwise they describe this sample only."
+msgstr ""
+
 #: aisp/results/summary.columns.title
 #: mlmsa/results/summary.columns.title
 #: msa/results/summary.columns.title
@@ -1516,6 +3727,12 @@ msgstr ""
 #: msa/options/plotValueLabels.title
 #: msacheck/options/plotValueLabels.title
 msgid "Value labels"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Values of about .80 or more are usually expected for research on groups, and "
+".90 or more for decisions about individuals."
 msgstr ""
 
 #: msa/results/bounds.columns.title
@@ -1534,6 +3751,10 @@ msgstr ""
 msgid "Vertical"
 msgstr ""
 
+#: R/msa.b.R
+msgid "Violation"
+msgstr ""
+
 #: msacheck/results/critPlot.title
 msgid "Violation profile"
 msgstr ""
@@ -1542,19 +3763,20 @@ msgstr ""
 msgid "Violation profile (crit)"
 msgstr ""
 
-#: aisp/options/plotPalette/viridis.title
-#: mlmsa/options/plotPalette/viridis.title
-#: msa/options/plotPalette/viridis.title
-#: msacheck/options/plotPalette/viridis.title
-msgid "Viridis"
-msgstr ""
-
 #: msacheck/options/caWindex.title
 msgid "W indices"
 msgstr ""
 
 #: msacheck/results/caW.title
 msgid "W indices of local dependence"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"W indices of the first step (all items). W1 and W3: positive local "
+"dependence with another item (largest value and number of flagged pairs); "
+"W2: negative local dependence. Flags use outlier rules on each index (Straat "
+"et al., 2016)."
 msgstr ""
 
 #: msacheck/results/caW.columns.title
@@ -1573,6 +3795,9 @@ msgstr ""
 msgid "W3 flags"
 msgstr ""
 
+#: R/aisp.b.R
+#: R/mlmsa.b.R
+#: R/msa.b.R
 #: aisp/options/typeZ/WB.title
 #: mlmsa/options/typeCI/WB.title
 #: mlmsa/options/typeZ/WB.title
@@ -1581,8 +3806,37 @@ msgstr ""
 msgid "Wald-based"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"Wald-based intervals are the estimate plus and minus a normal quantile times "
+"the standard error, with standard errors from the marginal-modelling "
+"approach (Kuijpers et al., 2013; see references). They are symmetric and can "
+"exceed 1 for coefficients near the ceiling; then prefer range-preserving "
+"intervals."
+msgstr ""
+
+#: R/texts.R
+msgid "Warnings"
+msgstr ""
+
+#: R/texts.R
+msgid "Weak ordering (.30 ≤ HT < .40)"
+msgstr ""
+
+#: R/texts.R
+msgid "weak scale (.30 ≤ H < .40)"
+msgstr ""
+
 #: mlmsa/options/weighProps.title
 msgid "Weight proportions by group size"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Weighted"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Weighted by group size"
 msgstr ""
 
 #: mlmsa/options/showWeights.title
@@ -1593,6 +3847,14 @@ msgstr ""
 msgid "Weights for two-level Guttman errors"
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"What H measures: how well the items order respondents in the same way. Think "
+"of a Guttman scale: if items are ordered from easiest to hardest, a "
+"respondent who endorses a hard item should also endorse every easier one. "
+"Each time this fails is a Guttman error."
+msgstr ""
+
 #: aisp/options/plotWidth.title
 #: mlmsa/options/plotWidth.title
 #: msa/options/plotWidth.title
@@ -1600,9 +3862,32 @@ msgstr ""
 msgid "Width (0 = automatic)"
 msgstr ""
 
+#: aisp/results/bootTable.columns.title
+msgid "With its scale-mates"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"With its scale-mates: for each item, the average proportion of samples in "
+"which it falls in the same scale as each item it was grouped with. Same "
+"scale as found: the proportion of samples in which its set of scale-mates is "
+"exactly the one found. Unscalable: how often it was left out."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"With nested data, mokken tests the coefficients with the Wald-based Z test; "
+"the original Z test was replaced by it."
+msgstr ""
+
+#: R/msacheck.b.R
 #: mlmsa/results/items.columns.title
 #: mlmsa/results/pairs.columns.title
 msgid "Within"
+msgstr ""
+
+#: R/mlmsa.b.R
+msgid "Within (HWi)"
 msgstr ""
 
 #: mlmsa/results/levelPlot.title
@@ -1613,6 +3898,18 @@ msgstr ""
 msgid "Within and between scalability plot"
 msgstr ""
 
+#: R/mlmsa.b.R
+msgid "Within raters (HW)"
+msgstr ""
+
+#: R/texts.R
+msgid "Within raters, H = %s; between raters, H = %s; their ratio BW = %s."
+msgstr ""
+
+#: R/msa.b.R
+msgid "Within the bounds"
+msgstr ""
+
 #: package/analyses/mlmsa.description
 #: mlmsa/options.description.main
 msgid ""
@@ -1620,6 +3917,12 @@ msgid ""
 "raters nested in subjects (for example, students rating their teacher), with "
 "standard errors, confidence intervals, tests, intraclass correlations, "
 "weights for Guttman errors and plain-language interpretation."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"Within: the item scores of raters within each cluster; Between: the cluster "
+"means (two-level fit statistics of Koopman et al.)."
 msgstr ""
 
 #: aisp/options/plotAxisAngle.title
@@ -1644,6 +3947,8 @@ msgstr ""
 msgid "z (within)"
 msgstr ""
 
+#: R/msa.b.R
+#: R/texts.R
 #: aisp/options/typeZ.title
 #: mlmsa/options/typeZ.title
 #: msa/options/typeZ.title
@@ -1655,9 +3960,39 @@ msgstr ""
 msgid "Z tests"
 msgstr ""
 
+#: R/texts.R
+msgid "Z tests (Scalability of the scale): the tests could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Z tests (two-level scalability): the tests could not be computed: %s."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"z: %2$s test of each coefficient against %1$s; p is one-sided. mokken does "
+"not test the ratio BW."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"z: %2$s test of each coefficient against the lower bound %1$s; p is "
+"one-sided (coefficient larger than the bound)."
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"z: original Z test of each coefficient against zero (Mokken, 1971); p is "
+"one-sided."
+msgstr ""
+
 #: msacheck/results/mono.columns.title
 #: msacheck/results/iioClusters.columns.title
 #: msacheck/results/rest.columns.title
 #: msacheck/results/pmat.columns.title
 msgid "zmax"
+msgstr ""
+
+#: R/msacheck.b.R
+msgid "Zone"
 msgstr ""

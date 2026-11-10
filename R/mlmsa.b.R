@@ -64,6 +64,12 @@
 # estima entonces el orden a partir de los datos, su valor por defecto.
 # -----------------------------------------------------------------------------
 
+# Numeric cell of a mokken result data frame, or NA when the column is
+# absent (MLcoefH() omits interval columns when no interval is asked for).
+# ES: Celda numérica de un data frame de resultados de mokken, o NA si falta
+# la columna (MLcoefH() omite las columnas de intervalo si no se piden).
+.ml_get <- function(df, col, i = 1) if (col %in% names(df)) .mk_clean_num(df[i, col]) else NA_real_
+
 mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
     "mlmsaClass",
     inherit = mlmsaBase,
@@ -75,17 +81,65 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.key[[type]] <- c(private$.key[[type]], text)
         },
 
+        # ---------------------------------------------------------------------
+        # Structure known from the options alone: the rows and columns of the
+        # covariance matrices, named as MLcoefH() names them.
+        # ES: Estructura que se conoce solo con las opciones: las filas y
+        # columnas de las matrices de covarianza, con los nombres que les da
+        # MLcoefH().
+        # ---------------------------------------------------------------------
+        .init = function() {
+            items <- unlist(self$options$vars)
+            # Item pairs follow from the selected items, in combn() order,
+            # so the pair table has its rows before the results arrive.
+            # ES: Los pares de ítems se derivan de los ítems elegidos, en el
+            # orden de combn(), así que la tabla tiene sus filas antes de
+            # que lleguen los resultados.
+            if (isTRUE(self$options$showHij) && length(items) >= 2) {
+                pairs <- utils::combn(length(items), 2)
+                for (k in seq_len(ncol(pairs)))
+                    self$results$pairs$addRow(rowKey = k, values = list(
+                        item1 = items[pairs[1, k]], item2 = items[pairs[2, k]]))
+            }
+            if (!isTRUE(self$options$showCov))
+                return()
+            tables <- list(covH = self$results$covH, covHi = self$results$covHi)
+            if (isTRUE(self$options$showHij))
+                tables$covHij <- self$results$covHij
+            for (kind in names(tables)) {
+                names <- private$.covNames(kind, items)
+                for (j in seq_along(names))
+                    tables[[kind]]$addColumn(name = paste0("c", j), title = names[j], type = "number", format = "zto")
+                for (name in names)
+                    tables[[kind]]$addRow(rowKey = name, values = list(coef = name))
+            }
+        },
+
+        .covNames = function(kind, items) {
+            if (identical(kind, "covH"))
+                return(c("HB", "HW", "HBW"))
+            if (identical(kind, "covHi"))
+                return(as.vector(t(outer(c("HBi", "HWi", "HBWi"), items, paste))))
+            pairs <- character(0)
+            for (i in seq_along(items)) for (j in seq_along(items))
+                if (i < j) pairs <- c(pairs, paste(items[i], items[j]))
+            as.vector(t(outer(c("HBij", "HWij", "HBWij"), pairs, paste)))
+        },
+
         .run = function() {
 
-            lang <- .mk_normalize_lang(self$options$reportLang)
-            tr <- function(en, es) .mk_tr(lang, en, es)
+            lang <- .mk_lang(self$options)
+            . <- tr <- lang$tr
             txt <- function(section, key) .mk_text(lang, section, key)
 
-            private$.setTitles(tr)
-            self$results$intro$setContent(.mk_html_block(NULL, txt("ml", "intro")))
-
-            if (length(self$options$vars) == 0 || is.null(self$options$subject))
+            # The introduction is the empty state: the first item assigned
+            # replaces it with results, so it never stays above them.
+            # ES: La introducción es el estado vacío: el primer ítem asignado
+            # la reemplaza por resultados, así que nunca queda sobre ellos.
+            if (length(self$options$vars) == 0 || is.null(self$options$subject)) {
+                self$results$intro$setContent(.mk_html_block(NULL, txt("ml", "intro")))
                 return()
+            }
             if (isTRUE(self$options$showGuides))
                 self$results$mlGuide$setContent(.mk_guide_block(lang, "ml"))
             private$.key <- list(findings = character(0), uncertain = character(0), warnings = character(0))
@@ -111,11 +165,11 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 self$results$choicesGuide$setContent(.mk_choices_guide(lang, c(
                     .mk_data_choices(lang, self$options, prep),
                     list(c(paste0(txt("choices", "h_weigh"), ": ", if (isTRUE(self$options$weighProps))
-                               tr("Weighted", "Ponderadas") else tr("Averaged", "Promediadas"), "."),
+                               .("Weighted") else .("Averaged"), "."),
                            txt("choices", if (isTRUE(self$options$weighProps)) "weigh_true" else "weigh_false"))),
                     if (isTRUE(self$options$ci)) list(c(
                         paste0(txt("choices", "h_ci"), ": ", if (identical(self$options$typeCI, "RP"))
-                            tr("Range-preserving", "Preservador de rango") else tr("Wald-based", "De Wald"), "."),
+                            .("Range-preserving") else .("Wald-based"), "."),
                         txt("choices", paste0("ci_", self$options$typeCI)))))))
 
             # -----------------------------------------------------------------
@@ -127,7 +181,8 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                          weigh.props = isTRUE(self$options$weighProps), type.ci = self$options$typeCI,
                          cov.mat = isTRUE(self$options$showCov))
             if (isTRUE(self$options$ci)) args$ci <- level
-            fit <- .mk_cached_capture(self$results$cacheStore, "MLcoefH", args, mokken::MLcoefH)
+            fit <- .mk_cached_capture(self$results$cacheStore, "MLcoefH", args, mokken::MLcoefH,
+                                      extract = .mk_keep(c("H", "Hi", "Hij", "covH", "covHi", "covHij")))
             if (is.null(fit$value))
                 jmvcore::reject(sprintf(txt("ml", "failed"), fit$error))
             warnings <- fit$warnings
@@ -136,7 +191,8 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             zfit <- NULL
             if (isTRUE(self$options$showZ)) {
                 zres <- .mk_cached_capture(self$results$cacheStore, "MLcoefZ", list(XS, lowerbound = as.numeric(self$options$zLowerbound),
-                                                    type.z = self$options$typeZ), mokken::MLcoefZ)
+                                                    type.z = self$options$typeZ), mokken::MLcoefZ,
+                                           extract = .mk_keep(c("Z", "Zi")))
                 warnings <- c(warnings, zres$warnings)
                 zfit <- zres$value
                 if (is.null(zfit))
@@ -148,16 +204,111 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             # Summary.
             # ES: Resumen.
             # -----------------------------------------------------------------
+            private$.fillSummary(lang, prep, items, raters, subject_name)
+
+            # -----------------------------------------------------------------
+            # Scale and item tables. Intervals are mokken's own (ci.*.l and
+            # ci.*.u), computed with the chosen type.
+            # ES: Tablas de la escala y de los ítems. Los intervalos son los de
+            # mokken (ci.*.l y ci.*.u), con el tipo elegido.
+            # ---------------------------------------------------------------
+            Hs <- H$H
+            get <- .ml_get
+            z_scale <- if (!is.null(zfit)) list(HW = get(zfit$Z, "HW"), HB = get(zfit$Z, "HB")) else list()
+            readings <- list(HW = txt("ml", "read_hw"), HB = txt("ml", "read_hb"), HBW = txt("ml", "read_bw"))
+            for (cf in c("HW", "HB", "HBW")) {
+                label <- switch(cf, HW = .("Within raters (HW)"),
+                                HB = .("Between raters (HB)"),
+                                HBW = .("Ratio (BW = HB / HW)"))
+                z <- if (cf %in% names(z_scale)) z_scale[[cf]] else NA_real_
+                .mk_add_row(self$results$scale, cf, list(
+                    coef = label, est = get(Hs, cf), se = get(Hs, paste0("se.", cf)),
+                    lower = get(Hs, paste0("ci.", cf, ".l")), upper = get(Hs, paste0("ci.", cf, ".u")),
+                    z = z, p = pz(z), reading = readings[[cf]]))
+            }
+            if (!is.null(zfit))
+                self$results$scale$setNote("z", sprintf(txt("ml", "z_note"), .mk_fmt_num(self$options$zLowerbound, 2),
+                    if (identical(self$options$typeZ, "RP")) .("range-preserving")
+                    else .("Wald-based [inline]")))
+
+            Hi <- H$Hi
+            for (i in seq_along(items)) {
+                zw <- if (!is.null(zfit)) get(zfit$Zi, "HWi", i) else NA_real_
+                zb <- if (!is.null(zfit)) get(zfit$Zi, "HBi", i) else NA_real_
+                .mk_add_row(self$results$items, items[i], list(
+                    item = items[i], w = get(Hi, "HWi", i), wse = get(Hi, "se.HWi", i),
+                    b = get(Hi, "HBi", i), bse = get(Hi, "se.HBi", i), bw = get(Hi, "HBWi", i), zw = zw, zb = zb))
+            }
+
+            if (isTRUE(self$options$showHij))
+                private$.fillPairs(lang, H$Hij, items)
+
+            if (isTRUE(self$options$showCov)) {
+                private$.fillCov(self$results$covH, H$covH)
+                private$.fillCov(self$results$covHi, H$covHi)
+                if (isTRUE(self$options$showHij))
+                    private$.fillCov(self$results$covHij, H$covHij)
+            }
+
+            # -----------------------------------------------------------------
+            # Intraclass correlations (Category B).
+            # ES: Correlaciones intraclase (Categoría B).
+            # -----------------------------------------------------------------
+            if (isTRUE(self$options$showICC))
+                warnings <- c(warnings, private$.runICC(lang, XS))
+
+            # -----------------------------------------------------------------
+            # Weights for two-level Guttman errors, one column per score
+            # pattern (score of the first item, score of the second).
+            # ES: Pesos para errores de Guttman de dos niveles, una columna por
+            # patrón de puntajes (puntaje del primer ítem, del segundo).
+            # -----------------------------------------------------------------
+            if (isTRUE(self$options$showWeights))
+                warnings <- c(warnings, private$.fillWeights(XS, items, prep$range, lang, tr, txt))
+
+            # -----------------------------------------------------------------
+            # Plot state: HWi and HBi of every item with intervals.
+            # ES: Estado del gráfico: HWi y HBi de cada ítem con intervalos.
+            # -----------------------------------------------------------------
+            if (isTRUE(self$options$levelPlot))
+                private$.fillLevelPlot(lang, Hi, items, level)
+
+            # -----------------------------------------------------------------
+            # Interpretation, key findings, notes.
+            # ES: Interpretación, hallazgos, notas.
+            # -----------------------------------------------------------------
+            private$.interpret(lang, Hs, Hi, items)
+
+            for (section in .mk_failed_sections(self$results, lang))
+                private$.addKey("warnings", sprintf(txt("common", "key_failed"), section))
+            if (isTRUE(self$options$showKeySummary))
+                self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
+
+            # Reproducibility record.
+            # ES: Registro de reproducibilidad.
+            if (isTRUE(self$options$showRepro))
+                private$.fillRepro(lang, prep, items, level, subject_name)
+
+            .mk_insert_notices(self$results, self$options, .mk_translate_notices(warnings, lang))
+        },
+
+        # ---------------------------------------------------------------------
+        # Summary of the design: items, raters and subjects.
+        # ES: Resumen del diseño: ítems, evaluadores y sujetos.
+        # ---------------------------------------------------------------------
+        .fillSummary = function(lang, prep, items, raters, subject_name) {
+            . <- tr <- lang$tr
+            txt <- function(section, key) .mk_text(lang, section, key)
             rows <- list(
-                list(tr("Items", "Ítems"), as.character(length(items))),
-                list(tr("Raters (rows) used", "Evaluadores (filas) usados"), .mk_cases_label(tr, prep)),
-                list(tr("Subjects", "Sujetos"), sprintf(tr("%d (%s)", "%d (%s)"), length(raters), subject_name)),
-                list(tr("Raters per subject", "Evaluadores por sujeto"), sprintf(
-                    tr("minimum %d, median %s, maximum %d", "mínimo %d, mediana %s, máximo %d"),
+                list(.("Items"), as.character(length(items))),
+                list(.("Raters (rows) used"), .mk_cases_label(tr, prep)),
+                list(.("Subjects"), sprintf(.("%d (%s)"), length(raters), subject_name)),
+                list(.("Raters per subject"), sprintf(
+                    .("minimum %d, median %s, maximum %d"),
                     as.integer(min(raters)), .mk_fmt_num(stats::median(raters), 1), as.integer(max(raters)))),
-                list(tr("Group proportions", "Proporciones de grupo"), if (isTRUE(self$options$weighProps))
-                    tr("Weighted by group size", "Ponderadas por tamaño de grupo") else tr("Averaged", "Promediadas")))
-            rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
+                list(.("Group proportions"), if (isTRUE(self$options$weighProps))
+                    .("Weighted by group size") else .("Averaged")))
+            rows[[length(rows) + 1]] <- list(.("Negatively worded items (reversed)"),
                                                  .mk_reversed_label(tr, prep))
             for (i in seq_along(rows))
                 .mk_add_row(self$results$summary, i, list(element = rows[[i]][[1]], value = rows[[i]][[2]]))
@@ -178,127 +329,94 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 self$results$summary$setNote("few", sprintf(txt("ml", "few_subjects"), length(raters)))
                 private$.addKey("uncertain", sprintf(txt("ml", "key_few_subjects"), length(raters)))
             }
+        },
 
-            # -----------------------------------------------------------------
-            # Scale and item tables. Intervals are mokken's own (ci.*.l and
-            # ci.*.u), computed with the chosen type.
-            # ES: Tablas de la escala y de los ítems. Los intervalos son los de
-            # mokken (ci.*.l y ci.*.u), con el tipo elegido.
-            # ---------------------------------------------------------------
-            Hs <- H$H
-            get <- function(df, col, i = 1) if (col %in% names(df)) .mk_clean_num(df[i, col]) else NA_real_
-            z_scale <- if (!is.null(zfit)) list(HW = get(zfit$Z, "HW"), HB = get(zfit$Z, "HB")) else list()
-            readings <- list(HW = txt("ml", "read_hw"), HB = txt("ml", "read_hb"), HBW = txt("ml", "read_bw"))
-            for (cf in c("HW", "HB", "HBW")) {
-                label <- switch(cf, HW = tr("Within raters (HW)", "Dentro de evaluadores (HW)"),
-                                HB = tr("Between raters (HB)", "Entre evaluadores (HB)"),
-                                HBW = tr("Ratio (BW = HB / HW)", "Razón (BW = HB / HW)"))
-                z <- if (cf %in% names(z_scale)) z_scale[[cf]] else NA_real_
-                .mk_add_row(self$results$scale, cf, list(
-                    coef = label, est = get(Hs, cf), se = get(Hs, paste0("se.", cf)),
-                    lower = get(Hs, paste0("ci.", cf, ".l")), upper = get(Hs, paste0("ci.", cf, ".u")),
-                    z = z, p = pz(z), reading = readings[[cf]]))
+        # ---------------------------------------------------------------------
+        # Item pairs, identified by position in combn() order.
+        # ES: Pares de ítems, identificados por su posición en el orden de combn().
+        # ---------------------------------------------------------------------
+        .fillPairs = function(lang, Hij, items) {
+            . <- tr <- lang$tr
+            txt <- function(section, key) .mk_text(lang, section, key)
+            get <- .ml_get
+            # Pairs are identified by position: MLcoefH() returns them in
+            # combn() order (1-2, 1-3, ..., 2-3, ...). Splitting its row
+            # names at spaces would break item names that contain spaces.
+            # ES: Los pares se identifican por posición: MLcoefH() los
+            # devuelve en el orden de combn(). Partir sus nombres de fila
+            # por espacios rompería nombres de ítem con espacios.
+            pairs <- utils::combn(length(items), 2)
+            if (nrow(Hij) != ncol(pairs)) {
+                self$results$pairs$deleteRows()
+                .mk_add_row(self$results$pairs, 1, list(item1 = txt("common", "not_computable")))
+                self$results$pairs$addFootnote(rowKey = 1, col = "item1", txt("ml", "pairs_mismatch"))
+            } else {
+                for (k in seq_len(nrow(Hij)))
+                    .mk_add_row(self$results$pairs, k, list(
+                        item1 = items[pairs[1, k]], item2 = items[pairs[2, k]],
+                        w = get(Hij, "HWij", k), wse = get(Hij, "se.HWij", k), b = get(Hij, "HBij", k),
+                        bse = get(Hij, "se.HBij", k), bw = get(Hij, "HBWij", k)))
             }
-            if (!is.null(zfit))
-                self$results$scale$setNote("z", sprintf(txt("ml", "z_note"), .mk_fmt_num(self$options$zLowerbound, 2),
-                    if (identical(self$options$typeZ, "RP")) tr("range-preserving", "preservadora de rango")
-                    else tr("Wald-based", "de Wald")))
+        },
 
-            Hi <- H$Hi
-            for (i in seq_along(items)) {
-                zw <- if (!is.null(zfit)) get(zfit$Zi, "HWi", i) else NA_real_
-                zb <- if (!is.null(zfit)) get(zfit$Zi, "HBi", i) else NA_real_
-                .mk_add_row(self$results$items, items[i], list(
-                    item = items[i], w = get(Hi, "HWi", i), wse = get(Hi, "se.HWi", i),
-                    b = get(Hi, "HBi", i), bse = get(Hi, "se.HBi", i), bw = get(Hi, "HBWi", i), zw = zw, zb = zb))
+        # ---------------------------------------------------------------------
+        # Intraclass correlations (Category B). Returns the warnings.
+        # ES: Correlaciones intraclase (Categoría B). Devuelve los avisos.
+        # ---------------------------------------------------------------------
+        .runICC = function(lang, XS) {
+            . <- tr <- lang$tr
+            txt <- function(section, key) .mk_text(lang, section, key)
+            icc <- .mk_cached_capture(self$results$cacheStore, "ICC", list(XS), mokken::ICC,
+                                      extract = .mk_keep(c("itemICC", "scaleICC")))
+            table <- self$results$icc
+            if (is.null(icc$value)) {
+                .mk_add_row(table, 1, list(item = txt("common", "not_computable")))
+                table$addFootnote(rowKey = 1, col = "item", sprintf(txt("ml", "icc_failed"), icc$error))
+            } else {
+                it <- icc$value$itemICC
+                for (i in seq_len(nrow(it)))
+                    .mk_add_row(table, i, list(item = as.character(it$Item[i]), icc = .mk_clean_num(it$ICC[i])))
+                sc <- icc$value$scaleICC
+                .mk_add_row(table, "scale", list(item = .("Total score"),
+                    icc = .mk_clean_num(sc$ICC), f = .mk_clean_num(sc$F), df1 = as.integer(sc$df1),
+                    df2 = as.integer(sc$df2), p = .mk_clean_num(sc$p.value)))
+                table$setNote("icc", txt("ml", "icc_note"))
+                private$.addKey("findings", sprintf(txt("ml", "key_icc"), .mk_fmt_num(sc$ICC, 2)))
             }
+            icc$warnings
+        },
 
-            if (isTRUE(self$options$showHij)) {
-                Hij <- H$Hij
-                # Pairs are identified by position: MLcoefH() returns them in
-                # combn() order (1-2, 1-3, ..., 2-3, ...). Splitting its row
-                # names at spaces would break item names that contain spaces.
-                # ES: Los pares se identifican por posición: MLcoefH() los
-                # devuelve en el orden de combn(). Partir sus nombres de fila
-                # por espacios rompería nombres de ítem con espacios.
-                pairs <- utils::combn(length(items), 2)
-                if (nrow(Hij) != ncol(pairs)) {
-                    .mk_add_row(self$results$pairs, 1, list(item1 = txt("common", "not_computable")))
-                    self$results$pairs$addFootnote(rowKey = 1, col = "item1", txt("ml", "pairs_mismatch"))
-                } else {
-                    for (k in seq_len(nrow(Hij)))
-                        .mk_add_row(self$results$pairs, k, list(
-                            item1 = items[pairs[1, k]], item2 = items[pairs[2, k]],
-                            w = get(Hij, "HWij", k), wse = get(Hij, "se.HWij", k), b = get(Hij, "HBij", k),
-                            bse = get(Hij, "se.HBij", k), bw = get(Hij, "HBWij", k)))
-                }
-            }
+        # ---------------------------------------------------------------------
+        # Plot state: HWi and HBi of every item with intervals.
+        # ES: Estado del gráfico: HWi y HBi de cada ítem con intervalos.
+        # ---------------------------------------------------------------------
+        .fillLevelPlot = function(lang, Hi, items, level) {
+            . <- tr <- lang$tr
+            txt <- function(section, key) .mk_text(lang, section, key)
+            z <- stats::qnorm(1 - (1 - level) / 2)
+            hw <- as.numeric(Hi$HWi); hb <- as.numeric(Hi$HBi)
+            sw <- as.numeric(Hi$se.HWi); sb <- as.numeric(Hi$se.HBi)
+            lw <- if ("ci.HWi.l" %in% names(Hi)) as.numeric(Hi$ci.HWi.l) else hw - z * sw
+            uw <- if ("ci.HWi.u" %in% names(Hi)) as.numeric(Hi$ci.HWi.u) else hw + z * sw
+            lb <- if ("ci.HBi.l" %in% names(Hi)) as.numeric(Hi$ci.HBi.l) else hb - z * sb
+            ub <- if ("ci.HBi.u" %in% names(Hi)) as.numeric(Hi$ci.HBi.u) else hb + z * sb
+            within <- .("Within (HWi)"); between <- .("Between (HBi)")
+            .mk_set_size(self$results$levelPlot, self$options, 600, max(340, 30 * length(items) + 160))
+            self$results$levelPlot$setState(list(
+                data = data.frame(item = rep(items, 2), level = rep(c(within, between), each = length(items)),
+                                  est = c(hw, hb), lower = c(lw, lb), upper = c(uw, ub), stringsAsFactors = FALSE),
+                items = items, ci = isTRUE(self$options$ci),
+                labels = list(x = .("Item scalability"), color = .("Level"))))
+        },
 
-            if (isTRUE(self$options$showCov)) {
-                private$.fillCov(self$results$covH, H$covH)
-                private$.fillCov(self$results$covHi, H$covHi)
-                if (isTRUE(self$options$showHij))
-                    private$.fillCov(self$results$covHij, H$covHij)
-            }
-
-            # -----------------------------------------------------------------
-            # Intraclass correlations (Category B).
-            # ES: Correlaciones intraclase (Categoría B).
-            # -----------------------------------------------------------------
-            if (isTRUE(self$options$showICC)) {
-                icc <- .mk_cached_capture(self$results$cacheStore, "ICC", list(XS), mokken::ICC)
-                table <- self$results$icc
-                if (is.null(icc$value)) {
-                    .mk_add_row(table, 1, list(item = txt("common", "not_computable")))
-                    table$addFootnote(rowKey = 1, col = "item", sprintf(txt("ml", "icc_failed"), icc$error))
-                } else {
-                    it <- icc$value$itemICC
-                    for (i in seq_len(nrow(it)))
-                        .mk_add_row(table, i, list(item = as.character(it$Item[i]), icc = .mk_clean_num(it$ICC[i])))
-                    sc <- icc$value$scaleICC
-                    .mk_add_row(table, "scale", list(item = tr("Total score", "Puntuación total"),
-                        icc = .mk_clean_num(sc$ICC), f = .mk_clean_num(sc$F), df1 = as.integer(sc$df1),
-                        df2 = as.integer(sc$df2), p = .mk_clean_num(sc$p.value)))
-                    table$setNote("icc", txt("ml", "icc_note"))
-                    private$.addKey("findings", sprintf(txt("ml", "key_icc"), .mk_fmt_num(sc$ICC, 2)))
-                }
-                warnings <- c(warnings, icc$warnings)
-            }
-
-            # -----------------------------------------------------------------
-            # Weights for two-level Guttman errors, one column per score
-            # pattern (score of the first item, score of the second).
-            # ES: Pesos para errores de Guttman de dos niveles, una columna por
-            # patrón de puntajes (puntaje del primer ítem, del segundo).
-            # -----------------------------------------------------------------
-            if (isTRUE(self$options$showWeights))
-                warnings <- c(warnings, private$.fillWeights(XS, items, prep$range, lang, tr, txt))
-
-            # -----------------------------------------------------------------
-            # Plot state: HWi and HBi of every item with intervals.
-            # ES: Estado del gráfico: HWi y HBi de cada ítem con intervalos.
-            # -----------------------------------------------------------------
-            if (isTRUE(self$options$levelPlot)) {
-                z <- stats::qnorm(1 - (1 - level) / 2)
-                hw <- as.numeric(Hi$HWi); hb <- as.numeric(Hi$HBi)
-                sw <- as.numeric(Hi$se.HWi); sb <- as.numeric(Hi$se.HBi)
-                lw <- if ("ci.HWi.l" %in% names(Hi)) as.numeric(Hi$ci.HWi.l) else hw - z * sw
-                uw <- if ("ci.HWi.u" %in% names(Hi)) as.numeric(Hi$ci.HWi.u) else hw + z * sw
-                lb <- if ("ci.HBi.l" %in% names(Hi)) as.numeric(Hi$ci.HBi.l) else hb - z * sb
-                ub <- if ("ci.HBi.u" %in% names(Hi)) as.numeric(Hi$ci.HBi.u) else hb + z * sb
-                within <- tr("Within (HWi)", "Dentro (HWi)"); between <- tr("Between (HBi)", "Entre (HBi)")
-                .mk_set_size(self$results$levelPlot, self$options, 600, max(340, 30 * length(items) + 160))
-                self$results$levelPlot$setState(list(
-                    data = data.frame(item = rep(items, 2), level = rep(c(within, between), each = length(items)),
-                                      est = c(hw, hb), lower = c(lw, lb), upper = c(uw, ub), stringsAsFactors = FALSE),
-                    items = items, ci = isTRUE(self$options$ci),
-                    labels = list(x = tr("Item scalability", "Escalabilidad del ítem"), color = tr("Level", "Nivel"))))
-            }
-
-            # -----------------------------------------------------------------
-            # Interpretation, key findings, notes.
-            # ES: Interpretación, hallazgos, notas.
-            # -----------------------------------------------------------------
+        # ---------------------------------------------------------------------
+        # Interpretation and key findings.
+        # ES: Interpretación y hallazgos clave.
+        # ---------------------------------------------------------------------
+        .interpret = function(lang, Hs, Hi, items) {
+            . <- tr <- lang$tr
+            txt <- function(section, key) .mk_text(lang, section, key)
+            get <- .ml_get
             hw <- get(Hs, "HW"); hb <- get(Hs, "HB"); bw <- get(Hs, "HBW")
             parts <- sprintf(txt("ml", "interp_values"), .mk_fmt_num(hw, 3), .mk_fmt_num(hb, 3), .mk_fmt_num(bw, 3))
             private$.addKey("findings", sprintf(txt("ml", "key_values"), .mk_fmt_num(hw, 2), .mk_fmt_num(hb, 2),
@@ -322,40 +440,33 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             }
             parts <- c(parts, txt("ml", "interp_next"))
             self$results$interpretation$setContent(.mk_interpretation(lang, parts))
+        },
 
-            for (section in .mk_failed_sections(self$results, lang))
-                private$.addKey("warnings", sprintf(txt("common", "key_failed"), section))
-            if (isTRUE(self$options$showKeySummary))
-                self$results$keySummary$setContent(.mk_key_summary(lang, private$.key))
-
-            # Reproducibility record.
-            # ES: Registro de reproducibilidad.
-            if (isTRUE(self$options$showRepro)) {
-                opts <- self$options
-                code <- .mk_r_prep_code(prep, opts, items, subject_name)
-                code <- c(code, paste0("XS <- cbind(Subject = as.integer(factor(extra[[",
-                                       encodeString(subject_name, quote = "\""), "]])), X)"),
-                          .mk_r_call("MLcoefH", "XS", list(se = TRUE, ci = if (isTRUE(opts$ci)) level,
-                              type.ci = opts$typeCI, weigh.props = isTRUE(opts$weighProps), cov.mat = isTRUE(opts$showCov))))
-                if (isTRUE(opts$showZ))
-                    code <- c(code, .mk_r_call("MLcoefZ", "XS", list(lowerbound = as.numeric(opts$zLowerbound), type.z = opts$typeZ)))
-                if (isTRUE(opts$showICC))
-                    code <- c(code, "ICC(XS)")
-                if (isTRUE(opts$showWeights))
-                    code <- c(code, paste0("MLweight(XS[, c(1, i + 1, j + 1)], minx = ", prep$range[1], ", maxx = ",
-                                           prep$range[2], ")  # for every pair of items i < j"))
-                seeds <- if (!is.null(prep$completed)) sprintf(tr("Two-way imputation seed: %d.", "Semilla de la imputación two-way: %d."),
-                                                              as.integer(opts$twowaySeed)) else character(0)
-                self$results$reproducibility$setContent(.mk_repro_block(lang, code, seeds))
-            }
-
-            notes <- .mk_translate_notices(warnings, lang)
-            if (length(notes) > 0) {
-                self$results$notes$setContent(.mk_html_block(
-                    txt("common", "warnings_title"), .mk_html_list(notes), raw = TRUE))
-            } else {
-                self$results$notes$setVisible(FALSE)
-            }
+        # ---------------------------------------------------------------------
+        # Reproducibility record.
+        # ES: Registro de reproducibilidad.
+        # ---------------------------------------------------------------------
+        .fillRepro = function(lang, prep, items, level, subject_name) {
+            . <- tr <- lang$tr
+            txt <- function(section, key) .mk_text(lang, section, key)
+            opts <- self$options
+            code <- .mk_r_prep_code(prep, opts, items, subject_name)
+            code <- c(code, paste0("XS <- cbind(Subject = as.integer(factor(extra[[",
+                                   encodeString(subject_name, quote = "\""), "]])), X)"),
+                      .mk_r_call("MLcoefH", "XS", list(se = TRUE, ci = if (isTRUE(opts$ci)) level,
+                          type.ci = opts$typeCI, weigh.props = isTRUE(opts$weighProps), cov.mat = isTRUE(opts$showCov))))
+            if (isTRUE(opts$showZ))
+                code <- c(code, .mk_r_call("MLcoefZ", "XS", list(lowerbound = as.numeric(opts$zLowerbound), type.z = opts$typeZ)))
+            if (isTRUE(opts$showICC))
+                code <- c(code, "ICC(XS)")
+            if (isTRUE(opts$showWeights))
+                code <- c(code, paste0("MLweight(XS[, c(1, i + 1, j + 1)], minx = ", prep$range[1], ", maxx = ",
+                                       prep$range[2], ")  # for every pair of items i < j"))
+            seeds <- if (!is.null(prep$completed)) sprintf(.("Two-way imputation seed: %d."),
+                                                          as.integer(opts$twowaySeed)) else character(0)
+            repro <- .mk_repro_block(lang, code, seeds)
+            self$results$reproducibility$setContent(repro$html)
+            self$results$reproducibilityCode$setContent(repro$code)
         },
 
         # Covariance matrix as a table: one row and one column per
@@ -366,30 +477,51 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (is.null(m)) return(invisible(NULL))
             m <- as.matrix(m)
             names <- if (is.null(colnames(m))) paste0("V", seq_len(ncol(m))) else colnames(m)
+            # .init() laid out the matrix as MLcoefH() names it; columns are
+            # added here only if mokken named them otherwise.
+            # ES: .init() dispuso la matriz con los nombres de MLcoefH(); aquí
+            # solo se agregan columnas si mokken las nombró de otro modo.
             for (j in seq_len(ncol(m)))
-                table$addColumn(name = paste0("c", j), title = names[j], type = "number", format = "zto")
+                if (!.mk_has_column(table, paste0("c", j)))
+                    table$addColumn(name = paste0("c", j), title = names[j], type = "number", format = "zto")
             for (i in seq_len(nrow(m))) {
-                values <- list(coef = if (is.null(rownames(m))) names[i] else rownames(m)[i])
+                key <- if (is.null(rownames(m))) names[i] else rownames(m)[i]
+                values <- list(coef = key)
                 for (j in seq_len(ncol(m)))
                     values[[paste0("c", j)]] <- .mk_clean_num(m[i, j])
-                .mk_add_row(table, i, values)
+                .mk_add_row(table, key, values)
             }
         },
 
         .fillWeights = function(XS, items, range, lang, tr, txt) {
+            . <- tr
             table <- self$results$weights
             scores <- seq(range[1], range[2])
             patterns <- expand.grid(b = scores, a = scores)[, c("a", "b")]
             for (k in seq_len(nrow(patterns)))
                 table$addColumn(name = paste0("w", k), title = paste0("(", patterns$a[k], ", ", patterns$b[k], ")"),
-                                type = "number", superTitle = tr("Score pattern (first, second item)",
-                                                                 "Patrón de puntajes (primer, segundo ítem)"))
+                                type = "number", superTitle = .("Score pattern (first, second item)"))
+            # Every pair in one cache entry: one entry per pair would push
+            # the other results out of the small cache.
+            # ES: Todos los pares en una sola entrada de la caché: una entrada
+            # por par desplazaría los demás resultados.
+            all_pairs <- .mk_cached_capture(self$results$cacheStore, "MLweight", list(XS, range),
+                function(XS, range) {
+                    out <- list()
+                    for (i in seq_along(items)) for (j in seq_along(items)) {
+                        if (i >= j) next
+                        res <- .mk_capture(mokken::MLweight(XS[, c(1, i + 1, j + 1)], minx = range[1], maxx = range[2]))
+                        if (!is.null(res$value)) res$value <- as.numeric(res$value)
+                        out[[length(out) + 1]] <- res
+                    }
+                    out
+                })$value
             warnings <- character(0)
             row <- 0
             for (i in seq_along(items)) for (j in seq_along(items)) {
                 if (i >= j) next
                 row <- row + 1
-                res <- .mk_cached_capture(self$results$cacheStore, "MLweight", list(XS[, c(1, i + 1, j + 1)], minx = range[1], maxx = range[2]), mokken::MLweight)
+                res <- all_pairs[[row]]
                 warnings <- c(warnings, res$warnings)
                 values <- list(pair = paste(items[i], "–", items[j]))
                 if (!is.null(res$value))
@@ -410,49 +542,6 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             warnings
         },
 
-        .setTitles = function(tr) {
-            titles <- list(
-                c("intro", "Introduction", "Introducción"),
-                c("keySummary", "Key findings", "Hallazgos clave"),
-                c("choicesGuide", "About your choices", "Acerca de sus elecciones"),
-                c("mlGuide", "How to read two-level scalability", "Cómo leer la escalabilidad de dos niveles"),
-                c("summary", "Analysis summary", "Resumen del análisis"),
-                c("scale", "Two-level scalability of the scale", "Escalabilidad de dos niveles de la escala"),
-                c("items", "Two-level item scalability", "Escalabilidad de dos niveles de los ítems"),
-                c("pairs", "Two-level item-pair scalability", "Escalabilidad de dos niveles de los pares de ítems"),
-                c("covH", "Covariance matrix of the scale coefficients", "Matriz de covarianzas de los coeficientes de la escala"),
-                c("covHi", "Covariance matrix of the item coefficients", "Matriz de covarianzas de los coeficientes de los ítems"),
-                c("covHij", "Covariance matrix of the item-pair coefficients", "Matriz de covarianzas de los coeficientes de los pares"),
-                c("icc", "Intraclass correlations", "Correlaciones intraclase"),
-                c("weights", "Weights for two-level Guttman errors", "Pesos para errores de Guttman de dos niveles"),
-                c("levelPlot", "Within and between scalability", "Escalabilidad dentro y entre"),
-                c("interpretation", "Applied interpretation", "Interpretación aplicada"),
-                c("notes", "Notes", "Notas"))
-            for (t in titles)
-                tryCatch(self$results[[t[1]]]$setTitle(tr(t[2], t[3])), error = function(e) NULL)
-            cols <- list(
-                list("summary", "element", "Element", "Elemento"), list("summary", "value", "Value", "Valor"),
-                list("scale", "coef", "Coefficient", "Coeficiente"), list("scale", "est", "Estimate", "Estimación"),
-                list("scale", "se", "SE", "EE"), list("scale", "lower", "Lower", "Inferior"),
-                list("scale", "upper", "Upper", "Superior"), list("scale", "reading", "Reading", "Lectura"),
-                list("items", "item", "Item", "Ítem"), list("items", "w", "Within", "Dentro"),
-                list("items", "wse", "SE", "EE"), list("items", "b", "Between", "Entre"), list("items", "bse", "SE", "EE"),
-                list("items", "bw", "Ratio BW", "Razón BW"), list("items", "zw", "z (within)", "z (dentro)"),
-                list("items", "zb", "z (between)", "z (entre)"),
-                list("pairs", "item1", "Item", "Ítem"), list("pairs", "item2", "Item", "Ítem"),
-                list("pairs", "w", "Within", "Dentro"), list("pairs", "wse", "SE", "EE"),
-                list("pairs", "b", "Between", "Entre"), list("pairs", "bse", "SE", "EE"),
-                list("pairs", "bw", "Ratio BW", "Razón BW"),
-                list("covH", "coef", "Coefficient", "Coeficiente"), list("covHi", "coef", "Coefficient", "Coeficiente"),
-                list("covHij", "coef", "Coefficient", "Coeficiente"),
-                list("icc", "item", "Item", "Ítem"), list("weights", "pair", "Item pair", "Par de ítems"))
-            for (cdef in cols)
-                tryCatch(self$results[[cdef[[1]]]]$getColumn(cdef[[2]])$setTitle(tr(cdef[[3]], cdef[[4]])),
-                         error = function(e) NULL)
-            ci_title <- tr("Confidence interval", "Intervalo de confianza")
-            for (col in c("lower", "upper"))
-                tryCatch(self$results$scale$getColumn(col)$setSuperTitle(ci_title), error = function(e) NULL)
-        },
 
         # ---------------------------------------------------------------------
         # Within and between scalability of every item, side by side, with
@@ -483,9 +572,6 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             plot <- plot + ggplot2::coord_flip(ylim = if (style$full) c(min(-0.2, min(df$lower, na.rm = TRUE)), 1) else NULL) +
                 ggplot2::labs(x = NULL, y = state$labels$x, color = state$labels$color) +
                 ggtheme + .mk_plot_theme(self$options)
-            palette <- .mk_plot_series_palette(self$options$plotPalette)
-            if (!is.null(palette))
-                plot <- plot + ggplot2::scale_color_manual(values = palette[c(5, 6)])
             print(plot)
             TRUE
         }

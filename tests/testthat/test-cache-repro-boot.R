@@ -52,7 +52,7 @@ test_that("a cosmetic change reuses the cached mokken results", {
     on.exit(untrace("coefH", where = asNamespace("mokken")), add = TRUE)
     a <- runAnalysis("msa", data, vars = names(data))
     first <- calls
-    b <- rerunWithCache("msa", a, data, vars = names(data), plotPointSize = 4, reportLang = "es")
+    b <- rerunWithCache("msa", a, data, vars = names(data), plotPointSize = 4, showGuides = TRUE)
     expect_equal(calls, first)
     expect_equal(a$results$scale$asDF$est, b$results$scale$asDF$est)
     d <- rerunWithCache("msa", b, data, vars = names(data), negItems = "item1")
@@ -68,10 +68,9 @@ test_that("every analysis writes a reproducibility record with valid R code", {
                              iioOrder = "clusters", iioClusterSize = 2L),
                  runAnalysis("mlmsa", two, subject = "Subject", vars = paste0("r", 1:5), showWeights = TRUE))
     for (a in runs) {
-        html <- a$results$reproducibility$content
-        expect_match(html, "library(mokken)", fixed = TRUE)
-        code <- sub("</pre>.*", "", sub(".*<pre[^>]*>", "", html))
-        code <- gsub("&quot;", "\"", gsub("&lt;", "<", gsub("&gt;", ">", gsub("&amp;", "&", code))))
+        expect_match(a$results$reproducibility$content, "MokkenLab", fixed = TRUE)
+        code <- a$results$reproducibilityCode$content
+        expect_match(code, "library(mokken)", fixed = TRUE)
         expect_silent(parse(text = code))
     }
 })

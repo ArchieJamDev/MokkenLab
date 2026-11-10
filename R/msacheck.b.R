@@ -62,12 +62,12 @@
 #   4. Interpretación, hallazgos, notas
 #
 # Not exposed: verbose (console progress only) and the color/ask arguments
-# of the plot methods (colors follow jamovi's theme and plotPalette; jamovi
-# shows every panel at once instead of asking).
+# of the plot methods (colors follow jamovi's theme and global palette;
+# jamovi shows every panel at once instead of asking).
 #
 # ES: No expuestos: verbose (solo progreso en consola) y los argumentos
-# color/ask de los métodos plot (los colores siguen el tema de jamovi y
-# plotPalette; jamovi muestra todos los paneles a la vez en lugar de
+# color/ask de los métodos plot (los colores siguen el tema y la paleta
+# global de jamovi; jamovi muestra todos los paneles a la vez en lugar de
 # preguntar).
 # -----------------------------------------------------------------------------
 
@@ -89,15 +89,18 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
         .run = function() {
 
-            lang <- .mk_normalize_lang(self$options$reportLang)
-            tr <- function(en, es) .mk_tr(lang, en, es)
+            lang <- .mk_lang(self$options)
+            . <- tr <- lang$tr
             txt <- function(section, key) .mk_text(lang, section, key)
 
-            private$.setTitles(tr)
-            self$results$intro$setContent(.mk_html_block(NULL, txt("check", "intro")))
-
-            if (length(self$options$vars) == 0)
+            # The introduction is the empty state: the first item assigned
+            # replaces it with results, so it never stays above them.
+            # ES: La introducción es el estado vacío: el primer ítem asignado
+            # la reemplaza por resultados, así que nunca queda sobre ellos.
+            if (length(self$options$vars) == 0) {
+                self$results$intro$setContent(.mk_html_block(NULL, txt("check", "intro")))
                 return()
+            }
             if (isTRUE(self$options$showGuides))
                 for (g in c("mono", "iio", "rest", "pmat", "ca"))
                     self$results[[paste0(g, "Guide")]]$setContent(.mk_guide_block(lang, g))
@@ -131,18 +134,17 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             # ES: Resumen.
             # -----------------------------------------------------------------
             rows <- list(
-                list(tr("Items", "Ítems"), as.character(length(items))),
-                list(tr("Cases used", "Casos usados"), .mk_cases_label(tr, prep)),
-                list(tr("Minimum rest-score group size", "Tamaño mínimo de grupo de rest-score"),
-                     if (is.null(minsize)) sprintf(tr("%d (mokken default for N = %d)", "%d (valor por defecto de mokken para N = %d)"),
+                list(.("Items"), as.character(length(items))),
+                list(.("Cases used"), .mk_cases_label(tr, prep)),
+                list(.("Minimum rest-score group size"),
+                     if (is.null(minsize)) sprintf(.("%d (mokken default for N = %d)"),
                                                    as.integer(.mk_default_minsize(nrow(X))), nrow(X))
                      else as.character(minsize)))
-            rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
+            rows[[length(rows) + 1]] <- list(.("Negatively worded items (reversed)"),
                                                  .mk_reversed_label(tr, prep))
             if (!is.null(level2))
-                rows[[length(rows) + 1]] <- list(tr("Clusters", "Conglomerados"), sprintf(
-                    tr("%s (%d clusters; two-level fit statistics for monotonicity and invariant item ordering)",
-                       "%s (%d conglomerados; estadísticos de ajuste de dos niveles para monotonicidad y orden invariante)"),
+                rows[[length(rows) + 1]] <- list(.("Clusters"), sprintf(
+                    .("%s (%d clusters; two-level fit statistics for monotonicity and invariant item ordering)"),
                     cluster_name, length(unique(level2))))
             for (i in seq_along(rows))
                 .mk_add_row(self$results$summary, i, list(element = rows[[i]][[1]], value = rows[[i]][[2]]))
@@ -190,10 +192,10 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 .mk_set_size(self$results$critPlot, self$options, max(500, 260 * min(style$ncol, n_checks) + 80),
                              max(360, (14 * length(items) + 120) * ceiling(n_checks / style$ncol)))
                 self$results$critPlot$setState(list(data = crit_df, items = items, labels = list(
-                    x = "Crit", none = tr("No serious violation", "Sin violación seria"),
-                    doubtful = tr("Doubtful", "Dudosa"), serious = tr("Serious", "Seria"),
-                    zone = tr("Zone", "Zona"), na = tr("Not evaluable", "No evaluable"),
-                    na_short = tr("not evaluable", "no evaluable"))))
+                    x = "Crit", none = .("No serious violation"),
+                    doubtful = .("Doubtful"), serious = .("Serious"),
+                    zone = .("Zone"), na = .("Not evaluable"),
+                    na_short = .("not evaluable"))))
             }
 
             if (length(parts) == 0)
@@ -218,46 +220,54 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
             # Reproducibility record.
             # ES: Registro de reproducibilidad.
-            if (isTRUE(self$options$showRepro)) {
-                opts <- self$options
-                keep <- if (!is.null(cluster_name)) cluster_name else character(0)
-                l2 <- if (!is.null(level2)) paste0("@as.integer(factor(extra[[", encodeString(cluster_name, quote = "\""), "]]))")
-                code <- .mk_r_prep_code(prep, opts, items, keep)
-                if (isTRUE(opts$checkMono))
-                    code <- c(code, .mk_r_call("check.monotonicity", "X", list(minvi = as.numeric(opts$monoMinvi),
-                                                                               minsize = minsize, level.two.var = l2)))
-                if (isTRUE(opts$checkIIO)) {
-                    order <- private$.iioOrder(ncol(X), txt)$order
-                    code <- c(code, .mk_r_call("check.iio", "X", list(method = opts$iioMethod,
-                        minvi = if (identical(opts$iioMinviMode, "manual")) as.numeric(opts$iioMinvi), minsize = minsize,
-                        alpha = as.numeric(opts$iioAlpha), item.selection = isTRUE(opts$iioItemSelection),
-                        fixed.item.order = order, level.two.var = l2)))
-                }
-                if (isTRUE(opts$checkRest))
-                    code <- c(code, .mk_r_call("check.restscore", "X", list(minvi = as.numeric(opts$restMinvi), minsize = minsize)))
-                if (isTRUE(opts$checkPmatrix))
-                    code <- c(code, .mk_r_call("check.pmatrix", "X", list(minvi = as.numeric(opts$pmatMinvi))))
-                if (isTRUE(opts$checkCA))
-                    code <- c(code, .mk_r_call("check.ca", "X", list(Windex = isTRUE(opts$caWindex),
-                        MINSIZE = as.integer(opts$caMinsize), NWEIGHTOPTION = opts$caNweight,
-                        COVWEIGHTOPTION = opts$caCovweight, MINGROUP = as.integer(opts$caMingroup))))
-                seeds <- if (!is.null(prep$completed)) sprintf(tr("Two-way imputation seed: %d.", "Semilla de la imputación two-way: %d."),
-                                                              as.integer(opts$twowaySeed)) else character(0)
-                self$results$reproducibility$setContent(.mk_repro_block(lang, code, seeds))
-            }
+            if (isTRUE(self$options$showRepro))
+                private$.fillRepro(lang, prep, items, cluster_name, level2, minsize)
 
-            notes <- .mk_translate_notices(warnings, lang)
-            if (length(notes) > 0) {
-                self$results$notes$setContent(.mk_html_block(
-                    txt("common", "warnings_title"), .mk_html_list(notes), raw = TRUE))
-            } else {
-                self$results$notes$setVisible(FALSE)
+            .mk_insert_notices(self$results, self$options, .mk_translate_notices(warnings, lang))
+        },
+
+        # ---------------------------------------------------------------------
+        # Reproducibility record: versions, seeds and the equivalent R code
+        # of this run.
+        # ES: Registro de reproducibilidad: versiones, semillas y el código R
+        # equivalente de esta ejecución.
+        # ---------------------------------------------------------------------
+        .fillRepro = function(lang, prep, items, cluster_name, level2, minsize) {
+            . <- lang$tr
+            txt <- function(section, key) .mk_text(lang, section, key)
+            opts <- self$options
+            keep <- if (!is.null(cluster_name)) cluster_name else character(0)
+            l2 <- if (!is.null(level2)) paste0("@as.integer(factor(extra[[", encodeString(cluster_name, quote = "\""), "]]))")
+            code <- .mk_r_prep_code(prep, opts, items, keep)
+            if (isTRUE(opts$checkMono))
+                code <- c(code, .mk_r_call("check.monotonicity", "X", list(minvi = as.numeric(opts$monoMinvi),
+                                                                           minsize = minsize, level.two.var = l2)))
+            if (isTRUE(opts$checkIIO)) {
+                order <- private$.iioOrder(length(items), txt)$order
+                code <- c(code, .mk_r_call("check.iio", "X", list(method = opts$iioMethod,
+                    minvi = if (identical(opts$iioMinviMode, "manual")) as.numeric(opts$iioMinvi), minsize = minsize,
+                    alpha = as.numeric(opts$iioAlpha), item.selection = isTRUE(opts$iioItemSelection),
+                    fixed.item.order = order, level.two.var = l2)))
             }
+            if (isTRUE(opts$checkRest))
+                code <- c(code, .mk_r_call("check.restscore", "X", list(minvi = as.numeric(opts$restMinvi), minsize = minsize)))
+            if (isTRUE(opts$checkPmatrix))
+                code <- c(code, .mk_r_call("check.pmatrix", "X", list(minvi = as.numeric(opts$pmatMinvi))))
+            if (isTRUE(opts$checkCA))
+                code <- c(code, .mk_r_call("check.ca", "X", list(Windex = isTRUE(opts$caWindex),
+                    MINSIZE = as.integer(opts$caMinsize), NWEIGHTOPTION = opts$caNweight,
+                    COVWEIGHTOPTION = opts$caCovweight, MINGROUP = as.integer(opts$caMingroup))))
+            seeds <- if (!is.null(prep$completed)) sprintf(.("Two-way imputation seed: %d."),
+                                                          as.integer(opts$twowaySeed)) else character(0)
+            repro <- .mk_repro_block(lang, code, seeds)
+            self$results$reproducibility$setContent(repro$html)
+            self$results$reproducibilityCode$setContent(repro$code)
         },
 
         .choices = function(lang, tr, txt) {
+            . <- tr
             out <- list(c(paste0(txt("choices", "h_minsize"), ": ", if (identical(self$options$minsizeMode, "manual"))
-                                     as.character(self$options$minsize) else tr("Automatic", "Automático"), "."),
+                                     as.character(self$options$minsize) else .("Automatic"), "."),
                           txt("choices", "minsize_body")),
                         c(paste0(txt("choices", "h_minvi"), "."), txt("choices", "minvi_body")))
             if (isTRUE(self$options$checkIIO)) {
@@ -340,10 +350,6 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             list(serious = unique(serious), doubtful = unique(doubtful), not_evaluable = unique(not_evaluable))
         },
 
-        .addLevelColumn = function(table, tr) {
-            table$addColumn(name = "level", title = tr("Level", "Nivel"), type = "text", index = 2)
-        },
-
         .failRow = function(table, lang, message) {
             .mk_add_row(table, 1, list(item = .mk_text(lang, "common", "not_computable")))
             table$addFootnote(rowKey = 1, col = "item", message)
@@ -383,36 +389,41 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # ES: Monotonicidad.
         # ---------------------------------------------------------------------
         .runMono = function(X, level2, minsize, plot_items, lang, tr, txt) {
+            . <- tr
             table <- self$results$mono
             args <- list(X = X, minvi = as.numeric(self$options$monoMinvi), level.two.var = level2)
             if (!is.null(minsize)) args$minsize <- minsize
-            fit <- .mk_cached_capture(self$results$cacheStore, "check.monotonicity", args, mokken::check.monotonicity)
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.monotonicity", args, mokken::check.monotonicity,
+                extract = function(v) {
+                    summ <- .mk_capture(summary(v))$value
+                    nested <- is.list(summ) && !is.matrix(summ)
+                    results <- if (nested) v[[1]]$results else v$results
+                    list(summary = summ, curves = if (!is.null(results)) lapply(results, function(r) r[[2]]))
+                })
             if (is.null(fit$value)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "mono_failed"), fit$error)))
             }
-            summ <- .mk_capture(summary(fit$value))$value
+            summ <- fit$value$summary
             if (is.list(summ) && !is.matrix(summ)) {
-                private$.addLevelColumn(table, tr)
-                res1 <- private$.fillViolations(table, summ[[1]], lang, tr("Within", "Dentro"), "L1_",
-                                                tr("Monotonicity", "Monotonicidad"))
-                res2 <- private$.fillViolations(table, summ[[2]], lang, tr("Between", "Entre"), "L2_",
-                                                tr("Monotonicity", "Monotonicidad"))
+                res1 <- private$.fillViolations(table, summ[[1]], lang, .("Within"), "L1_",
+                                                .("Monotonicity"))
+                res2 <- private$.fillViolations(table, summ[[2]], lang, .("Between"), "L2_",
+                                                .("Monotonicity"))
                 res <- list(serious = union(res1$serious, res2$serious), doubtful = union(res1$doubtful, res2$doubtful),
                             not_evaluable = union(res1$not_evaluable, res2$not_evaluable))
                 table$setNote("levels", txt("check", "levels_note"))
-                results <- fit$value[[1]]$results
             } else {
-                res <- private$.fillViolations(table, summ, lang, check = tr("Monotonicity", "Monotonicidad"))
-                results <- fit$value$results
+                res <- private$.fillViolations(table, summ, lang, check = .("Monotonicity"))
             }
+            results <- fit$value$curves
             table$setNote("crit", txt("check", "crit_note"))
 
             if (isTRUE(self$options$monoPlot) && !is.null(results)) {
                 curves <- list()
                 for (item in plot_items) {
                     k <- match(item, colnames(X))
-                    m <- results[[k]][[2]]
+                    m <- results[[k]]
                     curves[[item]] <- private$.curveData(m, item, self$options$monoCurves, tr)
                 }
                 df <- do.call(rbind, curves)
@@ -422,9 +433,9 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                                        if (identical(self$options$monoCurves, "both")) 2 else 1)
                     self$results$monoPlot$setState(list(
                         data = df, ci = isTRUE(self$options$plotCI),
-                        labels = list(x = tr("Rest score (group midpoint)", "Rest score (punto medio del grupo)"),
-                                      y = tr("Response function", "Función de respuesta"),
-                                      curve = tr("Curve", "Curva"))))
+                        labels = list(x = .("Rest score (group midpoint)"),
+                                      y = .("Response function"),
+                                      curve = .("Curve"))))
                 }
             }
             list(warnings = fit$warnings, text = private$.sectionText(lang, txt, "mono", res))
@@ -439,6 +450,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # con bandas normales a partir de las frecuencias del grupo.
         # ---------------------------------------------------------------------
         .curveData = function(m, item, curves, tr) {
+            . <- tr
             cols <- colnames(m)
             n <- m[, "N"]
             # The x axis is the midpoint of each rest-score group on a
@@ -457,7 +469,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 mean_k <- m[, "Mean"]
                 sd_k <- sqrt(pmax(rowSums(freq * outer(rep(1, nrow(freq)), scores)^2) / n - mean_k^2, 0))
                 se <- sd_k / sqrt(n)
-                out[[1]] <- data.frame(item = item, panel = tr("IRF (mean item score)", "IRF (media del ítem)"),
+                out[[1]] <- data.frame(item = item, panel = .("IRF (mean item score)"),
                                        curve = "IRF", group = group, est = mean_k, lower = mean_k - z * se,
                                        upper = mean_k + z * se, ymin = min(scores), ymax = max(scores),
                                        stringsAsFactors = FALSE)
@@ -467,7 +479,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     p <- m[, j]
                     se <- sqrt(p * (1 - p) / n)
                     out[[length(out) + 1]] <- data.frame(
-                        item = item, panel = tr("ISRFs P(X ≥ k)", "ISRF P(X ≥ k)"),
+                        item = item, panel = .("ISRFs P(X ≥ k)"),
                         curve = sub("P\\(X >=", "X ≥ ", sub("\\)$", "", cols[j])), group = group, est = p,
                         lower = pmax(p - z * se, 0), upper = pmin(p + z * se, 1), ymin = 0, ymax = 1,
                         stringsAsFactors = FALSE)
@@ -512,6 +524,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # ES: Orden invariante de los ítems.
         # ---------------------------------------------------------------------
         .runIIO = function(X, level2, minsize, plot_items, lang, tr, txt) {
+            . <- tr
             table <- self$results$iio
             order <- private$.iioOrder(ncol(X), txt)
             if (!is.null(order$error)) {
@@ -523,38 +536,43 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                          fixed.item.order = order$order, level.two.var = level2)
             if (identical(self$options$iioMinviMode, "manual")) args$minvi <- as.numeric(self$options$iioMinvi)
             if (!is.null(minsize)) args$minsize <- minsize
-            fit <- .mk_cached_capture(self$results$cacheStore, "check.iio", args, mokken::check.iio)
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.iio", args, mokken::check.iio,
+                extract = function(obj) {
+                    clustered <- !is.null(obj$Items) && !is.null(obj$Clusters)
+                    nested <- !is.null(obj$Level.1)
+                    base <- if (clustered) obj$Items else if (nested) obj$Level.1 else obj
+                    list(summary = .mk_capture(summary(obj))$value, clustered = clustered, nested = nested,
+                         removed = base$items.removed,
+                         pairs = lapply(base$results, function(p) list(p[[1]], p[[2]])))
+                })
             if (is.null(fit$value)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "iio_failed"), fit$error)))
             }
-            obj <- fit$value
-            summ <- .mk_capture(summary(obj))$value
-            clustered <- !is.null(obj$Items) && !is.null(obj$Clusters)
-            nested <- !is.null(obj$Level.1)
+            summ <- fit$value$summary
+            clustered <- fit$value$clustered
+            nested <- fit$value$nested
 
             # Removal step of each item in the backward selection.
             # ES: Paso de eliminación de cada ítem en la selección hacia
             # atrás.
-            base <- if (clustered) obj$Items else if (nested) obj$Level.1 else obj
-            removed <- base$items.removed
+            removed <- fit$value$removed
             removed_at <- stats::setNames(rep("", ncol(X)), colnames(X))
             if (length(removed) > 0)
-                removed_at[names(removed)] <- sprintf(tr("Step %d", "Paso %d"), seq_along(removed))
+                removed_at[names(removed)] <- sprintf(.("Step %d"), seq_along(removed))
             means <- colMeans(X)
 
             fill <- function(item_summary, level_label = NULL, prefix = "") {
                 res <- private$.fillViolations(table, item_summary, lang, level_label, prefix,
-                                               tr("Invariant item ordering", "Orden invariante"))
+                                               .("Invariant item ordering"))
                 for (item in rownames(item_summary))
                     table$setRow(rowKey = paste0(prefix, item), values = list(
                         mean = .mk_clean_num(means[[item]]), removed = removed_at[[item]]))
                 res
             }
             if (nested) {
-                private$.addLevelColumn(table, tr)
-                r1 <- fill(summ$item.summary[[1]], tr("Within", "Dentro"), "L1_")
-                r2 <- fill(summ$item.summary[[2]], tr("Between", "Entre"), "L2_")
+                r1 <- fill(summ$item.summary[[1]], .("Within"), "L1_")
+                r2 <- fill(summ$item.summary[[2]], .("Between"), "L2_")
                 res <- list(serious = union(r1$serious, r2$serious), doubtful = union(r1$doubtful, r2$doubtful),
                             not_evaluable = union(r1$not_evaluable, r2$not_evaluable))
                 table$setNote("levels", txt("check", "levels_note"))
@@ -607,13 +625,13 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             # Pair plot from the pairwise results.
             # ES: Gráfico de pares a partir de los resultados por pares.
             if (isTRUE(self$options$iioPlot)) {
-                pairs <- base$results
+                pairs <- fit$value$pairs
                 df <- private$.pairData(pairs, plot_items, function(p) unlist(p[[1]]), tr)
                 if (!is.null(df) && nrow(df) > 0) {
                     private$.sizeImage(self$results$iioPlot, length(unique(df$pair)))
                     self$results$iioPlot$setState(list(data = df, ci = isTRUE(self$options$plotCI),
-                        labels = list(x = tr("Rest score (group midpoint)", "Rest score (punto medio del grupo)"),
-                                      y = tr("Mean item score", "Media del ítem"), item = tr("Item", "Ítem"))))
+                        labels = list(x = .("Rest score (group midpoint)"),
+                                      y = .("Mean item score"), item = .("Item"))))
                 }
             }
 
@@ -698,16 +716,20 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # ES: Método rest-score.
         # ---------------------------------------------------------------------
         .runRest = function(X, minsize, plot_items, lang, tr, txt) {
+            . <- tr
             table <- self$results$rest
             args <- list(X = X, minvi = as.numeric(self$options$restMinvi))
             if (!is.null(minsize)) args$minsize <- minsize
-            fit <- .mk_cached_capture(self$results$cacheStore, "check.restscore", args, mokken::check.restscore)
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.restscore", args, mokken::check.restscore,
+                extract = function(v) list(summary = .mk_capture(summary(v))$value,
+                    results = lapply(v$results, function(p) list(p[[1]][c("FIRST.ITEM", "SECOND.ITEM")],
+                                                                  SUMMARY.MATRIX = p$SUMMARY.MATRIX))))
             if (is.null(fit$value)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "rest_failed"), fit$error)))
             }
-            res <- private$.fillViolations(table, .mk_capture(summary(fit$value))$value, lang,
-                                           check = tr("Rest-score", "Rest-score"))
+            res <- private$.fillViolations(table, fit$value$summary, lang,
+                                           check = .("Rest-score"))
             table$setNote("crit", txt("check", "crit_note"))
             if (isTRUE(self$options$restPlot)) {
                 df <- private$.pairData(fit$value$results, plot_items,
@@ -716,8 +738,8 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 if (!is.null(df) && nrow(df) > 0) {
                     private$.sizeImage(self$results$restPlot, length(unique(df$pair)))
                     self$results$restPlot$setState(list(data = df, ci = isTRUE(self$options$plotCI),
-                        labels = list(x = tr("Rest score (group midpoint)", "Rest score (punto medio del grupo)"),
-                                      y = tr("Mean item score", "Media del ítem"), item = tr("Item", "Ítem"))))
+                        labels = list(x = .("Rest score (group midpoint)"),
+                                      y = .("Mean item score"), item = .("Item"))))
                 }
             }
             list(warnings = fit$warnings, text = private$.sectionText(lang, txt, "rest", res))
@@ -728,13 +750,16 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # ES: Método P-matrix.
         # ---------------------------------------------------------------------
         .runPmatrix = function(X, plot_items, lang, tr, txt) {
+            . <- tr
             table <- self$results$pmat
-            fit <- .mk_cached_capture(self$results$cacheStore, "check.pmatrix", list(X, minvi = as.numeric(self$options$pmatMinvi)), mokken::check.pmatrix)
+            fit <- .mk_cached_capture(self$results$cacheStore, "check.pmatrix", list(X, minvi = as.numeric(self$options$pmatMinvi)), mokken::check.pmatrix,
+                extract = function(v) list(summary = .mk_capture(summary(v))$value, N = v$N, I.item = v$I.item,
+                                           I.step = v$I.step, results = v$results[c("Ppp", "Pmm")]))
             if (is.null(fit$value)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "pmat_failed"), fit$error)))
             }
-            res <- private$.fillViolations(table, .mk_capture(summary(fit$value))$value, lang,
+            res <- private$.fillViolations(table, fit$value$summary, lang,
                                            check = "P-matrix")
             table$setNote("crit", txt("check", "crit_note"))
 
@@ -766,10 +791,9 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     df <- do.call(rbind, out)
                     private$.sizeImage(self$results$pmatPlot, length(plot_items), length(which))
                     self$results$pmatPlot$setState(list(data = df, ci = isTRUE(self$options$plotCI),
-                        labels = list(x = tr("Other item steps, from most to least popular",
-                                             "Otros pasos de ítem, del más al menos popular"),
-                                      y = tr("Joint proportion", "Proporción conjunta"),
-                                      step = tr("Item step", "Paso de ítem"))))
+                        labels = list(x = .("Other item steps, from most to least popular"),
+                                      y = .("Joint proportion"),
+                                      step = .("Item step"))))
                 }
             }
             list(warnings = fit$warnings, text = private$.sectionText(lang, txt, "pmat", res))
@@ -784,20 +808,24 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # índices W de la primera iteración.
         # ---------------------------------------------------------------------
         .runCA = function(X, lang, tr, txt) {
+            . <- tr
             table <- self$results$ca
             fit <- .mk_cached_capture(self$results$cacheStore, "check.ca", list(X, Windex = isTRUE(self$options$caWindex),
                 MINSIZE = as.integer(self$options$caMinsize), NWEIGHTOPTION = self$options$caNweight,
-                COVWEIGHTOPTION = self$options$caCovweight, MINGROUP = as.integer(self$options$caMingroup)), mokken::check.ca)
-            # check.ca() returns list(InScale =, Index =, Flagged =) when
-            # Windex = TRUE, but the bare list of InScale iterations when
-            # Windex = FALSE. Both are valid; normalize before reading.
-            # ES: check.ca() devuelve list(InScale =, Index =, Flagged =)
-            # con Windex = TRUE, pero solo la lista de iteraciones de InScale
-            # con Windex = FALSE. Ambas son válidas; se normalizan antes de
-            # leerlas.
-            if (!is.null(fit$value) && is.null(fit$value$InScale) && is.list(fit$value) &&
-                length(fit$value) > 0 && all(vapply(fit$value, is.logical, logical(1))))
-                fit$value <- list(InScale = fit$value)
+                COVWEIGHTOPTION = self$options$caCovweight, MINGROUP = as.integer(self$options$caMingroup)), mokken::check.ca,
+                extract = function(v) {
+                    # check.ca() returns list(InScale =, Index =, Flagged =)
+                    # when Windex = TRUE, but the bare list of InScale
+                    # iterations when Windex = FALSE. Both are valid;
+                    # normalize before keeping the pieces.
+                    # ES: check.ca() devuelve list(InScale =, Index =,
+                    # Flagged =) con Windex = TRUE, pero solo la lista de
+                    # iteraciones de InScale con Windex = FALSE. Ambas son
+                    # válidas; se normalizan antes de guardar las piezas.
+                    if (is.null(v$InScale) && is.list(v) && length(v) > 0 && all(vapply(v, is.logical, logical(1))))
+                        v <- list(InScale = v)
+                    .mk_keep(c("InScale", "Index", "Flagged"))(v)
+                })
             if (is.null(fit$value) || is.null(fit$value$InScale)) {
                 private$.failRow(table, lang, sprintf(txt("check", "failed"),
                                                       if (is.null(fit$error)) "" else fit$error))
@@ -808,14 +836,14 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             items <- colnames(X)
             steps <- length(inscale)
             for (s in seq_len(steps))
-                table$addColumn(name = paste0("s", s), title = sprintf(tr("Step %d", "Paso %d"), s), type = "text")
-            table$addColumn(name = "final", title = tr("Final set", "Conjunto final"), type = "text")
+                table$addColumn(name = paste0("s", s), title = sprintf(.("Step %d"), s), type = "text")
+            table$addColumn(name = "final", title = .("Final set"), type = "text")
             final <- inscale[[steps]]
             for (i in seq_along(items)) {
                 values <- list(item = items[i])
                 for (s in seq_len(steps))
-                    values[[paste0("s", s)]] <- if (isTRUE(inscale[[s]][i])) tr("In", "Dentro") else "—"
-                values$final <- if (isTRUE(final[i])) tr("Kept", "Conservado") else tr("Removed", "Eliminado")
+                    values[[paste0("s", s)]] <- if (isTRUE(inscale[[s]][i])) .("In") else "—"
+                values$final <- if (isTRUE(final[i])) .("Kept") else .("Removed")
                 .mk_add_row(table, items[i], values)
             }
             table$setNote("ca", txt("check", "ca_note"))
@@ -830,7 +858,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     .mk_add_row(wtab, items[i], list(
                         item = items[i], w1 = .mk_clean_num(w1), w1flag = as.integer(sum(flags$F1[i, ], na.rm = TRUE)),
                         w2 = .mk_clean_num(idx$W2[1, i]),
-                        w2flag = if (isTRUE(flags$F2[1, i] == 1)) tr("Flagged", "Marcado") else "—",
+                        w2flag = if (isTRUE(flags$F2[1, i] == 1)) .("Flagged") else "—",
                         w3 = .mk_clean_num(w3), w3flag = as.integer(sum(flags$F3[i, ], na.rm = TRUE))))
                 }
                 wtab$setNote("w", txt("check", "w_note"))
@@ -848,71 +876,13 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             list(warnings = fit$warnings, text = text)
         },
 
-        .setTitles = function(tr) {
-            titles <- list(
-                c("intro", "Introduction", "Introducción"),
-                c("keySummary", "Key findings", "Hallazgos clave"),
-                c("choicesGuide", "About your choices", "Acerca de sus elecciones"),
-                c("summary", "Analysis summary", "Resumen del análisis"),
-                c("critPlot", "Violation profile", "Perfil de violaciones"),
-                c("monoGuide", "How to read monotonicity", "Cómo leer la monotonicidad"),
-                c("mono", "Monotonicity", "Monotonicidad"),
-                c("monoPlot", "Item response functions", "Funciones de respuesta de los ítems"),
-                c("iioGuide", "How to read invariant item ordering", "Cómo leer el orden invariante de los ítems"),
-                c("iio", "Invariant item ordering", "Orden invariante de los ítems"),
-                c("iioClusters", "Invariant ordering of item clusters", "Orden invariante de los conglomerados de ítems"),
-                c("iioHT", "Accuracy of the item ordering", "Precisión del orden de los ítems"),
-                c("iioPlot", "Item pairs (invariant item ordering)", "Pares de ítems (orden invariante)"),
-                c("restGuide", "How to read the rest-score method", "Cómo leer el método rest-score"),
-                c("rest", "Nonintersection (rest-score method)", "No intersección (método rest-score)"),
-                c("restPlot", "Item pairs (rest-score method)", "Pares de ítems (método rest-score)"),
-                c("pmatGuide", "How to read the P-matrix method", "Cómo leer el método P-matrix"),
-                c("pmat", "Nonintersection (P-matrix method)", "No intersección (método P-matrix)"),
-                c("pmatPlot", "P-matrix", "P-matrix"),
-                c("caGuide", "How to read conditional association", "Cómo leer la asociación condicional"),
-                c("ca", "Local independence (conditional association)", "Independencia local (asociación condicional)"),
-                c("caW", "W indices of local dependence", "Índices W de dependencia local"),
-                c("interpretation", "Applied interpretation", "Interpretación aplicada"),
-                c("notes", "Notes", "Notas"))
-            for (t in titles)
-                tryCatch(self$results[[t[1]]]$setTitle(tr(t[2], t[3])), error = function(e) NULL)
-            for (name in c("mono", "iio", "rest", "pmat")) {
-                for (cdef in list(list("item", "Item", "Ítem"), list("verdict", "Verdict", "Veredicto")))
-                    tryCatch(self$results[[name]]$getColumn(cdef[[1]])$setTitle(tr(cdef[[2]], cdef[[3]])),
-                             error = function(e) NULL)
-            }
-            cols <- list(
-                list("summary", "element", "Element", "Elemento"), list("summary", "value", "Value", "Valor"),
-                list("iio", "mean", "Mean", "Media"), list("iio", "removed", "Removed at step", "Eliminado en el paso"),
-                list("iioClusters", "cluster", "Cluster", "Conglomerado"),
-                list("iioClusters", "verdict", "Verdict", "Veredicto"),
-                list("iioHT", "stat", "Statistic", "Estadístico"), list("iioHT", "value", "Value", "Valor"),
-                list("iioHT", "meaning", "Reading", "Lectura"),
-                list("ca", "item", "Item", "Ítem"),
-                list("caW", "item", "Item", "Ítem"), list("caW", "w1", "Largest W1", "W1 mayor"),
-                list("caW", "w1flag", "W1 flags", "Marcas W1"), list("caW", "w2flag", "W2 flag", "Marca W2"),
-                list("caW", "w3", "Largest W3", "W3 mayor"), list("caW", "w3flag", "W3 flags", "Marcas W3"))
-            for (cdef in cols)
-                tryCatch(self$results[[cdef[[1]]]]$getColumn(cdef[[2]])$setTitle(tr(cdef[[3]], cdef[[4]])),
-                         error = function(e) NULL)
-        },
 
         # ---------------------------------------------------------------------
         # Plots. Bands use the opacity option; colors follow jamovi's theme
-        # unless a colorblind-safe or viridis palette is chosen (manual scale
-        # added after ggtheme, CODE_STYLE §18).
+        # and global palette through ggtheme (CODE_STYLE §18).
         # ES: Gráficos. Las bandas usan la opción de opacidad; los colores
-        # siguen el tema de jamovi salvo que se elija una paleta apta para
-        # daltonismo o viridis (escala manual agregada después de ggtheme).
+        # siguen el tema y la paleta global de jamovi a través de ggtheme.
         # ---------------------------------------------------------------------
-        .applyPalette = function(plot, n) {
-            palette <- .mk_plot_series_palette(self$options$plotPalette)
-            if (!is.null(palette))
-                plot <- plot + ggplot2::scale_color_manual(values = rep_len(palette, n)) +
-                    ggplot2::scale_fill_manual(values = rep_len(palette, n))
-            plot
-        },
-
         # Item response functions: one panel per item and curve type (IRF on
         # the item-score scale, ISRFs on the probability scale).
         # ES: Funciones de respuesta: un panel por ítem y tipo de curva (IRF
@@ -948,7 +918,6 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggplot2::facet_wrap(~ facet, scales = "free", ncol = style$ncol) +
                 ggplot2::labs(x = state$labels$x, y = state$labels$y, color = state$labels$curve) +
                 ggtheme + .mk_plot_theme(self$options)
-            plot <- private$.applyPalette(plot, length(unique(df$curve)))
             print(plot)
             TRUE
         },
@@ -989,7 +958,6 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggplot2::facet_wrap(~ pair, ncol = style$ncol, scales = "free_x") +
                 ggplot2::labs(x = state$labels$x, y = state$labels$y, color = NULL) +
                 ggtheme + .mk_plot_theme(self$options) + ggplot2::theme(legend.position = "none")
-            plot <- private$.applyPalette(plot, 2)
             print(plot)
             TRUE
         },
@@ -1017,7 +985,6 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggtheme + .mk_plot_theme(self$options)
             if (style$full)
                 plot <- plot + ggplot2::coord_cartesian(ylim = c(0, 1))
-            plot <- private$.applyPalette(plot, length(unique(df$step)))
             print(plot)
             TRUE
         },
@@ -1054,8 +1021,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggplot2::facet_wrap(~ check, ncol = style$ncol) +
                 ggplot2::labs(x = NULL, y = state$labels$x, fill = state$labels$zone) +
                 ggtheme + .mk_plot_theme(self$options)
-            palette <- .mk_plot_series_palette(self$options$plotPalette)
-            values <- if (!is.null(palette)) c(palette[c(3, 1, 6)], "grey70") else c("#4C9F70", "#E69F00", "#C0392B", "grey70")
+            values <- c("#4C9F70", "#E69F00", "#C0392B", "grey70")
             plot <- plot + ggplot2::scale_fill_manual(values = values, drop = FALSE)
             print(plot)
             TRUE

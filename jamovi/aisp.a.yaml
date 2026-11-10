@@ -27,7 +27,7 @@ title: Automated Item Selection
 menuGroup: Mokken Lab
 menuSubgroup: Scaling
 menuTitle: Automated Item Selection (AISP)
-version: '0.1.0'
+version: '1.0.0'
 jas: '1.2'
 
 description:
@@ -70,16 +70,6 @@ options:
       - factor
       - numeric
 
-  - name: reportLang
-    title: Report Language
-    type: List
-    options:
-      - title: English
-        name: en
-      - title: Español
-        name: es
-    default: en
-
   - name: showKeySummary
     title: Key findings
     type: Bool
@@ -98,7 +88,7 @@ options:
   - name: showGuides
     title: How to read each table
     type: Bool
-    default: true
+    default: false
 
   # Versions, seeds and the equivalent R code of this run.
   # ES: Versiones, semillas y el código R equivalente de esta ejecución.
@@ -460,15 +450,4 @@ options:
     type: Bool
     default: false
 
-  - name: plotPalette
-    title: Plot palette
-    type: List
-    options:
-      - title: jamovi theme
-        name: jamovi
-      - title: Colorblind-safe (Okabe-Ito)
-        name: colorblind
-      - title: Viridis
-        name: viridis
-    default: jamovi
 ...

@@ -49,7 +49,6 @@ test_that("mlmsa waits for a subject and rejects a single subject", {
 
 test_that("mlmsa reports in Spanish without missing texts", {
     data <- edgeTwoLevelData()
-    a <- runAnalysis("mlmsa", data, subject = "Subject", vars = paste0("r", 1:5), reportLang = "es",
-                     weighProps = FALSE)
+    a <- runAnalysisIn("es", "mlmsa", data, subject = "Subject", vars = paste0("r", 1:5), weighProps = FALSE)
     expect_false(grepl("[missing text", a$results$interpretation$content, fixed = TRUE))
 })

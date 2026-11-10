@@ -72,10 +72,11 @@ the whole toolkit in jamovi's point-and-click interface:
   intervals, selection algorithms, minimum group sizes and every other choice
   is an explicit option, each with an explanatory paragraph.
 - **Guidance with every table.** A key-findings summary at the top, a short
-  guide before each result and an interpretation after it, in English or
-  Spanish.
+  guide before each result (shown with **Report Content › How to read each
+  table**) and an interpretation after it, in English or Spanish, following
+  jamovi's own language setting.
 - **Configurable item response function plots.** Monotonicity, invariant item
-  ordering, rest-score and P-matrix plots with colorblind-safe palettes and
+  ordering, rest-score and P-matrix plots in jamovi's own colour palette, with
   control over items, confidence bands, size and layout.
 - **Native citations.** Every method-backed table cites its own source in
   jamovi's numbered reference format.
@@ -204,9 +205,10 @@ the P-matrix, and within and between two-level scalability.
 Every plot responds to one shared **Plot settings** box: width and height (or
 automatic, scaled to the number of panels), point size, line width, panels
 per row, legend position, x-axis label angle, y-axis range (full theoretical
-range or fitted to the data), value labels and palette (jamovi theme,
-colorblind-safe Okabe-Ito or viridis). Response-function plots add confidence
-bands with their own significance level and opacity.
+range or fitted to the data) and value labels. Colours follow the theme and
+palette chosen in jamovi's own settings, so every module's plots match.
+Response-function plots add confidence bands with their own significance level
+and opacity.
 
 ---
 
@@ -235,7 +237,7 @@ deletion or two-way imputation) rather than silently.
 2. **Evidence over a single coefficient.** An *H* above 0.3 is a claim that
    needs support: confidence intervals, assumption checks and item ordering.
 3. **Explain, then report.** Guides before results, interpretations after,
-   in the language of the report.
+   in the language jamovi is set to.
 4. **Fidelity to mokken.** MokkenLab calls the mokken package; it does not
    reimplement it.
 5. **Transparent failure.** When something cannot be computed, the output
@@ -249,7 +251,7 @@ MokkenLab is not yet in the official jamovi Library. Until then:
 
 ### From a release (Linux)
 
-Download `MokkenLab_0.1.0.jmo` from
+Download `MokkenLab_1.0.0.jmo` from
 [Releases](https://github.com/ArchieJamDev/MokkenLab/releases) and, in jamovi,
 open **⋮ › Modules › Install from file**. The file is built for Linux (x64,
 jamovi current): jamovi only loads a `.jmo` built for the same system.
@@ -298,7 +300,7 @@ jamovi's **⋮** → **Open** → **Data Library** → **Mokken Lab**.
   seeds and the equivalent R code with the exact mokken calls, checked to
   reproduce the results in a clean R session.
 - mokken results are **cached** per data and statistical options, so cosmetic
-  changes (plot size, palette, language) do not recompute them.
+  changes (plot size, labels, guides) do not recompute them.
 
 ---
 
@@ -323,7 +325,8 @@ package.
 | 2 | Test suite and CI, validation against direct mokken calls | ✅ Done |
 | 3 | Documentation (bibliography, architecture) | ✅ Done |
 | 4 | First release, v0.1.0, with Zenodo DOI [10.5281/zenodo.23955263](https://doi.org/10.5281/zenodo.23955263) | ✅ Done |
-| 5 | jamovi Library submission | 🗓 Planned |
+| 5 | Version 1.0.0, after the jamovi Library review | ✅ Done |
+| 6 | jamovi Library submission | 🔄 In progress |
 
 ---
 
@@ -333,7 +336,7 @@ If you use MokkenLab in your research, please cite the module and the mokken
 package:
 
 > Chacón Chacón, A. D. L. (2026). *MokkenLab: A jamovi module for Mokken
-> scale analysis* (Version 0.1.0) [Computer software]. Zenodo.
+> scale analysis* (Version 1.0.0) [Computer software]. Zenodo.
 > https://doi.org/10.5281/zenodo.23955263
 
 > van der Ark, L. A. (2012). New developments in Mokken scale analysis in R.
@@ -374,7 +377,8 @@ mokken (validation/).
 Trabaja con ítems dicotómicos y politómicos ordinales. Cada opción del menú
 incluye un párrafo que explica qué hace y cuándo conviene elegirla, y los
 resultados se acompañan de un resumen de hallazgos, guías e interpretaciones
-en español o inglés. Sus quince gráficos se parametrizan desde una misma caja
-de ajustes (tamaño, puntos, líneas, paneles, leyenda, ejes, rango, etiquetas
-y paleta). Incluye cuatro conjuntos de datos públicos del paquete mokken para
+en español o inglés, según el idioma configurado en jamovi. Sus quince
+gráficos se parametrizan desde una misma caja de ajustes (tamaño, puntos,
+líneas, paneles, leyenda, ejes, rango y etiquetas) y usan la paleta de
+jamovi. Incluye cuatro conjuntos de datos públicos del paquete mokken para
 practicar.

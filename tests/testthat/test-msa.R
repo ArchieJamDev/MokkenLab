@@ -58,11 +58,18 @@ test_that("msa fills every optional section", {
     expect_true(nzchar(a$results$choicesGuide$content))
 })
 
-test_that("msa renders the report in Spanish when asked", {
+test_that("msa reports in jamovi's language, and follows a change of language", {
     data <- edgeScaleData()
-    a <- runAnalysis("msa", data, vars = names(data), reportLang = "es")
+    a <- runAnalysisIn("es", "msa", data, vars = names(data))
     expect_true("Casos usados" %in% a$results$summary$asDF$element)
     expect_false(grepl("[missing text", a$results$interpretation$content, fixed = TRUE))
+    # The language is read at every run, never frozen at the first one
+    # (ARCHITECTURE.md, "Report language").
+    # ES: El idioma se lee en cada ejecución, nunca queda fijo en la primera.
+    b <- runAnalysisIn("en", "msa", data, vars = names(data))
+    expect_true("Cases used" %in% b$results$summary$asDF$element)
+    c <- runAnalysisIn("es", "msa", data, vars = names(data))
+    expect_true("Casos usados" %in% c$results$summary$asDF$element)
 })
 
 test_that("msa tolerates accented and symbol item names", {

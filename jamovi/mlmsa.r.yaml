@@ -86,7 +86,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
     columns:
       - name: element
         title: "Element"
@@ -113,7 +112,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - se
       - ci
       - ciWidth
@@ -163,7 +161,7 @@ items:
   - name: items
     title: Two-level item scalability
     type: Table
-    rows: 0
+    rows: (vars)
     refs:
       - crisan_2016
       - koopman_2020_se
@@ -177,7 +175,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - se
       - ci
       - ciWidth
@@ -190,6 +187,7 @@ items:
       - name: item
         title: "Item"
         type: text
+        content: ($key)
       - name: w
         title: "Within"
         type: number
@@ -241,7 +239,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - se
       - ci
       - ciWidth
@@ -301,7 +298,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - se
       - ci
       - ciWidth
@@ -328,7 +324,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - se
       - ci
       - ciWidth
@@ -355,7 +350,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - se
       - ci
       - ciWidth
@@ -386,7 +380,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - showICC
     columns:
       - name: item
@@ -427,7 +420,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - showWeights
     columns:
       - name: pair
@@ -451,7 +443,6 @@ items:
       - scoreRange
       - scoreMin
       - scoreMax
-      - reportLang
       - se
       - ci
       - ciWidth
@@ -466,7 +457,6 @@ items:
       - plotAxisAngle
       - plotYRange
       - plotValueLabels
-      - plotPalette
 
   - name: interpretation
     title: Applied interpretation
@@ -477,6 +467,7 @@ items:
     type: Html
     visible: (showRepro)
 
-  - name: notes
-    title: Notes
-    type: Html
+  - name: reproducibilityCode
+    title: Equivalent R code
+    type: Preformatted
+    visible: (showRepro)

@@ -8,10 +8,9 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         initialize = function(
             vars = NULL,
             clusterVar = NULL,
-            reportLang = "en",
             showKeySummary = TRUE,
             showChoicesGuide = FALSE,
-            showGuides = TRUE,
+            showGuides = FALSE,
             showRepro = TRUE,
             naHandling = "listwise",
             twowaySets = 1,
@@ -51,8 +50,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             plotLegend = "bottom",
             plotAxisAngle = "a45",
             plotYRange = "full",
-            plotValueLabels = FALSE,
-            plotPalette = "jamovi", ...) {
+            plotValueLabels = FALSE, ...) {
 
             super$initialize(
                 package="MokkenLab",
@@ -77,13 +75,6 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 permitted=list(
                     "factor",
                     "numeric"))
-            private$..reportLang <- jmvcore::OptionList$new(
-                "reportLang",
-                reportLang,
-                options=list(
-                    "en",
-                    "es"),
-                default="en")
             private$..showKeySummary <- jmvcore::OptionBool$new(
                 "showKeySummary",
                 showKeySummary,
@@ -95,7 +86,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             private$..showGuides <- jmvcore::OptionBool$new(
                 "showGuides",
                 showGuides,
-                default=TRUE)
+                default=FALSE)
             private$..showRepro <- jmvcore::OptionBool$new(
                 "showRepro",
                 showRepro,
@@ -335,18 +326,9 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 "plotValueLabels",
                 plotValueLabels,
                 default=FALSE)
-            private$..plotPalette <- jmvcore::OptionList$new(
-                "plotPalette",
-                plotPalette,
-                options=list(
-                    "jamovi",
-                    "colorblind",
-                    "viridis"),
-                default="jamovi")
 
             self$.addOption(private$..vars)
             self$.addOption(private$..clusterVar)
-            self$.addOption(private$..reportLang)
             self$.addOption(private$..showKeySummary)
             self$.addOption(private$..showChoicesGuide)
             self$.addOption(private$..showGuides)
@@ -390,12 +372,10 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             self$.addOption(private$..plotAxisAngle)
             self$.addOption(private$..plotYRange)
             self$.addOption(private$..plotValueLabels)
-            self$.addOption(private$..plotPalette)
         }),
     active = list(
         vars = function() private$..vars$value,
         clusterVar = function() private$..clusterVar$value,
-        reportLang = function() private$..reportLang$value,
         showKeySummary = function() private$..showKeySummary$value,
         showChoicesGuide = function() private$..showChoicesGuide$value,
         showGuides = function() private$..showGuides$value,
@@ -438,12 +418,10 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         plotLegend = function() private$..plotLegend$value,
         plotAxisAngle = function() private$..plotAxisAngle$value,
         plotYRange = function() private$..plotYRange$value,
-        plotValueLabels = function() private$..plotValueLabels$value,
-        plotPalette = function() private$..plotPalette$value),
+        plotValueLabels = function() private$..plotValueLabels$value),
     private = list(
         ..vars = NA,
         ..clusterVar = NA,
-        ..reportLang = NA,
         ..showKeySummary = NA,
         ..showChoicesGuide = NA,
         ..showGuides = NA,
@@ -486,8 +464,7 @@ aispOptions <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         ..plotLegend = NA,
         ..plotAxisAngle = NA,
         ..plotYRange = NA,
-        ..plotValueLabels = NA,
-        ..plotPalette = NA)
+        ..plotValueLabels = NA)
 )
 
 aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
@@ -512,7 +489,7 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
         sequencePlot = function() private$.items[["sequencePlot"]],
         interpretation = function() private$.items[["interpretation"]],
         reproducibility = function() private$.items[["reproducibility"]],
-        notes = function() private$.items[["notes"]]),
+        reproducibilityCode = function() private$.items[["reproducibilityCode"]]),
     private = list(),
     public=list(
         initialize=function(options) {
@@ -570,7 +547,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -601,7 +577,7 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="membership",
                 title="Scale membership",
-                rows=0,
+                rows="(vars)",
                 visible="(lbMode:single)",
                 refs=list(
                     "mokken_1971",
@@ -616,7 +592,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -638,7 +613,8 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="item", 
                         `title`="Item", 
-                        `type`="text"),
+                        `type`="text", 
+                        `content`="($key)"),
                     list(
                         `name`="scale", 
                         `title`="Scale", 
@@ -666,7 +642,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -747,7 +722,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -809,7 +783,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -839,8 +812,7 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "plotLegend",
                     "plotAxisAngle",
                     "plotYRange",
-                    "plotValueLabels",
-                    "plotPalette")))
+                    "plotValueLabels")))
             self$add(jmvcore::Html$new(
                 options=options,
                 name="sequenceGuide",
@@ -850,7 +822,7 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="sequence",
                 title="Scale membership across lower bounds",
-                rows=0,
+                rows="(vars)",
                 visible="(lbMode:sequence)",
                 refs=list(
                     "hemker_1995",
@@ -864,7 +836,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -886,7 +857,8 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="item", 
                         `title`="Item", 
-                        `type`="text"))))
+                        `type`="text", 
+                        `content`="($key)"))))
             self$add(jmvcore::Table$new(
                 options=options,
                 name="sequenceSummary",
@@ -902,7 +874,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -949,7 +920,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 clearWith=list(
                     "scaleCoefs",
                     "scalePlot",
-                    "plotPalette",
                     "plotValueLabels",
                     "plotYRange",
                     "plotAxisAngle",
@@ -967,7 +937,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -994,7 +963,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 renderFun=".plotSequence",
                 visible="(lbMode:sequence && sequencePlot)",
                 clearWith=list(
-                    "plotPalette",
                     "plotValueLabels",
                     "plotYRange",
                     "plotAxisAngle",
@@ -1012,7 +980,6 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     "scoreRange",
                     "scoreMin",
                     "scoreMax",
-                    "reportLang",
                     "clusterVar",
                     "lbMode",
                     "lowerbound",
@@ -1039,10 +1006,11 @@ aispResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 name="reproducibility",
                 title="Reproducibility",
                 visible="(showRepro)"))
-            self$add(jmvcore::Html$new(
+            self$add(jmvcore::Preformatted$new(
                 options=options,
-                name="notes",
-                title="Notes"))}))
+                name="reproducibilityCode",
+                title="Equivalent R code",
+                visible="(showRepro)"))}))
 
 aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
     "aispBase",
@@ -1052,7 +1020,7 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 package = "MokkenLab",
                 name = "aisp",
-                version = c(0,1,0),
+                version = c(1,0,0),
                 options = options,
                 results = aispResults$new(options=options),
                 data = data,
@@ -1075,7 +1043,6 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param data .
 #' @param vars .
 #' @param clusterVar .
-#' @param reportLang .
 #' @param showKeySummary .
 #' @param showChoicesGuide .
 #' @param showGuides .
@@ -1119,7 +1086,6 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #' @param plotAxisAngle .
 #' @param plotYRange .
 #' @param plotValueLabels .
-#' @param plotPalette .
 #' @return A results object containing:
 #' \tabular{llllll}{
 #'   \code{results$cacheStore} \tab \tab \tab \tab \tab a html \cr
@@ -1140,7 +1106,7 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
 #'   \code{results$sequencePlot} \tab \tab \tab \tab \tab an image \cr
 #'   \code{results$interpretation} \tab \tab \tab \tab \tab a html \cr
 #'   \code{results$reproducibility} \tab \tab \tab \tab \tab a html \cr
-#'   \code{results$notes} \tab \tab \tab \tab \tab a html \cr
+#'   \code{results$reproducibilityCode} \tab \tab \tab \tab \tab a preformatted \cr
 #' }
 #'
 #' Tables can be converted to data frames with \code{asDF} or \code{\link{as.data.frame}}. For example:
@@ -1154,10 +1120,9 @@ aisp <- function(
     data,
     vars,
     clusterVar = NULL,
-    reportLang = "en",
     showKeySummary = TRUE,
     showChoicesGuide = FALSE,
-    showGuides = TRUE,
+    showGuides = FALSE,
     showRepro = TRUE,
     naHandling = "listwise",
     twowaySets = 1,
@@ -1197,8 +1162,7 @@ aisp <- function(
     plotLegend = "bottom",
     plotAxisAngle = "a45",
     plotYRange = "full",
-    plotValueLabels = FALSE,
-    plotPalette = "jamovi") {
+    plotValueLabels = FALSE) {
 
     if ( ! requireNamespace("jmvcore", quietly=TRUE))
         stop("aisp requires jmvcore to be installed (restart may be required)")
@@ -1219,7 +1183,6 @@ aisp <- function(
     options <- aispOptions$new(
         vars = vars,
         clusterVar = clusterVar,
-        reportLang = reportLang,
         showKeySummary = showKeySummary,
         showChoicesGuide = showChoicesGuide,
         showGuides = showGuides,
@@ -1262,8 +1225,7 @@ aisp <- function(
         plotLegend = plotLegend,
         plotAxisAngle = plotAxisAngle,
         plotYRange = plotYRange,
-        plotValueLabels = plotValueLabels,
-        plotPalette = plotPalette)
+        plotValueLabels = plotValueLabels)
 
     analysis <- aispClass$new(
         options = options,

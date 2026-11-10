@@ -46,28 +46,39 @@
 # -----------------------------------------------------------------------------
 
 # -----------------------------------------------------------------------------
-# .mk_tr()
+# .mk_lang()
 #
-# Input: lang - normalized language code ("es" or "en", see
-#   .mk_normalize_lang() in texts.R); en - English text; es - Spanish text
-#   (optional; defaults to `en`).
-# Output: `es` when lang is "es", otherwise `en`.
+# Input: options - self$options of the running analysis.
+# Output: an environment with `tr`, the translator of this run (jamovi's
+#   Options$translate(), which uses the language jamovi sends with every
+#   run), and `texts`, the translated text table (texts.R), built on first
+#   use.
 #
-# Report text that varies at runtime goes through this function, never
-# through jmvcore's `.()`: `.()` caches its translator once per R process, so
-# dynamic text routed through it freezes at the language active when jamovi
-# started (the FiabilityLab regression documented in ARCHITECTURE.md §12).
+# Report strings are English text inside jamovi's `.()` so the jamovi compiler
+# extracts them into jamovi/i18n/es.po. Inside analysis methods and helpers
+# `.` is bound to `lang$tr` (`. <- lang$tr`), because a helper has no `self`
+# for jmvcore's own `.()` to find. A new `lang` is made at every run, so
+# nothing is cached across runs: jmvcore itself creates a fresh translator
+# for each analysis instance, so a language change in jamovi reaches the
+# next run (jmvcore 2.7.38, Options$translate()).
 #
-# ES: El texto del informe que varía en tiempo de ejecución pasa por esta
-# función, nunca por `.()` de jmvcore: `.()` guarda su traductor una sola vez
-# por proceso de R, así que el texto dinámico que pasa por ahí se congela en
-# el idioma activo cuando jamovi arrancó (la regresión de FiabilityLab
-# documentada en ARCHITECTURE.md §12).
+# ES: Los textos del informe son texto en inglés dentro de `.()` para que
+# el compilador de jamovi los extraiga a jamovi/i18n/es.po. En los métodos y
+# helpers `.` se enlaza a `lang$tr`, porque un helper no tiene `self` para
+# que lo encuentre el `.()` de jmvcore. Se crea un `lang` nuevo en cada
+# ejecución, así que nada queda guardado entre ejecuciones: jmvcore crea un
+# traductor nuevo por cada instancia del análisis, así que un cambio de
+# idioma en jamovi llega a la siguiente ejecución.
 # -----------------------------------------------------------------------------
-.mk_tr <- function(lang, en, es = NULL) {
-    if (is.null(es))
-        es <- en
-    if (identical(lang, "es")) es else en
+.mk_lang <- function(options) {
+    lang <- new.env(parent = emptyenv())
+    lang$tr <- function(text) {
+        if (is.null(text) || length(text) != 1 || is.na(text) || !nzchar(text))
+            return(text)
+        tryCatch(options$translate(text), error = function(e) text)
+    }
+    lang$texts <- NULL
+    lang
 }
 
 # -----------------------------------------------------------------------------
@@ -174,7 +185,18 @@
 # volvió no finito sin lanzar error) nunca se muestre como número real.
 # -----------------------------------------------------------------------------
 .mk_add_row <- function(table, key, values) {
-    table$addRow(rowKey = key, values = values)
+    # Rows already laid out (by `rows: (vars)` in the .r.yaml or in .init())
+    # are filled in place; any other row is added.
+    # ES: Las filas ya dispuestas (por `rows: (vars)` en el .r.yaml o en
+    # .init()) se llenan en su lugar; cualquier otra fila se agrega.
+    if (any(vapply(table$rowKeys, identical, logical(1), key)))
+        table$setRow(rowKey = key, values = values)
+    else
+        table$addRow(rowKey = key, values = values)
+}
+
+.mk_has_column <- function(table, name) {
+    name %in% vapply(table$columns, function(column) column$name, character(1))
 }
 
 .mk_clean_num <- function(x) {
@@ -197,54 +219,36 @@
 }
 
 # -----------------------------------------------------------------------------
-# .mk_plot_series_palette()
+# .mk_global_palette()
 #
-# Input: choice - the analysis' plotPalette option ("jamovi", "colorblind" or
-#   "viridis").
-# Output: NULL for "jamovi" (let jamovi's own ggtheme scale handle colors),
-#   otherwise a character vector of colors.
-#
-# Same policy as EGAnetLab and AssumptionsLab: the default follows jamovi's
-# global theme; only the two palettes jamovi does not ship are added. The
-# viridis stops are hard-coded so the result never depends on whether
-# viridisLite is installed.
-#
-# ES: Misma política que EGAnetLab y AssumptionsLab: por defecto se sigue el
-# tema global de jamovi; solo se agregan las dos paletas que jamovi no trae.
-# Los puntos de viridis están fijos para que el resultado nunca dependa de si
-# viridisLite está instalado.
+# Input: options - self$options; n - number of colors.
+# Output: n fill colors from the palette the user chose in jamovi's settings
+#   (jamovi audit, 2026-11-05: the module no longer has a palette of its own,
+#   so its plots never disagree with the rest of the document).
+# ES: Salida: n colores de relleno de la paleta que el usuario eligió en los
+#   ajustes de jamovi (auditoría de jamovi, 2026-11-05: el módulo ya no tiene
+#   paleta propia, así que sus gráficos nunca discrepan del resto del
+#   documento).
 # -----------------------------------------------------------------------------
-.mk_plot_series_palette <- function(choice) {
-    if (is.null(choice) || length(choice) == 0 || identical(choice, "jamovi"))
-        return(NULL)
-
-    if (identical(choice, "viridis"))
-        return(c("#440154", "#414487", "#2A788E", "#22A884", "#7AD151", "#FDE725"))
-
-    if (identical(choice, "colorblind"))
-        return(c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"))
-
-    NULL
+.mk_global_palette <- function(options, n) {
+    pal <- tryCatch(options$palette, error = function(e) NULL)
+    if (is.null(pal) || !nzchar(pal))
+        pal <- "jmv"
+    tryCatch(jmvcore::colorPalette(n, pal, "fill"), error = function(e) grDevices::hcl.colors(n))
 }
 
 # -----------------------------------------------------------------------------
 # .mk_plot_colors()
 #
-# Input: theme - the theme list jamovi passes to every render function;
-#   palette - the plotPalette option.
-# Output: list(line =, fill =, alert =) for single-series plots. The default
-#   derives from jamovi's own theme (theme$color / theme$fill); a module
-#   palette only replaces it when the user picked one jamovi does not ship.
-# ES: Salida: list(line =, fill =, alert =) para gráficos de una sola serie.
-#   Por defecto se deriva del propio tema de jamovi; una paleta del módulo
-#   solo lo reemplaza si el usuario eligió una que jamovi no trae.
+# Input: theme - the theme list jamovi passes to every render function.
+# Output: list(line =, fill =, alert =) for single-series plots, derived from
+#   jamovi's own theme (theme$color / theme$fill).
+# ES: Salida: list(line =, fill =, alert =) para gráficos de una sola serie,
+#   derivada del propio tema de jamovi.
 # -----------------------------------------------------------------------------
-.mk_plot_colors <- function(theme, palette) {
-    series <- .mk_plot_series_palette(palette)
+.mk_plot_colors <- function(theme) {
     base <- if (!is.null(theme$color) && length(theme$color) >= 1) theme$color[1] else "#333333"
     accent <- if (!is.null(theme$fill) && length(theme$fill) >= 2) theme$fill[2] else "#6B9DE8"
-    if (!is.null(series))
-        return(list(line = series[5], fill = series[2], alert = series[6]))
     list(line = base, fill = accent, alert = "#C0392B")
 }
 
@@ -591,18 +595,18 @@
 # -----------------------------------------------------------------------------
 .mk_data_choices <- function(lang, options, prep = NULL) {
     txt <- function(k) .mk_text(lang, "choices", k)
-    tr <- function(en, es) .mk_tr(lang, en, es)
+    . <- tr <- lang$tr
     out <- list()
     if (identical(options$naHandling, "twoway"))
         out[[length(out) + 1]] <- c(
-            paste0(txt("h_na"), ": ", tr("Two-way imputation", "Imputación two-way"), "."),
+            paste0(txt("h_na"), ": ", .("Two-way imputation"), "."),
             sprintf(txt("na_twoway"), as.integer(options$twowaySets), as.integer(options$twowaySeed)))
     else
-        out[[length(out) + 1]] <- c(paste0(txt("h_na"), ": ", tr("Listwise deletion", "Eliminación por lista"), "."),
+        out[[length(out) + 1]] <- c(paste0(txt("h_na"), ": ", .("Listwise deletion"), "."),
                                     txt("na_listwise"))
     out[[length(out) + 1]] <- c(
         paste0(txt("h_range"), ": ", if (identical(options$scoreRange, "manual"))
-            tr("Declared", "Declarado") else tr("Observed", "Observado"), "."),
+            .("Declared") else .("Observed"), "."),
         txt(if (identical(options$scoreRange, "manual")) "range_manual" else "range_observed"))
     if (!is.null(prep) && length(prep$neg) > 0)
         out[[length(out) + 1]] <- c(
@@ -641,17 +645,16 @@
 #   entraron, con qué regla de datos perdidos y cuántos estaban completos.
 # -----------------------------------------------------------------------------
 .mk_cases_label <- function(tr, prep) {
+    . <- tr
     if (!is.null(prep$completed)) {
-        label <- sprintf(tr("%d of %d (two-way imputation of %d missing scores; %d complete cases)",
-                            "%d de %d (imputación two-way de %d puntajes perdidos; %d casos completos)"),
+        label <- sprintf(.("%d of %d (two-way imputation of %d missing scores; %d complete cases)"),
                          prep$n_used, prep$n_total, as.integer(prep$imputed), prep$n_complete)
         if (length(prep$completed) > 1)
-            label <- paste0(label, sprintf(tr("; results from completed data set 1 of %d, not pooled",
-                                              "; resultados del conjunto completado 1 de %d, sin combinar"),
+            label <- paste0(label, sprintf(.("; results from completed data set 1 of %d, not pooled"),
                                            length(prep$completed)))
         return(label)
     }
-    sprintf(tr("%d of %d (listwise deletion)", "%d de %d (eliminación por lista)"),
+    sprintf(.("%d of %d (listwise deletion)"),
             prep$n_used, prep$n_total)
 }
 
@@ -864,10 +867,10 @@
 #   inconsistente entre análisis, así que nunca queda implícita.
 # -----------------------------------------------------------------------------
 .mk_reversed_label <- function(tr, prep) {
+    . <- tr
     if (length(prep$neg) > 0)
         return(paste(prep$neg, collapse = ", "))
-    tr("None. Confirm that every item is scored in the same direction, and use the same reversals in every MokkenLab analysis of these items.",
-       "Ninguno. Confirme que todos los ítems están puntuados en la misma dirección, y use las mismas inversiones en todos los análisis de MokkenLab con estos ítems.")
+    .("None. Confirm that every item is scored in the same direction, and use the same reversals in every MokkenLab analysis of these items.")
 }
 
 # -----------------------------------------------------------------------------
@@ -875,48 +878,131 @@
 #
 # Input: store - the analysis' hidden cacheStore result; label - the mokken
 #   function name; args - its arguments as a list; fun - the function;
-#   key_extra - anything else the result depends on (a seed set outside).
-# Output: the .mk_capture() result of fun(args), computed once per distinct
-#   (label, args, key_extra) and reused afterwards.
+#   key_extra - anything else the result depends on (a seed set outside);
+#   extract - function(value) returning only the pieces the tables and plots
+#   read (numbers, small matrices, a summary), never the raw mokken object.
+# Output: the .mk_capture() result of fun(args), with `value` replaced by
+#   extract(value), computed once per distinct (label, args, key_extra) and
+#   reused afterwards.
 #
 # jamovi re-runs .run() on every option change, including cosmetic ones (plot
-# size, palette, language). Without a cache every mokken computation was
-# repeated then (independent audit, 2026-11-04). The key hashes the data and
-# every argument, so a cached result is never reused for other data or other
-# statistical options; the store's clearWith (the data options) and the cap
-# on entries only bound its size.
+# size, guides). Without a cache every mokken computation was repeated then
+# (independent audit, 2026-11-04). The key hashes the data and every
+# argument, so a cached result is never reused for other data or other
+# statistical options. The store is a results element's state, so it is
+# saved in the .omv file: only the extracted pieces go into it, as the jamovi
+# tutorial on state recommends (jamovi audit, 2026-11-05), entries are sized
+# with serialize(), not object.size(), and the store is capped at a few
+# entries and 2 MB.
 #
 # ES: jamovi vuelve a ejecutar .run() con cada cambio de opción, también los
-# cosméticos (tamaño de gráfico, paleta, idioma). Sin caché, cada cálculo de
-# mokken se repetía (auditoría independiente, 2026-11-04). La clave resume
-# los datos y cada argumento, así que un resultado guardado nunca se reutiliza
-# para otros datos u otras opciones estadísticas; el clearWith del almacén
-# (las opciones de datos) y el tope de entradas solo limitan su tamaño.
+# cosméticos. Sin caché, cada cálculo de mokken se repetía (auditoría
+# independiente, 2026-11-04). La clave resume los datos y cada argumento, así
+# que un resultado guardado nunca se reutiliza para otros datos u otras
+# opciones estadísticas. El almacén es el estado de un elemento de
+# resultados y se guarda en el archivo .omv: solo entran las piezas
+# extraídas, como recomienda el tutorial de jamovi sobre el estado
+# (auditoría de jamovi, 2026-11-05), las entradas se miden con serialize(),
+# no con object.size(), y el almacén tiene un tope de pocas entradas y 2 MB.
 # -----------------------------------------------------------------------------
-.mk_cached_capture <- function(store, label, args, fun, key_extra = NULL, max_entries = 12,
-                               max_bytes = 25 * 1024^2) {
-    key <- tryCatch(rlang::hash(list(label, args, key_extra)), error = function(e) NULL)
+.mk_cached_capture <- function(store, label, args, fun, key_extra = NULL, extract = NULL,
+                               max_entries = 8, max_bytes = 2 * 1024^2) {
+    key <- tryCatch(rlang::hash(.mk_hashable(list(label, args, key_extra))), error = function(e) NULL)
     state <- tryCatch(store$state, error = function(e) NULL)
     if (!is.null(key) && is.list(state) && !is.null(state[[key]]))
         return(state[[key]])
     result <- .mk_capture(do.call(fun, args))
+    if (!is.null(extract) && !is.null(result$value)) {
+        piece <- .mk_capture(extract(result$value))
+        result$value <- piece$value
+        if (is.null(piece$value))
+            result$error <- piece$error
+    }
     if (!is.null(key)) {
         if (!is.list(state))
             state <- list()
         state[[key]] <- result
         if (length(state) > max_entries)
             state <- state[seq.int(length(state) - max_entries + 1, length(state))]
-        # The store is saved with the .omv file, so its total size is capped
-        # too (one check.iio of the 80 TROG items takes about 8 MB): the
-        # oldest entries go first, the newest is always kept.
-        # ES: El almacén se guarda con el archivo .omv, así que su tamaño
-        # total también tiene tope: se descartan primero las entradas más
-        # antiguas y siempre se conserva la más reciente.
-        while (length(state) > 1 && as.numeric(utils::object.size(state)) > max_bytes)
+        # The oldest entries go first; the newest is kept only if it fits.
+        # ES: Se descartan primero las entradas más antiguas; la más reciente
+        # se conserva solo si cabe.
+        bytes <- function(x) length(serialize(x, NULL))
+        while (length(state) > 0 && bytes(state) > max_bytes)
             state <- state[-1]
         tryCatch(store$setState(state), error = function(e) NULL)
     }
     result
+}
+
+# -----------------------------------------------------------------------------
+# .mk_insert_notices()
+#
+# Input: results - the analysis' results group; options - self$options;
+#   messages - the (already translated) mokken warnings of this run.
+# Output: one jmvcore Notice of type WARNING per message, at the top of the
+#   results, where jamovi shows warnings in every analysis (jamovi audit,
+#   2026-11-05: Notices follow the results theme and carry a severity).
+# ES: Salida: un Notice de jmvcore de tipo WARNING por mensaje, arriba de
+#   los resultados, donde jamovi muestra las advertencias en todos los
+#   análisis (auditoría de jamovi, 2026-11-05).
+# -----------------------------------------------------------------------------
+.mk_insert_notices <- function(results, options, messages) {
+    messages <- .mk_clean_text(messages)
+    for (k in rev(seq_along(messages)))
+        results$insert(1, jmvcore::Notice$new(options, name = paste0(".mokkenNote", k),
+                                              type = jmvcore::NoticeType$WARNING, content = messages[k]))
+    invisible(NULL)
+}
+
+# -----------------------------------------------------------------------------
+# .mk_hashable()
+#
+# Input: x - any R value (the arguments of a mokken call).
+# Output: the same content with every string turned into raw bytes, ready for
+#   rlang::hash().
+#
+# serialize(), and so rlang::hash(), writes the attributes of each string's
+# shared internal cell (CHARSXP). The first call to mokken's compiled code
+# leaves an attribute on the shared cells of the item names, so the same X
+# hashed to another key after any mokken call, and coefZ() was recomputed
+# after a cosmetic change. Raw bytes carry only the characters.
+#
+# ES: serialize(), y por tanto rlang::hash(), escribe los atributos de la
+# celda interna compartida de cada cadena (CHARSXP). La primera llamada al
+# código compilado de mokken deja un atributo en las celdas compartidas de
+# los nombres de los ítems, así que la misma X daba otra clave tras
+# cualquier llamada a mokken, y coefZ() se recalculaba tras un cambio
+# cosmético. Los bytes crudos solo llevan los caracteres.
+# -----------------------------------------------------------------------------
+.mk_hashable <- function(x) {
+    text <- function(v) list(charToRaw(enc2utf8(paste(ifelse(is.na(v), "\002NA", v), collapse = "\001"))), length(v))
+    if (is.null(x) || is.function(x) || is.environment(x))
+        return(NULL)
+    attrs <- attributes(x)
+    core <- if (is.character(x)) text(as.vector(x))
+            else if (is.list(x)) lapply(unname(as.list(x)), .mk_hashable)
+            else { attributes(x) <- NULL; x }
+    if (!is.null(attrs))
+        attrs <- list(text(names(attrs)), lapply(unname(attrs), .mk_hashable))
+    list(typeof(x), core, attrs)
+}
+
+# -----------------------------------------------------------------------------
+# .mk_keep()
+#
+# Input: x - a mokken result (a list); fields - the names to keep.
+# Output: a plain list with only those fields (absent ones are left out), the
+#   usual `extract` for .mk_cached_capture().
+# ES: Salida: una lista simple con solo esos campos, el `extract` habitual de
+#   .mk_cached_capture().
+# -----------------------------------------------------------------------------
+.mk_keep <- function(fields) {
+    function(x) {
+        out <- lapply(fields, function(f) x[[f]])
+        names(out) <- fields
+        out[!vapply(out, is.null, logical(1))]
+    }
 }
 
 # -----------------------------------------------------------------------------
@@ -962,18 +1048,20 @@
 }
 
 .mk_repro_block <- function(lang, code, seeds = character(0)) {
-    tr <- function(en, es) .mk_tr(lang, en, es)
+    . <- tr <- lang$tr
     version <- function(pkg) tryCatch(as.character(utils::packageVersion(pkg)), error = function(e) "?")
     p_style <- "margin: 0.15em 0 0.65em 0; line-height: 1.40;"
-    info <- c(sprintf(tr("MokkenLab %s, mokken %s, %s; run on %s.", "MokkenLab %s, mokken %s, %s; ejecutado el %s."),
+    info <- c(sprintf(.("MokkenLab %s, mokken %s, %s; run on %s."),
                       version("MokkenLab"), version("mokken"), R.version.string, format(Sys.Date())),
               seeds,
-              tr("Equivalent R code (the same mokken calls this analysis made, with its current options):",
-                 "Código R equivalente (las mismas llamadas a mokken que hizo este análisis, con sus opciones actuales):"))
-    pre <- paste0("<pre style=\"font-size: 0.85em; white-space: pre-wrap; background: #f6f8fa; padding: 0.6em;\">",
-                  .mk_html_escape(paste(code, collapse = "\n")), "</pre>")
-    .mk_html_block(tr("Reproducibility", "Reproducibilidad"),
-                   c(paste0("<p style=\"", p_style, "\">", .mk_html_escape(info), "</p>"), pre), raw = TRUE)
+              .("Equivalent R code (the same mokken calls this analysis made, with its current options):"))
+    # The code goes to a native Preformatted element, which follows the
+    # results theme and copies as plain text (jamovi audit, 2026-11-05).
+    # ES: El código va a un elemento Preformatted nativo, que sigue el tema
+    # de los resultados y se copia como texto plano.
+    list(html = .mk_html_block(.("Reproducibility"),
+                               paste0("<p style=\"", p_style, "\">", .mk_html_escape(info), "</p>"), raw = TRUE),
+         code = paste(code, collapse = "\n"))
 }
 
 # -----------------------------------------------------------------------------

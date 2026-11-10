@@ -1,3 +1,47 @@
+# MokkenLab 1.0.0
+
+Version submitted to the jamovi Library, after jamovi's own review.
+
+## Changes visible to users
+
+* **One language setting.** Results, guides and interpretations now follow
+  jamovi's language (Settings › Language), like the interface. The
+  per-analysis "Report language" option is removed. Switching jamovi's
+  language takes effect on the next run, without restarting.
+* **Plot colours follow jamovi.** The module's own palette option (Okabe-Ito,
+  viridis) is removed; every plot uses the theme and palette chosen in
+  jamovi's settings.
+* **"How to read each table" is off by default**, and the options for guides,
+  key findings and the reproducibility record are grouped in a collapsed
+  **Report Content** box.
+* **Warnings from mokken appear as jamovi notices** at the top of the
+  results, instead of a notes block at the end.
+* The equivalent R code of the reproducibility record is a separate
+  preformatted block that can be copied as is.
+* Option boxes use Title Case, as in other jamovi modules.
+
+## Internal changes
+
+* Version 1.0.0 in `DESCRIPTION`, `0000.yaml` and every `.a.yaml`; `rlang`
+  declared in Imports.
+* All report text is in jamovi's translation catalog: `.()` in the R sources,
+  synchronized with `jamovi/i18n/es.po` (706 entries, all translated).
+  `ARCHITECTURE.md` §12 is corrected: `.()` does not freeze at the language
+  of the R process.
+* The cache keeps only the parts of each mokken result that the report reads
+  and is capped at 8 entries and 2 MB, so .omv files stay small. Item names
+  are hashed as bytes, because mokken attaches attributes to them and changed
+  the key from one run to the next.
+* Table rows and columns that depend only on the selected items are declared
+  in `.r.yaml` or created in `.init()`, so tables keep their shape before the
+  results arrive. Visibility is declared in `.r.yaml` where jmvcore can
+  evaluate it.
+* Long `.run()` methods are split into private steps (summary, item pairs,
+  completed data sets, intraclass correlations, plots, reproducibility).
+* New regression tests: a group too small to analyse marks both group
+  tables; cached results keep only what the report reads; the same analysis
+  in Spanish, English and Spanish in one process.
+
 # MokkenLab 0.1.0 (released 2026-11-04, DOI 10.5281/zenodo.23955263)
 
 First public release, archived on Zenodo. The entries below describe the

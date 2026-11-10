@@ -85,17 +85,49 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.key[[type]] <- c(private$.key[[type]], text)
         },
 
+        # ---------------------------------------------------------------------
+        # Structure known from the options alone: one column per lower bound
+        # of the sequence (the rows come from `rows: (vars)`).
+        # ES: Estructura que se conoce solo con las opciones: una columna por
+        # cota de la secuencia (las filas vienen de `rows: (vars)`).
+        # ---------------------------------------------------------------------
+        .init = function() {
+            lbs <- private$.lowerBounds()
+            if (identical(self$options$lbMode, "sequence") && length(lbs) > 0)
+                for (k in seq_along(lbs))
+                    self$results$sequence$addColumn(name = paste0("c", k), title = paste0("c = ", .mk_fmt_num(lbs[k], 2)),
+                                                    type = "integer")
+        },
+
+        # The lower bounds the options ask for; empty when the sequence is
+        # invalid (.run() rejects it then).
+        # ES: Las cotas que piden las opciones; vacío si la secuencia no es
+        # válida (.run() la rechaza entonces).
+        .lowerBounds = function() {
+            if (!identical(self$options$lbMode, "sequence"))
+                return(as.numeric(self$options$lowerbound))
+            from <- as.numeric(self$options$lbFrom)
+            to <- as.numeric(self$options$lbTo)
+            step <- as.numeric(self$options$lbStep)
+            if (!(from < to) || !(step > 0))
+                return(numeric(0))
+            round(seq(from, to, by = step), 4)
+        },
+
         .run = function() {
 
-            lang <- .mk_normalize_lang(self$options$reportLang)
-            tr <- function(en, es) .mk_tr(lang, en, es)
+            lang <- .mk_lang(self$options)
+            . <- tr <- lang$tr
             txt <- function(section, key) .mk_text(lang, section, key)
 
-            private$.setTitles(tr)
-            self$results$intro$setContent(.mk_html_block(NULL, txt("aisp", "intro")))
-
-            if (length(self$options$vars) == 0)
+            # The introduction is the empty state: the first item assigned
+            # replaces it with results, so it never stays above them.
+            # ES: La introducción es el estado vacío: el primer ítem asignado
+            # la reemplaza por resultados, así que nunca queda sobre ellos.
+            if (length(self$options$vars) == 0) {
+                self$results$intro$setContent(.mk_html_block(NULL, txt("aisp", "intro")))
                 return()
+            }
             if (isTRUE(self$options$showGuides)) {
                 self$results$aispGuide$setContent(.mk_guide_block(lang, "aisp"))
                 self$results$sequenceGuide$setContent(.mk_guide_block(lang, "sequence"))
@@ -117,15 +149,10 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
             sequence <- identical(self$options$lbMode, "sequence")
             if (sequence) {
-                from <- as.numeric(self$options$lbFrom)
-                to <- as.numeric(self$options$lbTo)
-                step <- as.numeric(self$options$lbStep)
-                if (!(from < to))
+                if (!(as.numeric(self$options$lbFrom) < as.numeric(self$options$lbTo)))
                     jmvcore::reject(txt("aisp", "bad_sequence"))
-                lbs <- round(seq(from, to, by = step), 4)
-            } else {
-                lbs <- as.numeric(self$options$lowerbound)
             }
+            lbs <- private$.lowerBounds()
 
             start <- match(intersect(as.character(unlist(self$options$startSet)), items), items)
             ga <- identical(self$options$search, "ga")
@@ -182,37 +209,36 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             # Summary.
             # ES: Resumen.
             # -----------------------------------------------------------------
-            search_label <- if (ga) tr("Genetic algorithm", "Algoritmo genético") else
-                tr("Mokken's automated item selection procedure", "Procedimiento de selección automática de Mokken")
-            z_label <- switch(type_z, Z = tr("Original Z", "Z original"), WB = tr("Wald-based", "De Wald"),
-                              RP = tr("Range-preserving", "Preservadora de rango"))
+            search_label <- if (ga) .("Genetic algorithm") else
+                .("Mokken's automated item selection procedure")
+            z_label <- switch(type_z, Z = .("Original Z"), WB = .("Wald-based"),
+                              RP = .("Range-preserving [test]"))
             rows <- list(
-                list(tr("Items", "Ítems"), as.character(length(items))),
-                list(tr("Cases used", "Casos usados"), .mk_cases_label(tr, prep)),
-                list(tr("Search", "Búsqueda"), search_label),
-                list(tr("Lower bound c", "Cota inferior c"), if (sequence)
-                     sprintf(tr("%s to %s in steps of %s (%d values)", "%s a %s en pasos de %s (%d valores)"),
+                list(.("Items"), as.character(length(items))),
+                list(.("Cases used"), .mk_cases_label(tr, prep)),
+                list(.("Search"), search_label),
+                list(.("Lower bound c"), if (sequence)
+                     sprintf(.("%s to %s in steps of %s (%d values)"),
                              .mk_fmt_num(min(lbs), 2), .mk_fmt_num(max(lbs), 2),
                              .mk_fmt_num(as.numeric(self$options$lbStep), 2), length(lbs))
                      else .mk_fmt_num(lbs, 2)),
-                list(tr("Tests during selection", "Pruebas durante la selección"), sprintf(
-                    tr("%s, alpha = %s%s", "%s, alfa = %s%s"), z_label, .mk_fmt_num(self$options$alpha, 3),
-                    if (isTRUE(self$options$testHi)) tr("; Hi tested against c", "; Hi contrastado contra c") else "")))
+                list(.("Tests during selection"), sprintf(
+                    .("%s, alpha = %s%s"), z_label, .mk_fmt_num(self$options$alpha, 3),
+                    if (isTRUE(self$options$testHi)) .("; Hi tested against c") else "")))
             if (ga)
-                rows[[length(rows) + 1]] <- list(tr("Genetic algorithm", "Algoritmo genético"), sprintf(
-                    tr("population %d, %s generations, crossover %s, mutation %s, seed %d",
-                       "población %d, %s generaciones, cruce %s, mutación %s, semilla %d"),
+                rows[[length(rows) + 1]] <- list(.("Genetic algorithm"), sprintf(
+                    .("population %d, %s generations, crossover %s, mutation %s, seed %d"),
                     as.integer(self$options$popsize),
                     if (identical(self$options$maxgensMode, "manual")) as.character(as.integer(self$options$maxgens))
-                    else tr("default", "por defecto"),
+                    else .("default"),
                     .mk_fmt_num(self$options$pxover, 2), .mk_fmt_num(self$options$pmutation, 2),
                     as.integer(self$options$gaSeed)))
             if (length(start) > 0)
-                rows[[length(rows) + 1]] <- list(tr("Start set", "Conjunto inicial"), paste(items[start], collapse = ", "))
+                rows[[length(rows) + 1]] <- list(.("Start set"), paste(items[start], collapse = ", "))
             if (!is.null(level2))
-                rows[[length(rows) + 1]] <- list(tr("Clusters", "Conglomerados"),
-                    sprintf(tr("%s (%d clusters)", "%s (%d conglomerados)"), cluster_name, length(unique(level2))))
-            rows[[length(rows) + 1]] <- list(tr("Negatively worded items (reversed)", "Ítems redactados en negativo (invertidos)"),
+                rows[[length(rows) + 1]] <- list(.("Clusters"),
+                    sprintf(.("%s (%d clusters)"), cluster_name, length(unique(level2))))
+            rows[[length(rows) + 1]] <- list(.("Negatively worded items (reversed)"),
                                                  .mk_reversed_label(tr, prep))
             for (i in seq_along(rows))
                 .mk_add_row(self$results$summary, i, list(element = rows[[i]][[1]], value = rows[[i]][[2]]))
@@ -242,52 +268,60 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
             # Reproducibility record.
             # ES: Registro de reproducibilidad.
-            if (isTRUE(self$options$showRepro)) {
-                opts <- self$options
-                keep <- if (!is.null(cluster_name)) cluster_name else character(0)
-                code <- .mk_r_prep_code(prep, opts, items, keep)
-                if (ga)
-                    code <- c(code, paste0("set.seed(", as.integer(opts$gaSeed), ")"))
-                code <- c(code, .mk_r_call("aisp", "X", list(lowerbound = lbs, search = opts$search,
-                    alpha = as.numeric(opts$alpha), StartSet = if (length(start) > 0) start,
-                    popsize = if (ga) as.integer(opts$popsize),
-                    maxgens = if (ga && identical(opts$maxgensMode, "manual")) as.integer(opts$maxgens),
-                    pxover = if (ga) as.numeric(opts$pxover), pmutation = if (ga) as.numeric(opts$pmutation),
-                    type.z = type_z, test.Hi = isTRUE(opts$testHi),
-                    level.two.var = if (!is.null(level2)) paste0("@as.integer(factor(extra[[",
-                        encodeString(cluster_name, quote = "\""), "]]))"))))
-                if (!sequence && isTRUE(opts$bootStability))
-                    code <- c(code, sprintf(paste0("# Bootstrap stability: the same aisp() call on %d resamples of the rows ",
-                                                   "(of whole clusters, with nested data) after set.seed(%d)"),
-                                            as.integer(opts$bootReps), as.integer(opts$bootSeed)))
-                seeds <- c(if (!is.null(prep$completed)) sprintf(tr("Two-way imputation seed: %d.", "Semilla de la imputación two-way: %d."),
-                                                                 as.integer(opts$twowaySeed)),
-                           if (ga) sprintf(tr("Genetic algorithm seed: %d.", "Semilla del algoritmo genético: %d."),
-                                           as.integer(opts$gaSeed)),
-                           if (!sequence && isTRUE(opts$bootStability))
-                               sprintf(tr("Bootstrap seed: %d.", "Semilla del bootstrap: %d."), as.integer(opts$bootSeed)))
-                self$results$reproducibility$setContent(.mk_repro_block(lang, code, seeds))
-            }
+            if (isTRUE(self$options$showRepro))
+                private$.fillRepro(lang, prep, items, cluster_name, level2, ga, lbs, start, type_z, sequence)
 
-            notes <- .mk_translate_notices(warnings, lang)
-            if (length(notes) > 0) {
-                self$results$notes$setContent(.mk_html_block(
-                    txt("common", "warnings_title"), .mk_html_list(notes), raw = TRUE))
-            } else {
-                self$results$notes$setVisible(FALSE)
-            }
+            .mk_insert_notices(self$results, self$options, .mk_translate_notices(warnings, lang))
+        },
+
+        # ---------------------------------------------------------------------
+        # Reproducibility record: versions, seeds and the equivalent R code
+        # of this run.
+        # ES: Registro de reproducibilidad: versiones, semillas y el código R
+        # equivalente de esta ejecución.
+        # ---------------------------------------------------------------------
+        .fillRepro = function(lang, prep, items, cluster_name, level2, ga, lbs, start, type_z, sequence) {
+            . <- lang$tr
+            txt <- function(section, key) .mk_text(lang, section, key)
+            opts <- self$options
+            keep <- if (!is.null(cluster_name)) cluster_name else character(0)
+            code <- .mk_r_prep_code(prep, opts, items, keep)
+            if (ga)
+                code <- c(code, paste0("set.seed(", as.integer(opts$gaSeed), ")"))
+            code <- c(code, .mk_r_call("aisp", "X", list(lowerbound = lbs, search = opts$search,
+                alpha = as.numeric(opts$alpha), StartSet = if (length(start) > 0) start,
+                popsize = if (ga) as.integer(opts$popsize),
+                maxgens = if (ga && identical(opts$maxgensMode, "manual")) as.integer(opts$maxgens),
+                pxover = if (ga) as.numeric(opts$pxover), pmutation = if (ga) as.numeric(opts$pmutation),
+                type.z = type_z, test.Hi = isTRUE(opts$testHi),
+                level.two.var = if (!is.null(level2)) paste0("@as.integer(factor(extra[[",
+                    encodeString(cluster_name, quote = "\""), "]]))"))))
+            if (!sequence && isTRUE(opts$bootStability))
+                code <- c(code, sprintf(paste0("# Bootstrap stability: the same aisp() call on %d resamples of the rows ",
+                                               "(of whole clusters, with nested data) after set.seed(%d)"),
+                                        as.integer(opts$bootReps), as.integer(opts$bootSeed)))
+            seeds <- c(if (!is.null(prep$completed)) sprintf(.("Two-way imputation seed: %d."),
+                                                             as.integer(opts$twowaySeed)),
+                       if (ga) sprintf(.("Genetic algorithm seed: %d."),
+                                       as.integer(opts$gaSeed)),
+                       if (!sequence && isTRUE(opts$bootStability))
+                           sprintf(.("Bootstrap seed: %d."), as.integer(opts$bootSeed)))
+            repro <- .mk_repro_block(lang, code, seeds)
+            self$results$reproducibility$setContent(repro$html)
+            self$results$reproducibilityCode$setContent(repro$code)
         },
 
         .choices = function(lang, tr, txt, ga, type_z, has_start) {
+            . <- tr
             out <- list(
-                c(paste0(txt("choices", "h_search"), ": ", if (ga) tr("Genetic algorithm", "Algoritmo genético")
-                         else tr("Mokken's procedure", "Procedimiento de Mokken"), "."),
+                c(paste0(txt("choices", "h_search"), ": ", if (ga) .("Genetic algorithm")
+                         else .("Mokken's procedure"), "."),
                   txt("choices", if (ga) "search_ga" else "search_normal")),
                 c(paste0(txt("choices", "h_lb"), ": ", if (identical(self$options$lbMode, "sequence"))
-                         tr("Sequence", "Secuencia") else .mk_fmt_num(self$options$lowerbound, 2), "."),
+                         .("Sequence") else .mk_fmt_num(self$options$lowerbound, 2), "."),
                   txt("choices", if (identical(self$options$lbMode, "sequence")) "lb_sequence" else "lb_single")),
-                c(paste0(txt("choices", "h_z"), ": ", switch(type_z, Z = tr("Original Z", "Z original"),
-                         WB = tr("Wald-based", "De Wald"), RP = tr("Range-preserving", "Preservadora de rango")), "."),
+                c(paste0(txt("choices", "h_z"), ": ", switch(type_z, Z = .("Original Z"),
+                         WB = .("Wald-based"), RP = .("Range-preserving [test]")), "."),
                   txt("choices", if (isTRUE(self$options$testHi)) "testhi_true" else "testhi_false")))
             if (has_start)
                 out[[length(out) + 1]] <- c(paste0(txt("choices", "h_start"), "."), txt("choices", "start_body"))
@@ -301,6 +335,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # escalabilidad de cada escala con al menos dos ítems.
         # ---------------------------------------------------------------------
         .fillSingle = function(X, scale_of, level2, lang, tr, txt) {
+            . <- tr
             items <- colnames(X)
             scale_of <- as.integer(scale_of)
             names(scale_of) <- items
@@ -308,7 +343,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             unscalable <- items[scale_of == 0]
             hi_in_scale <- stats::setNames(rep(NA_real_, length(items)), items)
             se_in_scale <- stats::setNames(rep(NA_real_, length(items)), items)
-            label_of <- function(s) if (s == 0) tr("Unscalable", "No escalable") else sprintf(tr("Scale %d", "Escala %d"), s)
+            label_of <- function(s) if (s == 0) .("Unscalable") else sprintf(.("Scale %d"), s)
             label_of_vec <- function(v) vapply(v, label_of, character(1))
 
             table <- self$results$scales
@@ -317,7 +352,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 members <- items[scale_of == s]
                 if (!isTRUE(self$options$scaleCoefs)) next
                 res <- .mk_cached_capture(self$results$cacheStore, "coefH", list(X[, members, drop = FALSE], se = TRUE, nice.output = FALSE,
-                                                 results = FALSE, level.two.var = level2), mokken::coefH)
+                                                 results = FALSE, level.two.var = level2), mokken::coefH,
+                                          extract = .mk_keep(c("H", "se.H", "Hi", "se.Hi")))
                 if (is.null(res$value)) {
                     .mk_add_row(table, s, list(scale = label_of(s), nItems = length(members),
                                                items = paste(members, collapse = ", ")))
@@ -362,9 +398,9 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                                       upper = as.numeric(ci$upper), stringsAsFactors = FALSE),
                     lowerbound = as.numeric(self$options$lowerbound),
                     caption = if (length(unscalable) > 0)
-                        sprintf(tr("Unscalable: %s", "No escalables: %s"), paste(unscalable, collapse = ", ")) else NULL,
-                    labels = list(x = tr("Item scalability within its scale (Hi)", "Escalabilidad del ítem en su escala (Hi)"),
-                                  color = tr("Scale", "Escala"), bound = tr("Lower bound c", "Cota inferior c"))))
+                        sprintf(.("Unscalable: %s"), paste(unscalable, collapse = ", ")) else NULL,
+                    labels = list(x = .("Item scalability within its scale (Hi)"),
+                                  color = .("Scale"), bound = .("Lower bound c"))))
             }
 
             # Interpretation.
@@ -401,10 +437,9 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # (Hemker et al., 1995).
         # ---------------------------------------------------------------------
         .fillSequence = function(partition, lbs, lang, tr, txt) {
+            . <- tr
             items <- rownames(partition)
             table <- self$results$sequence
-            for (k in seq_along(lbs))
-                table$addColumn(name = paste0("c", k), title = paste0("c = ", .mk_fmt_num(lbs[k], 2)), type = "integer")
             for (item in items) {
                 values <- list(item = item)
                 for (k in seq_along(lbs))
@@ -431,8 +466,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                              max(360, 24 * length(items) + 160))
                 self$results$sequencePlot$setState(list(
                     data = long, items = items,
-                    labels = list(x = tr("Lower bound c", "Cota inferior c"), fill = tr("Scale", "Escala"),
-                                  unscalable = tr("Unscalable", "No escalable"))))
+                    labels = list(x = .("Lower bound c"), fill = .("Scale"),
+                                  unscalable = .("Unscalable"))))
             }
 
             # Reading the pattern: one scale whose items drop out as c rises
@@ -463,48 +498,6 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             self$results$interpretation$setContent(.mk_interpretation(lang, parts))
         },
 
-        .setTitles = function(tr) {
-            titles <- list(
-                c("intro", "Introduction", "Introducción"),
-                c("keySummary", "Key findings", "Hallazgos clave"),
-                c("choicesGuide", "About your choices", "Acerca de sus elecciones"),
-                c("aispGuide", "How the automated item selection works", "Cómo funciona la selección automática de ítems"),
-                c("summary", "Analysis summary", "Resumen del análisis"),
-                c("membership", "Scale membership", "Pertenencia a las escalas"),
-                c("scales", "Scalability of each scale", "Escalabilidad de cada escala"),
-                c("sequenceGuide", "How to read the sequence of lower bounds", "Cómo leer la secuencia de cotas inferiores"),
-                c("sequence", "Scale membership across lower bounds", "Pertenencia a las escalas según la cota inferior"),
-                c("sequenceSummary", "Partition at each lower bound", "Partición en cada cota inferior"),
-                c("sequencePlot", "Scale membership across lower bounds", "Pertenencia a las escalas según la cota inferior"),
-                c("scalePlotImg", "Item scalability within each scale", "Escalabilidad de los ítems en cada escala"),
-                c("bootGuide", "How to read bootstrap stability", "Cómo leer la estabilidad bootstrap"),
-                c("bootTable", "Bootstrap stability of the partition", "Estabilidad bootstrap de la partición"),
-                c("bootPlotImg", "Bootstrap co-membership of item pairs", "Co-pertenencia bootstrap de los pares de ítems"),
-                c("interpretation", "Applied interpretation", "Interpretación aplicada"),
-                c("notes", "Notes", "Notas"))
-            for (t in titles)
-                tryCatch(self$results[[t[1]]]$setTitle(tr(t[2], t[3])), error = function(e) NULL)
-            cols <- list(
-                list("summary", "element", "Element", "Elemento"), list("summary", "value", "Value", "Valor"),
-                list("membership", "item", "Item", "Ítem"), list("membership", "scale", "Scale", "Escala"),
-                list("membership", "hi", "Hi in its scale", "Hi en su escala"),
-                list("scales", "scale", "Scale", "Escala"), list("scales", "nItems", "Items", "Ítems"),
-                list("scales", "items", "Item list", "Lista de ítems"), list("scales", "se", "SE", "EE"),
-                list("scales", "lower", "Lower", "Inferior"), list("scales", "upper", "Upper", "Superior"),
-                list("scales", "minHi", "Lowest Hi", "Hi más bajo"), list("scales", "strength", "Strength", "Fuerza"),
-                list("sequence", "item", "Item", "Ítem"),
-                list("bootTable", "item", "Item", "Ítem"), list("bootTable", "scale", "Scale", "Escala"),
-                list("bootTable", "together", "With its scale-mates", "Con sus compañeros de escala"),
-                list("bootTable", "same", "Same scale as found", "Misma escala que la encontrada"),
-                list("bootTable", "unscalable", "Unscalable", "No escalable"),
-                list("sequenceSummary", "lb", "Lower bound", "Cota inferior"),
-                list("sequenceSummary", "nScales", "Scales", "Escalas"),
-                list("sequenceSummary", "nUnscalable", "Unscalable items", "Ítems no escalables"),
-                list("sequenceSummary", "largest", "Items in the largest scale", "Ítems en la escala mayor"))
-            for (cdef in cols)
-                tryCatch(self$results[[cdef[[1]]]]$getColumn(cdef[[2]])$setTitle(tr(cdef[[3]], cdef[[4]])),
-                         error = function(e) NULL)
-        },
 
         # ---------------------------------------------------------------------
         # Bootstrap stability of the partition: the same selection on
@@ -514,6 +507,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         # repitan).
         # ---------------------------------------------------------------------
         .runBoot = function(X, args, level2, original, lang, tr, txt) {
+            . <- tr
             if (isTRUE(self$options$showGuides))
                 self$results$bootGuide$setContent(.mk_guide_block(lang, "boot"))
             table <- self$results$bootTable
@@ -532,7 +526,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 return(res$warnings)
             }
             items <- colnames(X)
-            label_of <- function(s) if (s == 0) tr("Unscalable", "No escalable") else sprintf(tr("Scale %d", "Escala %d"), s)
+            label_of <- function(s) if (s == 0) .("Unscalable") else sprintf(.("Scale %d"), s)
             for (i in seq_along(items))
                 .mk_add_row(table, items[i], list(item = items[i], scale = label_of(original[i]),
                     together = .mk_clean_num(boot$together[i]), same = .mk_clean_num(boot$same[i]),
@@ -556,7 +550,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     data = data.frame(item1 = items[grid$i], item2 = items[grid$j],
                                       p = ifelse(grid$i == grid$j, NA_real_, boot$co[cbind(grid$i, grid$j)]),
                                       stringsAsFactors = FALSE),
-                    items = order_items, labels = list(fill = tr("Same scale", "Misma escala"))))
+                    items = order_items, labels = list(fill = .("Same scale"))))
             }
             res$warnings
         },
@@ -578,8 +572,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             df$item1 <- factor(df$item1, levels = rev(state$items))
             df$item2 <- factor(df$item2, levels = state$items)
             style <- .mk_plot_style(self$options)
-            palette <- .mk_plot_series_palette(self$options$plotPalette)
-            high <- if (!is.null(palette)) palette[5] else "#2C7BB6"
+            high <- "#2C7BB6"
             plot <- ggplot2::ggplot(df, ggplot2::aes(x = item2, y = item1, fill = p)) +
                 ggplot2::geom_tile(color = "white", linewidth = 0.4)
             if (style$labels || length(state$items) <= 15)
@@ -622,9 +615,6 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggplot2::coord_flip(ylim = if (style$full) c(min(0, min(df$lower, na.rm = TRUE)), 1) else NULL) +
                 ggplot2::labs(x = NULL, y = state$labels$x, color = state$labels$color, caption = state$caption) +
                 ggtheme + .mk_plot_theme(self$options)
-            palette <- .mk_plot_series_palette(self$options$plotPalette)
-            if (!is.null(palette))
-                plot <- plot + ggplot2::scale_color_manual(values = rep_len(palette, length(unique(df$scale))))
             print(plot)
             TRUE
         },
@@ -659,11 +649,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             plot <- plot +
                 ggplot2::labs(x = state$labels$x, y = NULL, fill = state$labels$fill) +
                 ggtheme + .mk_plot_theme(self$options)
-            palette <- .mk_plot_series_palette(self$options$plotPalette)
             n_scales <- sum(levels != state$labels$unscalable)
-            values <- if (!is.null(palette)) rep_len(palette, n_scales) else
-                tryCatch(jmvcore::colorPalette(n_scales, "jmv", "fill"),
-                         error = function(e) grDevices::hcl.colors(n_scales))
+            values <- .mk_global_palette(self$options, n_scales)
             if (any(df$scale == 0))
                 values <- c(values, "white")
             plot <- plot + ggplot2::scale_fill_manual(values = values, drop = FALSE)

@@ -57,9 +57,10 @@ test_that("a missing violation count is never reported as no violations", {
     data <- edgeScaleData()
     a <- runAnalysis("msacheck", data, vars = names(data))
     verdict <- a$.__enclos_env__$private$.verdict
-    expect_equal(verdict("en", NA_real_, NA_real_), "Not evaluable")
-    expect_equal(verdict("en", 3, NA_real_), "Not evaluable")
-    expect_equal(verdict("en", 0, 0), "No violations")
+    lang <- MokkenLab:::.mk_lang(a$options)
+    expect_equal(verdict(lang, NA_real_, NA_real_), "Not evaluable")
+    expect_equal(verdict(lang, 3, NA_real_), "Not evaluable")
+    expect_equal(verdict(lang, 0, 0), "No violations")
 })
 
 test_that("checks not run and sections not computed reach the key findings", {
@@ -95,4 +96,28 @@ test_that("several completed data sets are labeled as not pooled", {
     data <- edgeMissingData()
     a <- runAnalysis("msa", data, vars = names(data), naHandling = "twoway", twowaySets = 2L)
     expect_match(a$results$summary$asDF$value[2], "not pooled")
+})
+
+# -----------------------------------------------------------------------------
+# Regression tests for the jamovi review of 1.0.0.
+# ES: Pruebas de regresión de la revisión de jamovi de la versión 1.0.0.
+# -----------------------------------------------------------------------------
+
+test_that("a group too small to analyse marks both group tables", {
+    data <- edgeScaleData()
+    data$grp <- factor(c("solo", rep(c("a", "b"), length.out = nrow(data) - 1)))
+    a <- runAnalysis("msa", data, vars = setdiff(names(data), "grp"), groupVar = "grp")
+    expect_equal(a$results$groups$asDF$group[1], "Not computable")
+    expect_equal(a$results$groupItems$asDF$item[1], "Not computable")
+})
+
+test_that("cached mokken results keep only what the report reads", {
+    data <- edgeScaleData()
+    a <- runAnalysis("msa", data, vars = names(data), showZ = TRUE, showReliability = TRUE)
+    state <- a$results$cacheStore$state
+    expect_true(length(state) > 0)
+    expect_lt(length(serialize(state, NULL)), 2 * 1024^2)
+    coefh <- Filter(function(e) is.list(e$value) && "Hij" %in% names(e$value), state)
+    expect_length(coefh, 1)
+    expect_setequal(names(coefh[[1]]$value), c("H", "se.H", "Hi", "se.Hi", "Hij"))
 })

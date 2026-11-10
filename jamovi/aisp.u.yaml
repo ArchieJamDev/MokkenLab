@@ -1,28 +1,3 @@
-# -----------------------------------------------------------------------------
-# MokkenLab
-# A jamovi module for Mokken scale analysis and evidence-based methodological
-# decision support on nonparametric item response theory.
-#
-# Copyright (C) 2026 Arquímedes De León Chacón Chacón
-#
-# This file is part of MokkenLab.
-#
-# MokkenLab is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License,
-# or (at your option) any later version.
-#
-# MokkenLab is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with MokkenLab.
-# If not, see https://www.gnu.org/licenses/.
-# -----------------------------------------------------------------------------
-
-
 title: Automated Item Selection
 name: aisp
 jus: '3.0'
@@ -40,25 +15,23 @@ children:
             name: vars
             isTarget: true
       - type: TargetLayoutBox
-        label: Negatively worded items (reversed)
+        label: Negatively Worded Items (Reversed)
         children:
           - type: VariablesListBox
             name: negItems
             isTarget: true
             height: small
       - type: TargetLayoutBox
-        label: Cluster variable (optional)
+        label: Cluster Variable (Optional)
         children:
           - type: VariablesListBox
             name: clusterVar
             maxItemCount: 1
             isTarget: true
   - type: CollapseBox
-    label: Report Language
-    collapsed: false
+    label: Report Content
+    collapsed: true
     children:
-      - type: ComboBox
-        name: reportLang
       - type: CheckBox
         name: showKeySummary
       - type: CheckBox
@@ -92,7 +65,7 @@ children:
         format: number
         enable: (scoreRange:manual)
   - type: CollapseBox
-    label: Selection criterion
+    label: Selection Criterion
     collapsed: false
     children:
       - type: ComboBox
@@ -114,7 +87,7 @@ children:
         format: number
         enable: (lbMode:sequence)
   - type: CollapseBox
-    label: Search procedure
+    label: Search Procedure
     collapsed: true
     children:
       - type: ComboBox
@@ -143,7 +116,7 @@ children:
         format: number
         enable: (search:ga)
   - type: CollapseBox
-    label: Tests during selection
+    label: Tests During Selection
     collapsed: true
     children:
       - type: TextBox
@@ -163,14 +136,14 @@ children:
           - numeric
         children:
           - type: TargetLayoutBox
-            label: Start set (first scale)
+            label: Start Set (First Scale)
             children:
               - type: VariablesListBox
                 name: startSet
                 isTarget: true
                 height: small
   - type: CollapseBox
-    label: Bootstrap stability
+    label: Bootstrap Stability
     collapsed: true
     children:
       - type: CheckBox
@@ -201,7 +174,7 @@ children:
         name: sequencePlot
         enable: (lbMode:sequence)
   - type: CollapseBox
-    label: Plot settings
+    label: Plot Settings
     collapsed: true
     children:
       - type: TextBox
@@ -227,5 +200,3 @@ children:
         name: plotYRange
       - type: CheckBox
         name: plotValueLabels
-      - type: ComboBox
-        name: plotPalette
