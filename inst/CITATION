@@ -5,6 +5,6 @@ bibentry(
     year = "2026",
     note = "Version 1.0.0 [jamovi module]",
     url = "https://github.com/ArchieJamDev/MokkenLab",
-    doi = "10.5281/zenodo.23955263",
-    textVersion = "Chacon, A. (2026). MokkenLab (Version 1.0.0) [jamovi module]. Zenodo. https://doi.org/10.5281/zenodo.23955263"
+    doi = "10.5281/zenodo.24119065",
+    textVersion = "Chacon, A. (2026). MokkenLab (Version 1.0.0) [jamovi module]. Zenodo. https://doi.org/10.5281/zenodo.24119065"
 )
