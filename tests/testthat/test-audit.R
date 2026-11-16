@@ -136,7 +136,7 @@ restartSignal <- function() structure(class = c("error", "condition"),
 test_that("the bootstrap calls the checkpoint once per resample", {
     data <- edgeTwoDimData()
     X <- as.matrix(data)
-    original <- as.integer(mokken::aisp(X, verbose = FALSE)[, 1])
+    original <- as.integer(suppressWarnings(mokken::aisp(X, verbose = FALSE))[, 1])
     calls <- 0L
     boot <- MokkenLab:::.mk_aisp_bootstrap(X, list(lowerbound = 0.3), reps = 5L, seed = 1L, level2 = NULL,
                                            original = original, checkpoint = function() calls <<- calls + 1L)
@@ -147,7 +147,7 @@ test_that("the bootstrap calls the checkpoint once per resample", {
 test_that("jamovi's restart signal stops the bootstrap and is never cached", {
     data <- edgeTwoDimData()
     X <- as.matrix(data)
-    original <- as.integer(mokken::aisp(X, verbose = FALSE)[, 1])
+    original <- as.integer(suppressWarnings(mokken::aisp(X, verbose = FALSE))[, 1])
     store <- new.env()
     store$state <- NULL
     store$setState <- function(value) store$state <- value
@@ -215,28 +215,22 @@ test_that("a check that cannot run replaces the item rows with one row", {
 })
 
 test_that("plot checkboxes are greyed out until their analysis is on", {
-    skip_if_not_installed("yaml")
     root <- testthat::test_path("..", "..", "jamovi")
     skip_if_not(dir.exists(root))
-    enable_of <- function(file) {
-        out <- list()
-        walk <- function(x) {
-            if (is.list(x)) {
-                if (!is.null(x$name) && !is.null(x$enable)) out[[x$name]] <<- x$enable
-                for (y in x) walk(y)
-            }
-        }
-        walk(yaml::read_yaml(file.path(root, file)))
-        out
+    # The enable: line that follows `name: <option>` in a .u.yaml file
+    # (read as text: yaml is not a dependency of the module).
+    # ES: La línea enable: que sigue a `name: <opción>` en un .u.yaml.
+    enable_of <- function(file, name) {
+        lines <- trimws(readLines(file.path(root, file), warn = FALSE))
+        at <- match(paste("name:", name), lines)
+        sub("^enable:[[:space:]]*", "", lines[at + 1])
     }
-    check <- enable_of("msacheck.u.yaml")
-    expect_equal(check$monoPlot, "(checkMono)")
-    expect_equal(check$iioPlot, "(checkIIO)")
-    expect_equal(check$restPlot, "(checkRest)")
-    expect_equal(check$pmatPlot, "(checkPmatrix)")
-    msa <- enable_of("msa.u.yaml")
-    expect_equal(msa$groupPlot, "(groupVar)")
-    expect_equal(msa$normsPlot, "(showNorms)")
+    expect_equal(enable_of("msacheck.u.yaml", "monoPlot"), "(checkMono)")
+    expect_equal(enable_of("msacheck.u.yaml", "iioPlot"), "(checkIIO)")
+    expect_equal(enable_of("msacheck.u.yaml", "restPlot"), "(checkRest)")
+    expect_equal(enable_of("msacheck.u.yaml", "pmatPlot"), "(checkPmatrix)")
+    expect_equal(enable_of("msa.u.yaml", "groupPlot"), "(groupVar)")
+    expect_equal(enable_of("msa.u.yaml", "normsPlot"), "(showNorms)")
 })
 
 test_that("headings and appended clauses are translated as whole sentences", {
