@@ -121,3 +121,135 @@ test_that("cached mokken results keep only what the report reads", {
     expect_length(coefh, 1)
     expect_setequal(names(coefh[[1]]$value), c("H", "se.H", "Hi", "se.Hi", "Hij"))
 })
+
+# -----------------------------------------------------------------------------
+# Regression tests for the jamovi audit of 2026-11-13.
+# ES: Pruebas de regresión de la auditoría de jamovi del 2026-11-13.
+# -----------------------------------------------------------------------------
+
+# The condition private$.checkpoint() raises when jamovi restarts the analysis.
+# ES: La condición que lanza private$.checkpoint() cuando jamovi reinicia el
+# análisis.
+restartSignal <- function() structure(class = c("error", "condition"),
+                                      list(message = "restart", call = NULL, code = "restart"))
+
+test_that("the bootstrap calls the checkpoint once per resample", {
+    data <- edgeTwoDimData()
+    X <- as.matrix(data)
+    original <- as.integer(mokken::aisp(X, verbose = FALSE)[, 1])
+    calls <- 0L
+    boot <- MokkenLab:::.mk_aisp_bootstrap(X, list(lowerbound = 0.3), reps = 5L, seed = 1L, level2 = NULL,
+                                           original = original, checkpoint = function() calls <<- calls + 1L)
+    expect_equal(calls, 5L)
+    expect_equal(boot$done + boot$failed, 5L)
+})
+
+test_that("jamovi's restart signal stops the bootstrap and is never cached", {
+    data <- edgeTwoDimData()
+    X <- as.matrix(data)
+    original <- as.integer(mokken::aisp(X, verbose = FALSE)[, 1])
+    store <- new.env()
+    store$state <- NULL
+    store$setState <- function(value) store$state <- value
+    calls <- 0L
+    checkpoint <- function() {
+        calls <<- calls + 1L
+        if (calls == 3L) stop(restartSignal())
+    }
+    err <- tryCatch(MokkenLab:::.mk_cached_capture(store, "aisp_bootstrap",
+        list(X = X, args = list(lowerbound = 0.3), reps = 10L, seed = 1L, level2 = NULL, original = original),
+        function(...) MokkenLab:::.mk_aisp_bootstrap(..., checkpoint = checkpoint)),
+        error = function(e) e)
+    expect_identical(err$code, "restart")
+    expect_equal(calls, 3L)
+    expect_null(store$state)
+})
+
+test_that(".mk_capture() lets the restart signal through and keeps other errors", {
+    err <- tryCatch(MokkenLab:::.mk_capture(stop(restartSignal())), error = function(e) e)
+    expect_identical(err$code, "restart")
+    res <- MokkenLab:::.mk_capture(stop("ordinary failure"))
+    expect_null(res$value)
+    expect_equal(res$error, "ordinary failure")
+})
+
+test_that("Model Assumptions lays out its item rows in .init()", {
+    data <- edgeScaleData()
+    cls <- MokkenLab:::msacheckClass
+    a <- cls$new(options = MokkenLab:::msacheckOptions$new(vars = names(data), checkIIO = TRUE,
+                                                          checkRest = TRUE, checkPmatrix = TRUE,
+                                                          checkCA = TRUE, caWindex = TRUE),
+                 data = data)
+    a$init()
+    keys <- function(table) as.character(unlist(table$rowKeys))
+    for (name in c("mono", "iio", "rest", "pmat", "caW"))
+        expect_equal(keys(a$results[[name]]), names(data), info = name)
+    a$run()
+    for (name in c("mono", "iio", "rest", "pmat", "caW")) {
+        expect_equal(keys(a$results[[name]]), names(data), info = name)
+        expect_equal(a$results[[name]]$asDF$item, names(data), info = name)
+    }
+})
+
+test_that("with a cluster variable the two-level rows exist before the results", {
+    data <- edgeTwoLevelData()
+    items <- paste0("r", 1:5)
+    a <- MokkenLab:::msacheckClass$new(options = MokkenLab:::msacheckOptions$new(
+        vars = items, clusterVar = "Subject", checkIIO = TRUE, iioItemSelection = FALSE), data = data)
+    a$init()
+    expected <- c(paste0("L1_", items), paste0("L2_", items))
+    for (name in c("mono", "iio"))
+        expect_equal(as.character(unlist(a$results[[name]]$rowKeys)), expected, info = name)
+    a$run()
+    for (name in c("mono", "iio")) {
+        expect_equal(as.character(unlist(a$results[[name]]$rowKeys)), expected, info = name)
+        expect_equal(a$results[[name]]$asDF$level, rep(c("Within", "Between"), each = 5), info = name)
+    }
+})
+
+test_that("a check that cannot run replaces the item rows with one row", {
+    data <- edgeScaleData()
+    a <- runAnalysis("msacheck", data, vars = names(data), checkMono = FALSE, checkIIO = TRUE,
+                     iioOrder = "custom", iioOrderText = "1 2")
+    expect_equal(a$results$iio$asDF$item, "Not computable")
+})
+
+test_that("plot checkboxes are greyed out until their analysis is on", {
+    skip_if_not_installed("yaml")
+    root <- testthat::test_path("..", "..", "jamovi")
+    skip_if_not(dir.exists(root))
+    enable_of <- function(file) {
+        out <- list()
+        walk <- function(x) {
+            if (is.list(x)) {
+                if (!is.null(x$name) && !is.null(x$enable)) out[[x$name]] <<- x$enable
+                for (y in x) walk(y)
+            }
+        }
+        walk(yaml::read_yaml(file.path(root, file)))
+        out
+    }
+    check <- enable_of("msacheck.u.yaml")
+    expect_equal(check$monoPlot, "(checkMono)")
+    expect_equal(check$iioPlot, "(checkIIO)")
+    expect_equal(check$restPlot, "(checkRest)")
+    expect_equal(check$pmatPlot, "(checkPmatrix)")
+    msa <- enable_of("msa.u.yaml")
+    expect_equal(msa$groupPlot, "(groupVar)")
+    expect_equal(msa$normsPlot, "(showNorms)")
+})
+
+test_that("headings and appended clauses are translated as whole sentences", {
+    data <- edgeMissingData()
+    a <- runAnalysisIn("es", "msa", data, vars = names(data), naHandling = "twoway", twowaySets = 2L,
+                       showChoicesGuide = TRUE)
+    expect_match(a$results$choicesGuide$content, "Valores perdidos: Imputación two-way.", fixed = TRUE)
+    expect_match(a$results$summary$asDF$value[2], "sin combinar)", fixed = TRUE)
+    b <- runAnalysisIn("es", "aisp", edgeScaleData(), vars = names(edgeScaleData()), testHi = TRUE)
+    expect_true(any(grepl("Hi contrastado contra c", b$results$summary$asDF$value, fixed = TRUE)))
+    # No catalogue entry is a fragment that starts with a separator.
+    # ES: Ninguna entrada del catálogo es un fragmento que empieza con un
+    # separador.
+    for (s in unlist(MokkenLab:::.mk_text_table(identity), use.names = FALSE))
+        expect_false(grepl("^[;,:] ", s), info = s)
+})

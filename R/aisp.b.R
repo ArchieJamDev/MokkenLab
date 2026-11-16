@@ -223,8 +223,8 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                              .mk_fmt_num(as.numeric(self$options$lbStep), 2), length(lbs))
                      else .mk_fmt_num(lbs, 2)),
                 list(.("Tests during selection"), sprintf(
-                    .("%s, alpha = %s%s"), z_label, .mk_fmt_num(self$options$alpha, 3),
-                    if (isTRUE(self$options$testHi)) .("; Hi tested against c") else "")))
+                    if (isTRUE(self$options$testHi)) .("%s, alpha = %s; Hi tested against c") else .("%s, alpha = %s"),
+                    z_label, .mk_fmt_num(self$options$alpha, 3))))
             if (ga)
                 rows[[length(rows) + 1]] <- list(.("Genetic algorithm"), sprintf(
                     .("population %d, %s generations, crossover %s, mutation %s, seed %d"),
@@ -314,17 +314,17 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         .choices = function(lang, tr, txt, ga, type_z, has_start) {
             . <- tr
             out <- list(
-                c(paste0(txt("choices", "h_search"), ": ", if (ga) .("Genetic algorithm")
-                         else .("Mokken's procedure"), "."),
+                c(sprintf(txt("choices", "h_search"), if (ga) .("Genetic algorithm")
+                          else .("Mokken's procedure")),
                   txt("choices", if (ga) "search_ga" else "search_normal")),
-                c(paste0(txt("choices", "h_lb"), ": ", if (identical(self$options$lbMode, "sequence"))
-                         .("Sequence") else .mk_fmt_num(self$options$lowerbound, 2), "."),
+                c(sprintf(txt("choices", "h_lb"), if (identical(self$options$lbMode, "sequence"))
+                          .("Sequence") else .mk_fmt_num(self$options$lowerbound, 2)),
                   txt("choices", if (identical(self$options$lbMode, "sequence")) "lb_sequence" else "lb_single")),
-                c(paste0(txt("choices", "h_z"), ": ", switch(type_z, Z = .("Original Z"),
-                         WB = .("Wald-based"), RP = .("Range-preserving [test]")), "."),
+                c(sprintf(txt("choices", "h_z"), switch(type_z, Z = .("Original Z"),
+                          WB = .("Wald-based"), RP = .("Range-preserving [test]"))),
                   txt("choices", if (isTRUE(self$options$testHi)) "testhi_true" else "testhi_false")))
             if (has_start)
-                out[[length(out) + 1]] <- c(paste0(txt("choices", "h_start"), "."), txt("choices", "start_body"))
+                out[[length(out) + 1]] <- c(txt("choices", "h_start"), txt("choices", "start_body"))
             out
         },
 
@@ -517,7 +517,7 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             boot_args$lowerbound <- boot_args$lowerbound[1]
             res <- .mk_cached_capture(self$results$cacheStore, "aisp_bootstrap",
                 list(X = X, args = boot_args, reps = reps, seed = seed, level2 = level2, original = original),
-                .mk_aisp_bootstrap)
+                function(...) .mk_aisp_bootstrap(..., checkpoint = function() private$.checkpoint(flush = FALSE)))
             boot <- res$value
             if (is.null(boot) || is.null(boot$done) || boot$done == 0) {
                 .mk_add_row(table, 1, list(item = txt("common", "not_computable")))

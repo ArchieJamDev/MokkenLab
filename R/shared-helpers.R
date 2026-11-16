@@ -447,6 +447,18 @@
 }
 
 # -----------------------------------------------------------------------------
+# .mk_is_restart()
+#
+# Input: e - a condition. Output: TRUE for the error private$.checkpoint()
+#   raises when jamovi restarts the analysis (its $code is "restart"). Every
+#   error handler on the path to .run() re-throws it.
+# ES: Salida: TRUE para el error que lanza private$.checkpoint() cuando
+#   jamovi reinicia el análisis. Todo manejador de errores en el camino a
+#   .run() lo vuelve a lanzar.
+# -----------------------------------------------------------------------------
+.mk_is_restart <- function(e) identical(e$code, "restart")
+
+# -----------------------------------------------------------------------------
 # .mk_capture()
 #
 # Input: expr - an expression (usually a mokken call).
@@ -466,7 +478,14 @@
     value <- NULL
     utils::capture.output(
         value <- withCallingHandlers(
-            tryCatch(expr, error = function(e) structure(list(message = conditionMessage(e)), class = "mk_error")),
+            tryCatch(expr, error = function(e) {
+                # jamovi's restart signal must reach .run(), never be cached.
+                # ES: la señal de reinicio de jamovi debe llegar a .run(), nunca
+                # guardarse en la caché.
+                if (.mk_is_restart(e))
+                    stop(e)
+                structure(list(message = conditionMessage(e)), class = "mk_error")
+            }),
             warning = function(w) {
                 warnings <<- c(warnings, trimws(gsub("[[:space:]]+", " ", conditionMessage(w))))
                 invokeRestart("muffleWarning")
@@ -599,18 +618,18 @@
     out <- list()
     if (identical(options$naHandling, "twoway"))
         out[[length(out) + 1]] <- c(
-            paste0(txt("h_na"), ": ", .("Two-way imputation"), "."),
+            sprintf(txt("h_na"), .("Two-way imputation")),
             sprintf(txt("na_twoway"), as.integer(options$twowaySets), as.integer(options$twowaySeed)))
     else
-        out[[length(out) + 1]] <- c(paste0(txt("h_na"), ": ", .("Listwise deletion"), "."),
+        out[[length(out) + 1]] <- c(sprintf(txt("h_na"), .("Listwise deletion")),
                                     txt("na_listwise"))
     out[[length(out) + 1]] <- c(
-        paste0(txt("h_range"), ": ", if (identical(options$scoreRange, "manual"))
-            .("Declared") else .("Observed"), "."),
+        sprintf(txt("h_range"), if (identical(options$scoreRange, "manual"))
+            .("Declared") else .("Observed")),
         txt(if (identical(options$scoreRange, "manual")) "range_manual" else "range_observed"))
     if (!is.null(prep) && length(prep$neg) > 0)
         out[[length(out) + 1]] <- c(
-            paste0(txt("h_neg"), ": ", paste(prep$neg, collapse = ", "), "."),
+            sprintf(txt("h_neg"), paste(prep$neg, collapse = ", ")),
             txt("neg_body"))
     out
 }
@@ -647,12 +666,16 @@
 .mk_cases_label <- function(tr, prep) {
     . <- tr
     if (!is.null(prep$completed)) {
-        label <- sprintf(.("%d of %d (two-way imputation of %d missing scores; %d complete cases)"),
-                         prep$n_used, prep$n_total, as.integer(prep$imputed), prep$n_complete)
+        # Two whole sentences, chosen in code: a translator never sees a
+        # clause appended to another (jamovi audit, 2026-11-13).
+        # ES: Dos frases completas, elegidas en el código: quien traduce
+        # nunca ve una cláusula añadida a otra.
         if (length(prep$completed) > 1)
-            label <- paste0(label, sprintf(.("; results from completed data set 1 of %d, not pooled"),
-                                           length(prep$completed)))
-        return(label)
+            return(sprintf(.("%d of %d (two-way imputation of %d missing scores; %d complete cases; results from completed data set 1 of %d, not pooled)"),
+                           prep$n_used, prep$n_total, as.integer(prep$imputed), prep$n_complete,
+                           length(prep$completed)))
+        return(sprintf(.("%d of %d (two-way imputation of %d missing scores; %d complete cases)"),
+                       prep$n_used, prep$n_total, as.integer(prep$imputed), prep$n_complete))
     }
     sprintf(.("%d of %d (listwise deletion)"),
             prep$n_used, prep$n_total)
@@ -1090,7 +1113,10 @@
 #
 # Input: X - item matrix; args - the aisp() arguments of the analysis
 #   (without X); reps - bootstrap samples; seed; level2 - cluster codes or
-#   NULL; original - the partition found in the full sample.
+#   NULL; original - the partition found in the full sample; checkpoint -
+#   called once per resample (the analysis passes private$.checkpoint, so
+#   jamovi can interrupt a long run; it is a function, so .mk_hashable()
+#   leaves it out of the cache key).
 # Output: list(together =, same =, unscalable =, exact =, failed =, reps =)
 #   with, for each item, the proportion of samples in which it is grouped with
 #   its original scale-mates (mean pairwise co-membership), in which its set
@@ -1107,7 +1133,7 @@
 # de ellos. El estado aleatorio de R se restaura después, así que el
 # análisis nunca lo altera para el usuario.
 # -----------------------------------------------------------------------------
-.mk_aisp_bootstrap <- function(X, args, reps, seed, level2, original) {
+.mk_aisp_bootstrap <- function(X, args, reps, seed, level2, original, checkpoint = function() NULL) {
     had_seed <- exists(".Random.seed", envir = globalenv(), inherits = FALSE)
     old_seed <- if (had_seed) get(".Random.seed", envir = globalenv()) else NULL
     on.exit(if (had_seed) assign(".Random.seed", old_seed, envir = globalenv())
@@ -1126,6 +1152,12 @@
     clusters <- if (!is.null(level2)) unique(level2) else NULL
 
     for (b in seq_len(reps)) {
+        # Outside the per-resample tryCatch: jamovi may stop or restart here
+        # when the options change (jamovi audit, 2026-11-13).
+        # ES: Fuera del tryCatch de cada remuestra: jamovi puede detener o
+        # reiniciar aquí si cambian las opciones (auditoría de jamovi,
+        # 2026-11-13).
+        checkpoint()
         if (is.null(clusters)) {
             rows <- sample.int(nrow(X), nrow(X), replace = TRUE)
             l2 <- NULL
@@ -1140,7 +1172,7 @@
             out <- NULL
             utils::capture.output(out <- do.call(mokken::aisp, call_args))
             as.integer(out[, 1])
-        }), error = function(e) NULL)
+        }), error = function(e) if (.mk_is_restart(e)) stop(e) else NULL)
         if (is.null(res) || length(res) != J) {
             failed <- failed + 1
             next

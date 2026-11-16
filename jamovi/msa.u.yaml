@@ -189,8 +189,10 @@ children:
         name: hijPlot
       - type: CheckBox
         name: groupPlot
+        enable: (groupVar)
       - type: CheckBox
         name: normsPlot
+        enable: (showNorms)
   - type: CollapseBox
     label: Plot Settings
     collapsed: true

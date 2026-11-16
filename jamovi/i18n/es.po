@@ -7,14 +7,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-#: R/aisp.b.R
-msgid "; Hi tested against c"
-msgstr "; Hi contrastado contra c"
-
-#: R/shared-helpers.R
-msgid "; results from completed data set 1 of %d, not pooled"
-msgstr "; resultados del conjunto completado 1 de %d, sin combinar"
-
 #: msacheck/results/mono.columns.title
 #: msacheck/results/iio.columns.title
 #: msacheck/results/iioClusters.columns.title
@@ -81,6 +73,14 @@ msgstr "%d de %d (eliminación por lista)"
 msgid "%d of %d (two-way imputation of %d missing scores; %d complete cases)"
 msgstr "%d de %d (imputación two-way de %d puntajes perdidos; %d casos completos)"
 
+#: R/shared-helpers.R
+msgid ""
+"%d of %d (two-way imputation of %d missing scores; %d complete cases; "
+"results from completed data set 1 of %d, not pooled)"
+msgstr ""
+"%d de %d (imputación two-way de %d puntajes perdidos; %d casos completos; "
+"resultados del conjunto completado 1 de %d, sin combinar)"
+
 #: R/texts.R
 msgid ""
 "%d of %d bootstrap samples could not be analyzed (for example, an item "
@@ -132,8 +132,12 @@ msgid "%s to %s in steps of %s (%d values)"
 msgstr "%s a %s en pasos de %s (%d valores)"
 
 #: R/aisp.b.R
-msgid "%s, alpha = %s%s"
-msgstr "%s, alfa = %s%s"
+msgid "%s, alpha = %s"
+msgstr "%s, alfa = %s"
+
+#: R/aisp.b.R
+msgid "%s, alpha = %s; Hi tested against c"
+msgstr "%s, alfa = %s; Hi contrastado contra c"
 
 #: R/texts.R
 msgid "%s: %d item(s) could not be evaluated."
@@ -671,6 +675,10 @@ msgid "Conditional association could not be computed: %s."
 msgstr "La asociación condicional no pudo calcularse: %s."
 
 #: R/texts.R
+msgid "Conditional association."
+msgstr "Asociación condicional."
+
+#: R/texts.R
 msgid ""
 "Conditional association: %d item(s) were removed for local dependence: %s. "
 "Check whether they share content, wording or a stimulus with other items; "
@@ -700,7 +708,6 @@ msgstr "Bandas de confianza"
 msgid "Confidence interval"
 msgstr "Intervalo de confianza"
 
-#: R/texts.R
 #: mlmsa/options/ci.title
 #: msa/options/ci.title
 msgid "Confidence intervals"
@@ -709,6 +716,10 @@ msgstr "Intervalos de confianza"
 #: R/texts.R
 msgid "Confidence intervals: %s%%, %s."
 msgstr "Intervalos de confianza: %s%%, %s."
+
+#: R/texts.R
+msgid "Confidence intervals: %s."
+msgstr "Intervalos de confianza: %s."
 
 #: mlmsa/options/ciWidth.title
 #: msa/options/ciWidth.title
@@ -1195,9 +1206,12 @@ msgid "Group"
 msgstr "Grupo"
 
 #: R/mlmsa.b.R
-#: R/texts.R
 msgid "Group proportions"
 msgstr "Proporciones de grupo"
+
+#: R/texts.R
+msgid "Group proportions: %s."
+msgstr "Proporciones de grupo: %s."
 
 #: msa/options/groupVar.title
 msgid "Grouping variable"
@@ -1652,10 +1666,6 @@ msgid "Invariant item ordering could not be checked: %s."
 msgstr "El orden invariante no pudo verificarse: %s."
 
 #: R/texts.R
-msgid "Invariant item ordering method"
-msgstr "Método de orden invariante"
-
-#: R/texts.R
 msgid "Invariant item ordering: %d item(s) removed by the backward selection."
 msgstr "Orden invariante: %d ítem(s) eliminados por la selección hacia atrás."
 
@@ -1700,6 +1710,10 @@ msgid "ISRFs P(X ≥ k)"
 msgstr "ISRF P(X ≥ k)"
 
 #: R/texts.R
+msgid "Invariant item ordering method: %s."
+msgstr "Método de orden invariante: %s."
+
+#: R/texts.R
 msgid ""
 "It splits scalability into a within-rater part (HW), a between-rater part "
 "(HB) and their ratio (BW). Select the variable that identifies the rated "
@@ -1734,10 +1748,13 @@ msgstr "Ítem"
 msgid "Item list"
 msgstr "Lista de ítems"
 
-#: R/texts.R
 #: msacheck/options/iioOrder.title
 msgid "Item order"
 msgstr "Orden de los ítems"
+
+#: R/texts.R
+msgid "Item order."
+msgstr "Orden de los ítems."
 
 #: mlmsa/results/weights.columns.title
 msgid "Item pair"
@@ -2119,10 +2136,13 @@ msgid "Lower bound"
 msgstr "Cota inferior"
 
 #: R/aisp.b.R
-#: R/texts.R
 #: aisp/options/lowerbound.title
 msgid "Lower bound c"
 msgstr "Cota inferior c"
+
+#: R/texts.R
+msgid "Lower bound c: %s."
+msgstr "Cota inferior c: %s."
 
 #: msa/options/boundsLower.title
 msgid "Lower bounds"
@@ -2235,12 +2255,10 @@ msgid "Minimum number of groups"
 msgstr "Número mínimo de grupos"
 
 #: R/msacheck.b.R
-#: R/texts.R
 #: msacheck/options/minsizeMode.title
 msgid "Minimum rest-score group size"
 msgstr "Tamaño mínimo de grupo de rest-score"
 
-#: R/texts.R
 #: msacheck/options/monoMinvi.title
 #: msacheck/options/iioMinviMode.title
 #: msacheck/options/restMinvi.title
@@ -2260,7 +2278,6 @@ msgstr ""
 "Los puntajes perdidos se completaron por imputación two-way; informe el "
 "número de puntajes imputados y la semilla junto con los resultados."
 
-#: R/texts.R
 #: aisp/options/naHandling.title
 #: mlmsa/options/naHandling.title
 #: msa/options/naHandling.title
@@ -2510,11 +2527,22 @@ msgstr ""
 "es menor que alfa. LCRC estima la fiabilidad con un modelo de clases "
 "latentes y suele ser la menos sesgada cuando se cumplen sus supuestos."
 
+#: R/texts.R
+msgid "Minimum rest-score group size: %s."
+msgstr "Tamaño mínimo de grupo de rest-score: %s."
+
+#: R/texts.R
+msgid "Minimum violation."
+msgstr "Violación mínima."
+
+#: R/texts.R
+msgid "Missing values: %s."
+msgstr "Valores perdidos: %s."
+
 #: aisp/options/pmutation.title
 msgid "Mutation probability"
 msgstr "Probabilidad de mutación"
 
-#: R/texts.R
 #: aisp/options/negItems.title
 #: mlmsa/options/negItems.title
 #: msa/options/negItems.title
@@ -2537,8 +2565,12 @@ msgid "Negatively Worded Items (Reversed)"
 msgstr "Ítems redactados en negativo (se invierten)"
 
 #: R/texts.R
-msgid "Nested data"
-msgstr "Datos anidados"
+msgid "Negatively worded items: %s."
+msgstr "Ítems redactados en negativo: %s."
+
+#: R/texts.R
+msgid "Nested data: %s."
+msgstr "Datos anidados: %s."
 
 #: R/texts.R
 msgid ""
@@ -3409,7 +3441,6 @@ msgid "Score pattern (first, second item)"
 msgstr "Patrón de puntajes (primer, segundo ítem)"
 
 #: R/msa.b.R
-#: R/texts.R
 #: aisp/options/scoreRange.title
 #: mlmsa/options/scoreRange.title
 #: msa/options/scoreRange.title
@@ -3436,7 +3467,6 @@ msgstr "EE"
 msgid "Search"
 msgstr "Búsqueda"
 
-#: R/texts.R
 #: aisp/options/search.title
 msgid "Search procedure"
 msgstr "Procedimiento de búsqueda"
@@ -3571,7 +3601,6 @@ msgid "Stanine boundaries"
 msgstr "Límites de los estaninos"
 
 #: R/aisp.b.R
-#: R/texts.R
 msgid "Start set"
 msgstr "Conjunto inicial"
 
@@ -3667,6 +3696,18 @@ msgstr "Contrastar Hi contra la cota inferior"
 msgctxt "test"
 msgid "Range-preserving"
 msgstr "Preservadora de rango"
+
+#: R/texts.R
+msgid "Score range: %s."
+msgstr "Rango de puntajes: %s."
+
+#: R/texts.R
+msgid "Search procedure: %s."
+msgstr "Procedimiento de búsqueda: %s."
+
+#: R/texts.R
+msgid "Start set."
+msgstr "Conjunto inicial."
 
 #: R/texts.R
 msgid ""
@@ -4720,12 +4761,15 @@ msgid "z (within)"
 msgstr "z (dentro)"
 
 #: R/msa.b.R
-#: R/texts.R
 #: aisp/options/typeZ.title
 #: mlmsa/options/typeZ.title
 #: msa/options/typeZ.title
 msgid "Z test"
 msgstr "Prueba Z"
+
+#: R/texts.R
+msgid "Z test: %s."
+msgstr "Prueba Z: %s."
 
 #: mlmsa/options/showZ.title
 #: msa/options/showZ.title

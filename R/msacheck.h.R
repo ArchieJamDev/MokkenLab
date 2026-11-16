@@ -1344,7 +1344,7 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                 options=options,
                 name="caW",
                 title="W indices of local dependence",
-                rows=0,
+                rows="(vars)",
                 visible="(checkCA && caWindex)",
                 refs=list(
                     "straat_2016"),
@@ -1368,7 +1368,8 @@ msacheckResults <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
                     list(
                         `name`="item", 
                         `title`="Item", 
-                        `type`="text"),
+                        `type`="text", 
+                        `content`="($key)"),
                     list(
                         `name`="w1", 
                         `title`="Largest W1", 

@@ -1,3 +1,33 @@
+# MokkenLab (development version)
+
+Changes after jamovi's second audit of 1.0.0 (2026-11-13).
+
+## Changes visible to users
+
+* **A long bootstrap can be interrupted.** The bootstrap stability of the AISP
+  partition calls jamovi's checkpoint once per resample, so changing an
+  option or unticking the box stops the run instead of waiting for every
+  remaining resample. A stopped run is never cached.
+* **Model Assumptions tables keep their layout.** The Monotonicity,
+  Invariant item ordering, Rest-score method, P-matrix method and W indices
+  tables show one row per item (two, Within and Between, with a cluster
+  variable) from the start, instead of growing when the results arrive.
+* **Plot checkboxes are greyed out** until the option they need is set:
+  the monotonicity, IIO, rest-score and P-matrix plots in Model Assumptions,
+  and the percentile rank and group plots in Scale Analysis.
+
+## Internal changes
+
+* The restart signal of `private$.checkpoint()` passes through the error
+  handlers of `.mk_capture()` and of each resample (`.mk_is_restart()`).
+* `msacheck` has an `.init()` that lays out the item rows; W indices use
+  `rows: (vars)`.
+* "About your choices" headings are whole translatable sentences with the
+  value as a placeholder, and the two clauses that were appended to another
+  sentence are now full alternative sentences. `catalog.pot`, `es.po` and
+  `inst/i18n/es.json` updated (719 entries, all translated).
+* Regression tests for the four findings in `tests/testthat/test-audit.R`.
+
 # MokkenLab 1.0.0 (released 2026-11-10, DOI 10.5281/zenodo.24119065)
 
 Version submitted to the jamovi Library, after jamovi's own review.

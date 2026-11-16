@@ -477,18 +477,18 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             out <- list()
             if (isTRUE(self$options$ci))
                 out[[length(out) + 1]] <- c(
-                    paste0(txt("choices", "h_ci"), ": ", if (identical(self$options$typeCI, "RP"))
-                        .("Range-preserving") else .("Wald-based"), "."),
+                    sprintf(txt("choices", "h_ci"), if (identical(self$options$typeCI, "RP"))
+                        .("Range-preserving") else .("Wald-based")),
                     txt("choices", paste0("ci_", self$options$typeCI)))
             if (isTRUE(self$options$showZ))
                 out[[length(out) + 1]] <- c(
-                    paste0(txt("choices", "h_z"), ": ", switch(self$options$typeZ,
+                    sprintf(txt("choices", "h_z"), switch(self$options$typeZ,
                         Z = .("Original Z"), WB = .("Wald-based"),
-                        RP = .("Range-preserving [test]")), "."),
+                        RP = .("Range-preserving [test]"))),
                     sprintf(txt("choices", paste0("z_", self$options$typeZ)),
                             .mk_fmt_num(self$options$zLowerbound, 2)))
             if (nested)
-                out[[length(out) + 1]] <- c(paste0(txt("choices", "h_cluster"), ": ", self$options$clusterVar, "."),
+                out[[length(out) + 1]] <- c(sprintf(txt("choices", "h_cluster"), self$options$clusterVar),
                                             txt("choices", "cluster_body"))
             out
         },

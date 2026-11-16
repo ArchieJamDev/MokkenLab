@@ -7,12 +7,6 @@
                 "lang": "es",
                 "plural_forms": "nplurals=2; plural=(n!=1);"
             },
-            "; Hi tested against c": [
-                "; Hi contrastado contra c"
-            ],
-            "; results from completed data set 1 of %d, not pooled": [
-                "; resultados del conjunto completado 1 de %d, sin combinar"
-            ],
             "#ac": [
                 "#ac"
             ],
@@ -46,6 +40,9 @@
             "%d of %d (two-way imputation of %d missing scores; %d complete cases)": [
                 "%d de %d (imputación two-way de %d puntajes perdidos; %d casos completos)"
             ],
+            "%d of %d (two-way imputation of %d missing scores; %d complete cases; results from completed data set 1 of %d, not pooled)": [
+                "%d de %d (imputación two-way de %d puntajes perdidos; %d casos completos; resultados del conjunto completado 1 de %d, sin combinar)"
+            ],
             "%d of %d bootstrap samples could not be analyzed (for example, an item without variation in the resample) and were left out.": [
                 "%d de %d muestras bootstrap no pudieron analizarse (por ejemplo, un ítem sin variación en la remuestra) y se dejaron fuera."
             ],
@@ -67,8 +64,11 @@
             "%s to %s in steps of %s (%d values)": [
                 "%s a %s en pasos de %s (%d valores)"
             ],
-            "%s, alpha = %s%s": [
-                "%s, alfa = %s%s"
+            "%s, alpha = %s": [
+                "%s, alfa = %s"
+            ],
+            "%s, alpha = %s; Hi tested against c": [
+                "%s, alfa = %s; Hi contrastado contra c"
             ],
             "%s: %d item(s) could not be evaluated.": [
                 "%s: %d ítem(s) no pudieron evaluarse."
@@ -295,6 +295,9 @@
             "Conditional association could not be computed: %s.": [
                 "La asociación condicional no pudo calcularse: %s."
             ],
+            "Conditional association.": [
+                "Asociación condicional."
+            ],
             "Conditional association: %d item(s) were removed for local dependence: %s. Check whether they share content, wording or a stimulus with other items; locally dependent items inflate scalability and reliability.": [
                 "Asociación condicional: se eliminaron %d ítem(s) por dependencia local: %s. Revise si comparten contenido, redacción o un estímulo con otros ítems; los ítems localmente dependientes inflan la escalabilidad y la fiabilidad."
             ],
@@ -312,6 +315,9 @@
             ],
             "Confidence intervals: %s%%, %s.": [
                 "Intervalos de confianza: %s%%, %s."
+            ],
+            "Confidence intervals: %s.": [
+                "Intervalos de confianza: %s."
             ],
             "Confidence level": [
                 "Nivel de confianza"
@@ -526,6 +532,9 @@
             "Group proportions": [
                 "Proporciones de grupo"
             ],
+            "Group proportions: %s.": [
+                "Proporciones de grupo: %s."
+            ],
             "Grouping variable": [
                 "Variable de agrupación"
             ],
@@ -691,8 +700,14 @@
             "Infrequent scores (O+)": [
                 "Puntajes infrecuentes (O+)"
             ],
+            "inline\u0004Wald-based": [
+                "de Wald"
+            ],
             "Interval type": [
                 "Tipo de intervalo"
+            ],
+            "intervals\u0004range-preserving": [
+                "preservadores de rango"
             ],
             "Intraclass correlations": [
                 "Correlaciones intraclase"
@@ -721,9 +736,6 @@
             "Invariant item ordering could not be checked: %s.": [
                 "El orden invariante no pudo verificarse: %s."
             ],
-            "Invariant item ordering method": [
-                "Método de orden invariante"
-            ],
             "Invariant item ordering: %d item(s) removed by the backward selection.": [
                 "Orden invariante: %d ítem(s) eliminados por la selección hacia atrás."
             ],
@@ -751,6 +763,9 @@
             "ISRFs P(X ≥ k)": [
                 "ISRF P(X ≥ k)"
             ],
+            "Invariant item ordering method: %s.": [
+                "Método de orden invariante: %s."
+            ],
             "It splits scalability into a within-rater part (HW), a between-rater part (HB) and their ratio (BW). Select the variable that identifies the rated subject, then the items.": [
                 "Divide la escalabilidad en una parte dentro de evaluadores (HW), una entre evaluadores (HB) y su razón (BW). Seleccione la variable que identifica al sujeto evaluado y luego los ítems."
             ],
@@ -762,6 +777,9 @@
             ],
             "Item order": [
                 "Orden de los ítems"
+            ],
+            "Item order.": [
+                "Orden de los ítems."
             ],
             "Item pair": [
                 "Par de ítems"
@@ -946,6 +964,9 @@
             "Lower bound c": [
                 "Cota inferior c"
             ],
+            "Lower bound c: %s.": [
+                "Cota inferior c: %s."
+            ],
             "Lower bounds": [
                 "Cotas inferiores"
             ],
@@ -1102,6 +1123,15 @@
             "MS (Molenaar-Sijtsma) is the reliability estimate native to Mokken scale analysis: it uses the estimated item-step response functions and is less biased than alpha when invariant item ordering holds. Lambda-2 and alpha are lower bounds to reliability; lambda-2 is never smaller than alpha. LCRC estimates reliability from a latent class model and is usually the least biased when its assumptions hold.": [
                 "MS (Molenaar-Sijtsma) es la estimación de fiabilidad propia del análisis de Mokken: usa las funciones de respuesta estimadas de los pasos de ítem y tiene menos sesgo que alfa cuando se cumple el orden invariante de los ítems. Lambda-2 y alfa son cotas inferiores de la fiabilidad; lambda-2 nunca es menor que alfa. LCRC estima la fiabilidad con un modelo de clases latentes y suele ser la menos sesgada cuando se cumplen sus supuestos."
             ],
+            "Minimum rest-score group size: %s.": [
+                "Tamaño mínimo de grupo de rest-score: %s."
+            ],
+            "Minimum violation.": [
+                "Violación mínima."
+            ],
+            "Missing values: %s.": [
+                "Valores perdidos: %s."
+            ],
             "Mutation probability": [
                 "Probabilidad de mutación"
             ],
@@ -1114,8 +1144,11 @@
             "Negatively Worded Items (Reversed)": [
                 "Ítems redactados en negativo (se invierten)"
             ],
-            "Nested data": [
-                "Datos anidados"
+            "Negatively worded items: %s.": [
+                "Ítems redactados en negativo: %s."
+            ],
+            "Nested data: %s.": [
+                "Datos anidados: %s."
             ],
             "Next step: check the model assumptions (monotonicity, and invariant item ordering if you need items ordered the same way for every respondent) in Model Assumptions before using the sum score.": [
                 "Siguiente paso: verifique los supuestos del modelo (monotonicidad, y orden invariante de los ítems si necesita que los ítems se ordenen igual para cada persona) en Supuestos del modelo antes de usar la puntuación total."
@@ -1681,6 +1714,18 @@
             "Test Hi against the lower bound": [
                 "Contrastar Hi contra la cota inferior"
             ],
+            "test\u0004Range-preserving": [
+                "Preservadora de rango"
+            ],
+            "Score range: %s.": [
+                "Rango de puntajes: %s."
+            ],
+            "Search procedure: %s.": [
+                "Procedimiento de búsqueda: %s."
+            ],
+            "Start set.": [
+                "Conjunto inicial."
+            ],
             "Testing Hi against the lower bound needs the Wald-based Z test, so mokken replaced the original Z test by it.": [
                 "Contrastar Hi contra la cota inferior requiere la prueba Z de Wald, así que mokken la usó en lugar de la Z original."
             ],
@@ -2092,6 +2137,9 @@
             "Z test": [
                 "Prueba Z"
             ],
+            "Z test: %s.": [
+                "Prueba Z: %s."
+            ],
             "Z tests": [
                 "Pruebas Z"
             ],
@@ -2115,15 +2163,6 @@
             ],
             "Zone": [
                 "Zona"
-            ],
-            "inline\u0004Wald-based": [
-                "de Wald"
-            ],
-            "intervals\u0004range-preserving": [
-                "preservadores de rango"
-            ],
-            "test\u0004Range-preserving": [
-                "Preservadora de rango"
             ]
         }
     }
