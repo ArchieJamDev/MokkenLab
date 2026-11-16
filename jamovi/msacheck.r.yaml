@@ -703,7 +703,7 @@ items:
   - name: caW
     title: W indices of local dependence
     type: Table
-    rows: 0
+    rows: (vars)
     visible: (checkCA && caWindex)
     refs:
       - straat_2016
@@ -727,6 +727,7 @@ items:
       - name: item
         title: "Item"
         type: text
+        content: ($key)
       - name: w1
         title: "Largest W1"
         type: number

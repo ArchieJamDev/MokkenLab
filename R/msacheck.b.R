@@ -87,6 +87,68 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.key[[type]] <- c(private$.key[[type]], text)
         },
 
+        # ---------------------------------------------------------------------
+        # Structure known from the options alone: one row per item in the
+        # violation tables, two (Within, Between) with a cluster variable, so
+        # the tables do not grow once the results arrive (jamovi audit,
+        # 2026-11-13). The conditional association table keeps building its
+        # rows in .run(): its step columns depend on the iterations of
+        # check.ca().
+        # ES: Estructura que se conoce solo con las opciones: una fila por
+        # ítem en las tablas de violaciones, dos (Within, Between) con
+        # variable de conglomerado, para que las tablas no crezcan al llegar
+        # los resultados (auditoría de jamovi, 2026-11-13). La tabla de
+        # asociación condicional sigue creando sus filas en .run(): sus
+        # columnas de pasos dependen de las iteraciones de check.ca().
+        # ---------------------------------------------------------------------
+        .init = function() {
+            items <- as.character(unlist(self$options$vars))
+            if (length(items) == 0)
+                return()
+            tr <- .mk_lang(self$options)$tr
+            for (name in c("mono", "iio", "rest", "pmat")) {
+                layout <- private$.rowLayout(name, items, tr)
+                private$.layoutRows(self$results[[name]], layout$keys, layout$values)
+            }
+        },
+
+        # Row keys of a violation table: the item names, or L1_/L2_ + item
+        # name when the check runs on two levels. check.restscore() and
+        # check.pmatrix() take no cluster variable, and check.iio() returns
+        # two levels only when the item order has no clusters.
+        # ES: Claves de fila de una tabla de violaciones: los nombres de los
+        # ítems, o L1_/L2_ + nombre cuando la verificación usa dos niveles.
+        # check.restscore() y check.pmatrix() no reciben variable de
+        # conglomerado, y check.iio() da dos niveles solo cuando el orden de
+        # los ítems no tiene conglomerados.
+        .rowLayout = function(name, items, tr, nested = NULL) {
+            . <- tr
+            if (is.null(nested))
+                nested <- !is.null(self$options$clusterVar) && (identical(name, "mono") ||
+                    (identical(name, "iio") && !self$options$iioOrder %in% c("clusters", "custom")))
+            if (!nested)
+                return(list(keys = items, values = lapply(items, function(i) list(item = i))))
+            list(keys = c(paste0("L1_", items), paste0("L2_", items)),
+                 values = c(lapply(items, function(i) list(item = i, level = .("Within"))),
+                            lapply(items, function(i) list(item = i, level = .("Between")))))
+        },
+
+        # Lays out the rows of a table, or keeps them when they already match,
+        # so .run() only fills values. A result that differs from what the
+        # options predicted (a check that returned other items) still gets
+        # its own rows.
+        # ES: Crea las filas de una tabla, o las conserva si ya coinciden,
+        # para que .run() solo rellene valores. Un resultado distinto de lo
+        # que preveían las opciones igual recibe sus propias filas.
+        .layoutRows = function(table, keys, values) {
+            if (identical(as.character(unlist(table$rowKeys)), as.character(keys)))
+                return(invisible(NULL))
+            table$deleteRows()
+            for (k in seq_along(keys))
+                table$addRow(rowKey = keys[k], values = values[[k]])
+            invisible(NULL)
+        },
+
         .run = function() {
 
             lang <- .mk_lang(self$options)
@@ -266,18 +328,18 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
 
         .choices = function(lang, tr, txt) {
             . <- tr
-            out <- list(c(paste0(txt("choices", "h_minsize"), ": ", if (identical(self$options$minsizeMode, "manual"))
-                                     as.character(self$options$minsize) else .("Automatic"), "."),
+            out <- list(c(sprintf(txt("choices", "h_minsize"), if (identical(self$options$minsizeMode, "manual"))
+                                      as.character(self$options$minsize) else .("Automatic")),
                           txt("choices", "minsize_body")),
-                        c(paste0(txt("choices", "h_minvi"), "."), txt("choices", "minvi_body")))
+                        c(txt("choices", "h_minvi"), txt("choices", "minvi_body")))
             if (isTRUE(self$options$checkIIO)) {
-                out[[length(out) + 1]] <- c(paste0(txt("choices", "h_iio_method"), ": ", self$options$iioMethod, "."),
+                out[[length(out) + 1]] <- c(sprintf(txt("choices", "h_iio_method"), self$options$iioMethod),
                                             txt("choices", paste0("iio_", self$options$iioMethod)))
-                out[[length(out) + 1]] <- c(paste0(txt("choices", "h_iio_order"), "."),
+                out[[length(out) + 1]] <- c(txt("choices", "h_iio_order"),
                                             txt("choices", paste0("order_", self$options$iioOrder)))
             }
             if (isTRUE(self$options$checkCA))
-                out[[length(out) + 1]] <- c(paste0(txt("choices", "h_ca"), "."), txt("choices", "ca_body"))
+                out[[length(out) + 1]] <- c(txt("choices", "h_ca"), txt("choices", "ca_body"))
             out
         },
 
@@ -351,6 +413,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         },
 
         .failRow = function(table, lang, message) {
+            table$deleteRows()
             .mk_add_row(table, 1, list(item = .mk_text(lang, "common", "not_computable")))
             table$addFootnote(rowKey = 1, col = "item", message)
         },
@@ -405,7 +468,11 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "mono_failed"), fit$error)))
             }
             summ <- fit$value$summary
-            if (is.list(summ) && !is.matrix(summ)) {
+            nested_mono <- is.list(summ) && !is.matrix(summ)
+            layout <- private$.rowLayout("mono", rownames(as.matrix(if (nested_mono) summ[[1]] else summ)),
+                                         tr, nested = nested_mono)
+            private$.layoutRows(table, layout$keys, layout$values)
+            if (nested_mono) {
                 res1 <- private$.fillViolations(table, summ[[1]], lang, .("Within"), "L1_",
                                                 .("Monotonicity"))
                 res2 <- private$.fillViolations(table, summ[[2]], lang, .("Between"), "L2_",
@@ -561,6 +628,10 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (length(removed) > 0)
                 removed_at[names(removed)] <- sprintf(.("Step %d"), seq_along(removed))
             means <- colMeans(X)
+            layout <- private$.rowLayout("iio", rownames(as.matrix(
+                if (nested) summ$item.summary[[1]] else if (clustered) summ$item.summary$Items else summ$item.summary)),
+                tr, nested = nested)
+            private$.layoutRows(table, layout$keys, layout$values)
 
             fill <- function(item_summary, level_label = NULL, prefix = "") {
                 res <- private$.fillViolations(table, item_summary, lang, level_label, prefix,
@@ -728,6 +799,8 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "rest_failed"), fit$error)))
             }
+            layout <- private$.rowLayout("rest", rownames(as.matrix(fit$value$summary)), tr, nested = FALSE)
+            private$.layoutRows(table, layout$keys, layout$values)
             res <- private$.fillViolations(table, fit$value$summary, lang,
                                            check = .("Rest-score"))
             table$setNote("crit", txt("check", "crit_note"))
@@ -759,6 +832,8 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 private$.failRow(table, lang, sprintf(txt("check", "failed"), fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "pmat_failed"), fit$error)))
             }
+            layout <- private$.rowLayout("pmat", rownames(as.matrix(fit$value$summary)), tr, nested = FALSE)
+            private$.layoutRows(table, layout$keys, layout$values)
             res <- private$.fillViolations(table, fit$value$summary, lang,
                                            check = "P-matrix")
             table$setNote("crit", txt("check", "crit_note"))
@@ -827,6 +902,11 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     .mk_keep(c("InScale", "Index", "Flagged"))(v)
                 })
             if (is.null(fit$value) || is.null(fit$value$InScale)) {
+                # The W rows come from the items (rows: (vars)); with no
+                # result there is nothing to show in them.
+                # ES: Las filas de W vienen de los ítems; sin resultado no
+                # hay nada que mostrar en ellas.
+                self$results$caW$setVisible(FALSE)
                 private$.failRow(table, lang, sprintf(txt("check", "failed"),
                                                       if (is.null(fit$error)) "" else fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "ca_failed"),
@@ -848,6 +928,8 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             }
             table$setNote("ca", txt("check", "ca_note"))
 
+            if (isTRUE(self$options$caWindex) && is.null(fit$value$Index))
+                self$results$caW$setVisible(FALSE)
             if (isTRUE(self$options$caWindex) && !is.null(fit$value$Index)) {
                 idx <- fit$value$Index[[1]]
                 flags <- fit$value$Flagged[[1]]

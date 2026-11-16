@@ -7,14 +7,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "Language: c\n"
 
-#: R/aisp.b.R
-msgid "; Hi tested against c"
-msgstr ""
-
-#: R/shared-helpers.R
-msgid "; results from completed data set 1 of %d, not pooled"
-msgstr ""
-
 #: msacheck/results/mono.columns.title
 #: msacheck/results/iio.columns.title
 #: msacheck/results/iioClusters.columns.title
@@ -78,6 +70,12 @@ msgstr ""
 msgid "%d of %d (two-way imputation of %d missing scores; %d complete cases)"
 msgstr ""
 
+#: R/shared-helpers.R
+msgid ""
+"%d of %d (two-way imputation of %d missing scores; %d complete cases; "
+"results from completed data set 1 of %d, not pooled)"
+msgstr ""
+
 #: R/texts.R
 msgid ""
 "%d of %d bootstrap samples could not be analyzed (for example, an item "
@@ -118,7 +116,11 @@ msgid "%s to %s in steps of %s (%d values)"
 msgstr ""
 
 #: R/aisp.b.R
-msgid "%s, alpha = %s%s"
+msgid "%s, alpha = %s"
+msgstr ""
+
+#: R/aisp.b.R
+msgid "%s, alpha = %s; Hi tested against c"
 msgstr ""
 
 #: R/texts.R
@@ -561,6 +563,10 @@ msgid "Conditional association could not be computed: %s."
 msgstr ""
 
 #: R/texts.R
+msgid "Conditional association."
+msgstr ""
+
+#: R/texts.R
 msgid ""
 "Conditional association: %d item(s) were removed for local dependence: %s. "
 "Check whether they share content, wording or a stimulus with other items; "
@@ -584,7 +590,6 @@ msgstr ""
 msgid "Confidence interval"
 msgstr ""
 
-#: R/texts.R
 #: mlmsa/options/ci.title
 #: msa/options/ci.title
 msgid "Confidence intervals"
@@ -592,6 +597,10 @@ msgstr ""
 
 #: R/texts.R
 msgid "Confidence intervals: %s%%, %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Confidence intervals: %s."
 msgstr ""
 
 #: mlmsa/options/ciWidth.title
@@ -989,8 +998,11 @@ msgid "Group"
 msgstr ""
 
 #: R/mlmsa.b.R
-#: R/texts.R
 msgid "Group proportions"
+msgstr ""
+
+#: R/texts.R
+msgid "Group proportions: %s."
 msgstr ""
 
 #: msa/options/groupVar.title
@@ -1379,10 +1391,6 @@ msgid "Invariant item ordering could not be checked: %s."
 msgstr ""
 
 #: R/texts.R
-msgid "Invariant item ordering method"
-msgstr ""
-
-#: R/texts.R
 msgid "Invariant item ordering: %d item(s) removed by the backward selection."
 msgstr ""
 
@@ -1423,6 +1431,10 @@ msgid "ISRFs P(X ≥ k)"
 msgstr ""
 
 #: R/texts.R
+msgid "Invariant item ordering method: %s."
+msgstr ""
+
+#: R/texts.R
 msgid ""
 "It splits scalability into a within-rater part (HW), a between-rater part "
 "(HB) and their ratio (BW). Select the variable that identifies the rated "
@@ -1454,9 +1466,12 @@ msgstr ""
 msgid "Item list"
 msgstr ""
 
-#: R/texts.R
 #: msacheck/options/iioOrder.title
 msgid "Item order"
+msgstr ""
+
+#: R/texts.R
+msgid "Item order."
 msgstr ""
 
 #: mlmsa/results/weights.columns.title
@@ -1792,9 +1807,12 @@ msgid "Lower bound"
 msgstr ""
 
 #: R/aisp.b.R
-#: R/texts.R
 #: aisp/options/lowerbound.title
 msgid "Lower bound c"
+msgstr ""
+
+#: R/texts.R
+msgid "Lower bound c: %s."
 msgstr ""
 
 #: msa/options/boundsLower.title
@@ -1900,12 +1918,10 @@ msgid "Minimum number of groups"
 msgstr ""
 
 #: R/msacheck.b.R
-#: R/texts.R
 #: msacheck/options/minsizeMode.title
 msgid "Minimum rest-score group size"
 msgstr ""
 
-#: R/texts.R
 #: msacheck/options/monoMinvi.title
 #: msacheck/options/iioMinviMode.title
 #: msacheck/options/restMinvi.title
@@ -1923,7 +1939,6 @@ msgid ""
 "imputed scores and the seed with the results."
 msgstr ""
 
-#: R/texts.R
 #: aisp/options/naHandling.title
 #: mlmsa/options/naHandling.title
 #: msa/options/naHandling.title
@@ -2115,11 +2130,22 @@ msgid ""
 "biased when its assumptions hold."
 msgstr ""
 
+#: R/texts.R
+msgid "Minimum rest-score group size: %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Minimum violation."
+msgstr ""
+
+#: R/texts.R
+msgid "Missing values: %s."
+msgstr ""
+
 #: aisp/options/pmutation.title
 msgid "Mutation probability"
 msgstr ""
 
-#: R/texts.R
 #: aisp/options/negItems.title
 #: mlmsa/options/negItems.title
 #: msa/options/negItems.title
@@ -2142,7 +2168,11 @@ msgid "Negatively Worded Items (Reversed)"
 msgstr ""
 
 #: R/texts.R
-msgid "Nested data"
+msgid "Negatively worded items: %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Nested data: %s."
 msgstr ""
 
 #: R/texts.R
@@ -2886,7 +2916,6 @@ msgid "Score pattern (first, second item)"
 msgstr ""
 
 #: R/msa.b.R
-#: R/texts.R
 #: aisp/options/scoreRange.title
 #: mlmsa/options/scoreRange.title
 #: msa/options/scoreRange.title
@@ -2913,7 +2942,6 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: R/texts.R
 #: aisp/options/search.title
 msgid "Search procedure"
 msgstr ""
@@ -3033,7 +3061,6 @@ msgid "Stanine boundaries"
 msgstr ""
 
 #: R/aisp.b.R
-#: R/texts.R
 msgid "Start set"
 msgstr ""
 
@@ -3122,6 +3149,18 @@ msgstr ""
 #: R/msa.b.R
 msgctxt "test"
 msgid "Range-preserving"
+msgstr ""
+
+#: R/texts.R
+msgid "Score range: %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Search procedure: %s."
+msgstr ""
+
+#: R/texts.R
+msgid "Start set."
 msgstr ""
 
 #: R/texts.R
@@ -3948,11 +3987,14 @@ msgid "z (within)"
 msgstr ""
 
 #: R/msa.b.R
-#: R/texts.R
 #: aisp/options/typeZ.title
 #: mlmsa/options/typeZ.title
 #: msa/options/typeZ.title
 msgid "Z test"
+msgstr ""
+
+#: R/texts.R
+msgid "Z test: %s."
 msgstr ""
 
 #: mlmsa/options/showZ.title

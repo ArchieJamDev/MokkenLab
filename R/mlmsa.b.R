@@ -164,12 +164,12 @@ mlmsaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (isTRUE(self$options$showChoicesGuide))
                 self$results$choicesGuide$setContent(.mk_choices_guide(lang, c(
                     .mk_data_choices(lang, self$options, prep),
-                    list(c(paste0(txt("choices", "h_weigh"), ": ", if (isTRUE(self$options$weighProps))
-                               .("Weighted") else .("Averaged"), "."),
+                    list(c(sprintf(txt("choices", "h_weigh"), if (isTRUE(self$options$weighProps))
+                               .("Weighted") else .("Averaged")),
                            txt("choices", if (isTRUE(self$options$weighProps)) "weigh_true" else "weigh_false"))),
                     if (isTRUE(self$options$ci)) list(c(
-                        paste0(txt("choices", "h_ci"), ": ", if (identical(self$options$typeCI, "RP"))
-                            .("Range-preserving") else .("Wald-based"), "."),
+                        sprintf(txt("choices", "h_ci"), if (identical(self$options$typeCI, "RP"))
+                            .("Range-preserving") else .("Wald-based")),
                         txt("choices", paste0("ci_", self$options$typeCI)))))))
 
             # -----------------------------------------------------------------

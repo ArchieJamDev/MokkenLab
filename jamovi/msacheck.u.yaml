@@ -167,20 +167,24 @@ children:
         name: critPlot
       - type: CheckBox
         name: monoPlot
+        enable: (checkMono)
         children:
           - type: ComboBox
             name: monoCurves
-            enable: (monoPlot)
+            enable: (checkMono && monoPlot)
       - type: CheckBox
         name: iioPlot
+        enable: (checkIIO)
       - type: CheckBox
         name: restPlot
+        enable: (checkRest)
       - type: CheckBox
         name: pmatPlot
+        enable: (checkPmatrix)
         children:
           - type: ComboBox
             name: pmatType
-            enable: (pmatPlot)
+            enable: (checkPmatrix && pmatPlot)
       - type: VariableSupplier
         persistentItems: true
         stretchFactor: 1
