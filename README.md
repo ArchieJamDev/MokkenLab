@@ -251,7 +251,7 @@ MokkenLab is not yet in the official jamovi Library. Until then:
 
 ### From a release (Linux)
 
-Download `MokkenLab_1.0.0.jmo` from
+Download `MokkenLab_1.0.1.jmo` from
 [Releases](https://github.com/ArchieJamDev/MokkenLab/releases) and, in jamovi,
 open **⋮ › Modules › Install from file**. The file is built for Linux (x64,
 jamovi current): jamovi only loads a `.jmo` built for the same system.
