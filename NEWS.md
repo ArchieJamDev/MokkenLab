@@ -1,6 +1,7 @@
-# MokkenLab (development version)
+# MokkenLab 1.0.1
 
-Changes after jamovi's second audit of 1.0.0 (2026-11-13).
+Version resubmitted to the jamovi Library, with the changes requested in
+jamovi's second audit of 1.0.0 (2026-11-13).
 
 ## Changes visible to users
 
@@ -27,6 +28,10 @@ Changes after jamovi's second audit of 1.0.0 (2026-11-13).
   sentence are now full alternative sentences. `catalog.pot`, `es.po` and
   `inst/i18n/es.json` updated (719 entries, all translated).
 * Regression tests for the four findings in `tests/testthat/test-audit.R`.
+* Version 1.0.1 in `DESCRIPTION`, `0000.yaml` and every `.a.yaml`.
+* The group plot of Scale Analysis keeps its visibility rule in the R code:
+  jmvcore cannot evaluate `(groupVar && groupPlot)` in `.r.yaml` while
+  `groupVar` is empty. Its checkbox is greyed out with `enable: (groupVar)`.
 
 # MokkenLab 1.0.0 (released 2026-11-10, DOI 10.5281/zenodo.24119065)
 
