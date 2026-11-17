@@ -1,4 +1,4 @@
-# MokkenLab 1.0.1
+# MokkenLab 1.0.1 (released 2026-11-17, DOI 10.5281/zenodo.24305198)
 
 Version resubmitted to the jamovi Library, with the changes requested in
 jamovi's second audit of 1.0.0 (2026-11-13).

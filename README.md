@@ -8,7 +8,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a>
   <a href="https://github.com/ArchieJamDev/MokkenLab/releases"><img src="https://img.shields.io/github/v/release/ArchieJamDev/MokkenLab?label=release&color=A6427F" alt="Release"></a>
-  <a href="https://doi.org/10.5281/zenodo.24119065"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24119065.svg" alt="DOI"></a>
+  <a href="https://doi.org/10.5281/zenodo.24305198"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24305198.svg" alt="DOI"></a>
   <img src="https://img.shields.io/badge/mokken-%E2%89%A5%203.1.2-A6427F" alt="mokken ≥ 3.1.2">
   <img src="https://img.shields.io/badge/jamovi-%E2%89%A5%201.0.8-0072B2" alt="jamovi ≥ 1.0.8">
   <a href="https://github.com/ArchieJamDev/MokkenLab/actions/workflows/jamovi-check.yml"><img src="https://github.com/ArchieJamDev/MokkenLab/actions/workflows/jamovi-check.yml/badge.svg" alt="CI"></a>
@@ -326,7 +326,8 @@ package.
 | 3 | Documentation (bibliography, architecture) | ✅ Done |
 | 4 | First release, v0.1.0, with Zenodo DOI [10.5281/zenodo.23955263](https://doi.org/10.5281/zenodo.23955263) | ✅ Done |
 | 5 | Version 1.0.0, after the jamovi Library review, with Zenodo DOI [10.5281/zenodo.24119065](https://doi.org/10.5281/zenodo.24119065) | ✅ Done |
-| 6 | jamovi Library submission | 🔄 In progress |
+| 6 | Version 1.0.1, after the second jamovi audit, with Zenodo DOI [10.5281/zenodo.24305198](https://doi.org/10.5281/zenodo.24305198) | ✅ Done |
+| 7 | jamovi Library submission | 🔄 In progress |
 
 ---
 
@@ -336,8 +337,8 @@ If you use MokkenLab in your research, please cite the module and the mokken
 package:
 
 > Chacón Chacón, A. D. L. (2026). *MokkenLab: A jamovi module for Mokken
-> scale analysis* (Version 1.0.0) [Computer software]. Zenodo.
-> https://doi.org/10.5281/zenodo.24119065
+> scale analysis* (Version 1.0.1) [Computer software]. Zenodo.
+> https://doi.org/10.5281/zenodo.24305198
 
 > van der Ark, L. A. (2012). New developments in Mokken scale analysis in R.
 > *Journal of Statistical Software, 48*(5), 1–27.
