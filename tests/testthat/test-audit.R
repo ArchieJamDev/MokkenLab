@@ -232,7 +232,9 @@ test_that("the W indices table stays visible and says why it is empty", {
             })
         }))
         shown <- tryCatch(table$asString(), error = function(e) "")
-        paste(c(as.character(text), shown), collapse = " ")
+        # asString() wraps long notes and draws a border; join the lines.
+        # ES: asString() parte las notas largas y dibuja un borde; se unen.
+        gsub("[[:space:]\u2502]+", " ", paste(c(as.character(text), shown), collapse = " "))
     }
     run_with <- function(fake) {
         testthat::local_mocked_bindings(check.ca = fake, .package = "mokken")
