@@ -216,11 +216,23 @@ test_that("a check that cannot run replaces the item rows with one row", {
 
 test_that("the W indices table stays visible and says why it is empty", {
     data <- edgeScaleData()
-    # The note set on a table (jmvcore keeps them in a private field).
-    # ES: La nota de una tabla (jmvcore la guarda en un campo privado).
+    # The text of the notes set on a table: jmvcore has no public getter,
+    # so read every field of the table whose name mentions notes.
+    # ES: El texto de las notas de una tabla: jmvcore no tiene un método
+    # público para leerlas, así que se leen los campos cuyo nombre las nombra.
     note_of <- function(table) {
-        notes <- tryCatch(table$.__enclos_env__$private$.notes, error = function(e) NULL)
-        paste(unlist(lapply(notes, function(n) if (is.list(n)) n$note else n)), collapse = " ")
+        envs <- list(table$.__enclos_env__$private, table$.__enclos_env__$self)
+        text <- unlist(lapply(envs, function(env) {
+            if (!is.environment(env))
+                return(NULL)
+            fields <- grep("note", ls(env, all.names = TRUE), ignore.case = TRUE, value = TRUE)
+            lapply(fields, function(f) {
+                value <- tryCatch(get(f, envir = env), error = function(e) NULL)
+                if (is.function(value)) NULL else value
+            })
+        }))
+        shown <- tryCatch(table$asString(), error = function(e) "")
+        paste(c(as.character(text), shown), collapse = " ")
     }
     run_with <- function(fake) {
         testthat::local_mocked_bindings(check.ca = fake, .package = "mokken")
