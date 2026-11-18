@@ -1,6 +1,6 @@
 Package: MokkenLab
 Title: Mokken Scale Analysis Lab for Nonparametric Item Response Theory
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: person("Arquímedes De León", "Chacón Chacón", email = "arquimedeschacon@gmail.com", role = c("aut", "cre"), comment = c(affiliation = "Universidad Católica Andrés Bello (UCAB), Caracas, Venezuela"))
 Description: A jamovi module that exposes every capability of the mokken
     package (scalability coefficients with standard errors and confidence

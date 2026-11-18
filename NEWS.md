@@ -1,3 +1,21 @@
+# MokkenLab 1.0.2
+
+Version for the jamovi Library, with the change requested in jamovi's audit
+of 1.0.1 (2026-11-17).
+
+## Changes visible to users
+
+* **The W indices table no longer disappears.** When W indices is ticked in
+  Model Assumptions, the table stays in place even if it cannot be filled,
+  and its note says why: conditional association could not be computed, or
+  `check.ca()` returned no W indices with these settings.
+
+## Internal changes
+
+* `msacheck` no longer calls `setVisible(FALSE)` on `caW`; its visibility
+  follows only `(checkCA && caWindex)`. A regression test in
+  `tests/testthat/test-audit.R` covers both paths.
+
 # MokkenLab 1.0.1 (released 2026-11-17, DOI 10.5281/zenodo.24305198)
 
 Version resubmitted to the jamovi Library, with the changes requested in
