@@ -522,6 +522,15 @@ msgstr ""
 "intersección y la independencia local cuando el uso que hará de la escala lo "
 "requiera."
 
+#: R/texts.R
+msgid ""
+"check.ca() did not return W indices with these settings, so this table has "
+"no values. The conditional association steps above are not affected."
+msgstr ""
+"check.ca() no devolvió índices W con esta configuración, por lo que esta "
+"tabla no tiene valores. Los pasos de asociación condicional de arriba no se "
+"ven afectados."
+
 #: package/analyses/msacheck.description
 #: msacheck/options.description.main
 msgid ""
@@ -1595,6 +1604,14 @@ msgstr ""
 #: msa/results/oplusOV.title
 msgid "Infrequent scores (O+)"
 msgstr "Puntajes infrecuentes (O+)"
+
+#: R/texts.R
+msgid ""
+"The W indices could not be computed because conditional association could "
+"not be computed: %s."
+msgstr ""
+"Los índices W no pudieron calcularse porque la asociación condicional no "
+"pudo calcularse: %s."
 
 #: R/mlmsa.b.R
 #: R/msa.b.R
