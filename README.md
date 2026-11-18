@@ -7,10 +7,11 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a>
-  <a href="https://github.com/ArchieJamDev/MokkenLab/releases"><img src="https://img.shields.io/github/v/release/ArchieJamDev/MokkenLab?label=release&color=A6427F" alt="Release"></a>
+  <a href="https://github.com/ArchieJamDev/MokkenLab/releases"><img src="https://img.shields.io/github/v/release/ArchieJamDev/MokkenLab?label=release&color=4A86E0" alt="Release"></a>
   <a href="https://doi.org/10.5281/zenodo.24339275"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24339275.svg" alt="DOI"></a>
-  <img src="https://img.shields.io/badge/mokken-%E2%89%A5%203.1.2-A6427F" alt="mokken ≥ 3.1.2">
-  <img src="https://img.shields.io/badge/jamovi-%E2%89%A5%201.0.8-0072B2" alt="jamovi ≥ 1.0.8">
+  <img src="https://img.shields.io/badge/mokken-%E2%89%A5%203.1.2-E6AC40" alt="mokken ≥ 3.1.2">
+  <img src="https://img.shields.io/badge/jamovi-%E2%89%A5%201.0.8-4A86E0" alt="jamovi ≥ 1.0.8">
+  <img src="https://img.shields.io/badge/jamovi%20Library-available-6B9DE8" alt="Available in the jamovi Library">
   <a href="https://github.com/ArchieJamDev/MokkenLab/actions/workflows/jamovi-check.yml"><img src="https://github.com/ArchieJamDev/MokkenLab/actions/workflows/jamovi-check.yml/badge.svg" alt="CI"></a>
   <img src="https://komarev.com/ghpvc/?username=ArchieJamDev-MokkenLab&label=views&color=lightgrey&style=flat" alt="Views">
 </p>
@@ -247,16 +248,13 @@ deletion or two-way imputation) rather than silently.
 
 ## Installation
 
-MokkenLab is not yet in the official jamovi Library. Until then:
-
-### From a release (Linux)
-
-Download `MokkenLab_1.0.1.jmo` from
-[Releases](https://github.com/ArchieJamDev/MokkenLab/releases) and, in jamovi,
-open **⋮ › Modules › Install from file**. The file is built for Linux (x64,
-jamovi current): jamovi only loads a `.jmo` built for the same system.
+MokkenLab is in the official jamovi Library. In jamovi, open
+**Modules** (the **+** at the right of the Analyses ribbon) › **jamovi
+library**, find **MokkenLab** and click **Install**.
 
 ### From source (any system)
+
+To build the development version yourself:
 
 ```r
 install.packages("jmvtools", repos = c("https://repo.jamovi.org", "https://cran.r-project.org"))
@@ -328,7 +326,7 @@ package.
 | 5 | Version 1.0.0, after the jamovi Library review, with Zenodo DOI [10.5281/zenodo.24119065](https://doi.org/10.5281/zenodo.24119065) | ✅ Done |
 | 6 | Version 1.0.1, after the second jamovi audit, with Zenodo DOI [10.5281/zenodo.24305198](https://doi.org/10.5281/zenodo.24305198) | ✅ Done |
 | 7 | Version 1.0.2, after the jamovi audit of 1.0.1, with Zenodo DOI [10.5281/zenodo.24339275](https://doi.org/10.5281/zenodo.24339275) | ✅ Done |
-| 8 | jamovi Library submission | 🔄 In progress |
+| 8 | Published in the jamovi Library (from version 1.0.1) | ✅ Done |
 
 ---
 
