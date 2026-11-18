@@ -902,11 +902,13 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     .mk_keep(c("InScale", "Index", "Flagged"))(v)
                 })
             if (is.null(fit$value) || is.null(fit$value$InScale)) {
-                # The W rows come from the items (rows: (vars)); with no
-                # result there is nothing to show in them.
-                # ES: Las filas de W vienen de los ítems; sin resultado no
-                # hay nada que mostrar en ellas.
-                self$results$caW$setVisible(FALSE)
+                # The W table stays in place (its visibility follows the
+                # options only) and says why its item rows are empty.
+                # ES: La tabla W se mantiene (su visibilidad depende solo de
+                # las opciones) y explica por qué sus filas están vacías.
+                if (isTRUE(self$options$caWindex))
+                    self$results$caW$setNote("w", sprintf(txt("check", "w_failed"),
+                                                          if (is.null(fit$error)) "" else fit$error))
                 private$.failRow(table, lang, sprintf(txt("check", "failed"),
                                                       if (is.null(fit$error)) "" else fit$error))
                 return(list(warnings = fit$warnings, text = sprintf(txt("check", "ca_failed"),
@@ -929,7 +931,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             table$setNote("ca", txt("check", "ca_note"))
 
             if (isTRUE(self$options$caWindex) && is.null(fit$value$Index))
-                self$results$caW$setVisible(FALSE)
+                self$results$caW$setNote("w", txt("check", "w_missing"))
             if (isTRUE(self$options$caWindex) && !is.null(fit$value$Index)) {
                 idx <- fit$value$Index[[1]]
                 flags <- fit$value$Flagged[[1]]

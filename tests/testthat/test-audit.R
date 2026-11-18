@@ -214,6 +214,55 @@ test_that("a check that cannot run replaces the item rows with one row", {
     expect_equal(a$results$iio$asDF$item, "Not computable")
 })
 
+test_that("the W indices table stays visible and says why it is empty", {
+    data <- edgeScaleData()
+    # The text of the notes set on a table: jmvcore has no public getter,
+    # so read every field of the table whose name mentions notes.
+    # ES: El texto de las notas de una tabla: jmvcore no tiene un método
+    # público para leerlas, así que se leen los campos cuyo nombre las nombra.
+    note_of <- function(table) {
+        envs <- list(table$.__enclos_env__$private, table$.__enclos_env__$self)
+        text <- unlist(lapply(envs, function(env) {
+            if (!is.environment(env))
+                return(NULL)
+            fields <- grep("note", ls(env, all.names = TRUE), ignore.case = TRUE, value = TRUE)
+            lapply(fields, function(f) {
+                value <- tryCatch(get(f, envir = env), error = function(e) NULL)
+                if (is.function(value)) NULL else value
+            })
+        }))
+        shown <- tryCatch(table$asString(), error = function(e) "")
+        # asString() wraps long notes and draws a border; join the lines.
+        # ES: asString() parte las notas largas y dibuja un borde; se unen.
+        gsub("[[:space:]\u2502]+", " ", paste(c(as.character(text), shown), collapse = " "))
+    }
+    run_with <- function(fake) {
+        testthat::local_mocked_bindings(check.ca = fake, .package = "mokken")
+        runAnalysis("msacheck", data, vars = names(data), checkMono = FALSE, checkCA = TRUE, caWindex = TRUE)
+    }
+    # check.ca() fails: the CA table gets its single row, the W table keeps
+    # its item rows and a note.
+    # ES: check.ca() falla: la tabla CA recibe su fila única y la tabla W
+    # conserva sus filas de ítems y una nota.
+    a <- run_with(function(...) stop("fake failure"))
+    expect_equal(a$results$ca$asDF$item, "Not computable")
+    expect_true(a$results$caW$visible)
+    expect_equal(a$results$caW$asDF$item, names(data))
+    expect_match(note_of(a$results$caW), "could not be computed because conditional association", fixed = TRUE)
+    # check.ca() runs but returns no W indices.
+    # ES: check.ca() corre pero no devuelve índices W.
+    b <- run_with(function(X, ...) list(InScale = list(rep(TRUE, ncol(X)))))
+    expect_false("Not computable" %in% b$results$ca$asDF$item)
+    expect_true(b$results$caW$visible)
+    expect_equal(b$results$caW$asDF$item, names(data))
+    expect_match(note_of(b$results$caW), "did not return W indices", fixed = TRUE)
+    # No result path hides the table any more.
+    # ES: Ningún camino de resultados oculta ya la tabla.
+    source_file <- testthat::test_path("..", "..", "R", "msacheck.b.R")
+    if (file.exists(source_file))
+        expect_false(any(grepl("caW$setVisible(FALSE)", readLines(source_file, warn = FALSE), fixed = TRUE)))
+})
+
 test_that("plot checkboxes are greyed out until their analysis is on", {
     root <- testthat::test_path("..", "..", "jamovi")
     skip_if_not(dir.exists(root))

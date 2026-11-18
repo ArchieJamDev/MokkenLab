@@ -442,6 +442,12 @@ msgid ""
 "local independence when your use of the scale needs them."
 msgstr ""
 
+#: R/texts.R
+msgid ""
+"check.ca() did not return W indices with these settings, so this table has "
+"no values. The conditional association steps above are not affected."
+msgstr ""
+
 #: package/analyses/msacheck.description
 #: msacheck/options.description.main
 msgid ""
@@ -1324,6 +1330,12 @@ msgstr ""
 #: msa/options/errorsOplus.title
 #: msa/results/oplusOV.title
 msgid "Infrequent scores (O+)"
+msgstr ""
+
+#: R/texts.R
+msgid ""
+"The W indices could not be computed because conditional association could "
+"not be computed: %s."
 msgstr ""
 
 #: R/mlmsa.b.R
