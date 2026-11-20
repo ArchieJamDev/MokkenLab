@@ -817,6 +817,38 @@
                                             vjust = if (angle == 90) 0.5 else 1))
 }
 
+# -----------------------------------------------------------------------------
+# .mk_colourbar()
+#
+# Input: options - the analysis options (plotLegend).
+# Output: a guides() layer for a continuous fill scale whose title sits above
+#   the color bar, so a horizontal bar (legend at the bottom or top) never
+#   draws its title over the first label. ggplot2 3.5 moved the title and bar
+#   settings of a guide into its own theme, so both forms are supported.
+# ES: Salida: una capa guides() para una escala de relleno continua cuyo
+#   título va encima de la barra de color, para que una barra horizontal
+#   (leyenda abajo o arriba) nunca dibuje su título sobre la primera
+#   etiqueta. ggplot2 3.5 llevó los ajustes de título y barra al tema de la
+#   guía, así que se admiten ambas formas.
+# -----------------------------------------------------------------------------
+.mk_colourbar_guide <- function(options) {
+    horizontal <- is.null(options$plotLegend) || options$plotLegend %in% c("bottom", "top")
+    hjust <- if (horizontal) 0.5 else 0
+    if (utils::packageVersion("ggplot2") >= "3.5.0") {
+        theme <- ggplot2::theme(legend.title.position = "top",
+                                legend.title = ggplot2::element_text(hjust = hjust))
+        if (horizontal)
+            theme <- theme + ggplot2::theme(legend.key.width = grid::unit(8, "cm"))
+        return(ggplot2::guide_colourbar(theme = theme))
+    }
+    ggplot2::guide_colourbar(title.position = "top", title.hjust = hjust,
+                             barwidth = if (horizontal) grid::unit(8, "cm") else NULL)
+}
+
+.mk_colourbar <- function(options) {
+    ggplot2::guides(fill = .mk_colourbar_guide(options))
+}
+
 .mk_set_size <- function(image, options, auto_width, auto_height) {
     width <- as.integer(options$plotWidth)
     height <- as.integer(options$plotHeight)

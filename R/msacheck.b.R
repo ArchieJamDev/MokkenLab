@@ -183,9 +183,20 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             level2 <- .mk_level_two(prep, cluster_name)
             minsize <- if (identical(self$options$minsizeMode, "manual")) as.integer(self$options$minsize) else NULL
 
-            plot_items <- intersect(as.character(unlist(self$options$plotItems)), items)
-            if (length(plot_items) == 0)
-                plot_items <- utils::head(items, 6)
+            # Items drawn in the plots. With Items to plot empty, the
+            # per-item plots (monotonicity, P-matrix) show the first 12
+            # items, so a scale of up to 12 items is drawn whole, and the
+            # pair plots (IIO, rest-score) the pairs among the first six
+            # items (15 panels), which keeps them readable.
+            # ES: Ítems de los gráficos. Con Ítems a graficar vacío, los
+            # gráficos por ítem (monotonicidad, P-matrix) muestran los 12
+            # primeros ítems, de modo que una escala de hasta 12 ítems se
+            # dibuja completa, y los gráficos de pares (IIO, rest-score) los
+            # pares entre los seis primeros ítems (15 paneles), para que
+            # sigan siendo legibles.
+            chosen <- intersect(as.character(unlist(self$options$plotItems)), items)
+            plot_items <- if (length(chosen) > 0) chosen else utils::head(items, 12)
+            pair_items <- if (length(chosen) > 0) chosen else utils::head(items, 6)
 
             if (isTRUE(self$options$showChoicesGuide))
                 self$results$choicesGuide$setContent(.mk_choices_guide(lang, c(
@@ -224,12 +235,12 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 parts <- c(parts, out$text)
             }
             if (isTRUE(self$options$checkIIO)) {
-                out <- private$.runIIO(X, level2, minsize, plot_items, lang, tr, txt)
+                out <- private$.runIIO(X, level2, minsize, pair_items, lang, tr, txt)
                 warnings <- c(warnings, out$warnings)
                 parts <- c(parts, out$text)
             }
             if (isTRUE(self$options$checkRest)) {
-                out <- private$.runRest(X, minsize, plot_items, lang, tr, txt)
+                out <- private$.runRest(X, minsize, pair_items, lang, tr, txt)
                 warnings <- c(warnings, out$warnings)
                 parts <- c(parts, out$text)
             }
@@ -866,7 +877,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     df <- do.call(rbind, out)
                     private$.sizeImage(self$results$pmatPlot, length(plot_items), length(which))
                     self$results$pmatPlot$setState(list(data = df, ci = isTRUE(self$options$plotCI),
-                        labels = list(x = .("Other item steps, from most to least popular"),
+                        labels = list(x = .("Other item steps, from least to most popular"),
                                       y = .("Joint proportion"),
                                       step = .("Item step"))))
                 }
@@ -976,7 +987,11 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (is.null(state) || is.null(state$data) || nrow(state$data) == 0)
                 return(FALSE)
             df <- state$data
-            df$facet <- paste0(df$item, " · ", df$panel)
+            # Item and curve type on two lines, so the strip title fits
+            # narrow panels.
+            # ES: Ítem y tipo de curva en dos líneas, para que el título del
+            # panel quepa en paneles estrechos.
+            df$facet <- paste0(df$item, "\n", df$panel)
             df$facet <- factor(df$facet, levels = unique(df$facet))
             style <- .mk_plot_style(self$options, length(levels(df$facet)))
             opacity <- as.numeric(self$options$plotTransparency) / 100
@@ -1055,7 +1070,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
             if (is.null(state) || is.null(state$data) || nrow(state$data) == 0)
                 return(FALSE)
             df <- state$data
-            df$facet <- factor(paste0(df$matrix, " · ", df$item), levels = unique(paste0(df$matrix, " · ", df$item)))
+            df$facet <- factor(paste0(df$item, "\n", df$matrix), levels = unique(paste0(df$item, "\n", df$matrix)))
             style <- .mk_plot_style(self$options, length(levels(df$facet)))
             opacity <- as.numeric(self$options$plotTransparency) / 100
             plot <- ggplot2::ggplot(df, ggplot2::aes(x = x, y = est, color = step, group = step))

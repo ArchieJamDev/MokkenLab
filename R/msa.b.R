@@ -968,11 +968,10 @@ msaClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggplot2::scale_fill_gradient2(low = low, mid = "white", high = high, midpoint = 0,
                                               limits = c(-1, 1), breaks = c(-1, -0.5, 0, 0.5, 1),
                                               na.value = "grey92")
-            # A horizontal color bar needs room for its five labels.
-            # ES: Una barra de color horizontal necesita espacio para sus
-            # cinco etiquetas.
-            if (self$options$plotLegend %in% c("bottom", "top"))
-                plot <- plot + ggplot2::theme(legend.key.width = grid::unit(1.6, "cm"))
+            # Title above a wide color bar, so it never covers a label.
+            # ES: Título encima de una barra de color ancha, para que nunca
+            # cubra una etiqueta.
+            plot <- plot + .mk_colourbar(self$options)
             print(plot)
             TRUE
         },

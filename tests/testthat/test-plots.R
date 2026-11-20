@@ -76,3 +76,70 @@ test_that("every curve type of the response function plot draws", {
         expect_true(renders(a, "monoPlot", ".plotMono"), info = curves)
     }
 })
+
+# 1.0.3: with Items to plot empty, the per-item plots draw the first 12 items
+# (a whole scale of up to 12 items) and the pair plots the pairs among the
+# first six items; chosen items always win.
+# ES: 1.0.3: con Ítems a graficar vacío, los gráficos por ítem dibujan los 12
+# primeros ítems y los de pares los pares entre los seis primeros; los ítems
+# elegidos siempre mandan.
+test_that("msacheck plots every item of a short scale when Items to plot is empty", {
+    data <- edgeScaleData(items = 8)
+    items <- names(data)
+    a <- runAnalysis("msacheck", data, vars = items, monoPlot = TRUE, monoCurves = "ISRF",
+                     checkPmatrix = TRUE, pmatPlot = TRUE, checkRest = TRUE, restPlot = TRUE)
+    expect_setequal(unique(a$results$monoPlot$state$data$item), items)
+    expect_setequal(unique(a$results$pmatPlot$state$data$item), items)
+    pairs <- unique(as.character(a$results$restPlot$state$data$pair))
+    expect_true(all(unique(a$results$restPlot$state$data$item) %in% items[1:6]))
+    expect_lte(length(pairs), choose(6, 2))
+
+    long <- edgeScaleData(items = 14)
+    a <- runAnalysis("msacheck", long, vars = names(long), monoPlot = TRUE, monoCurves = "IRF")
+    expect_setequal(unique(a$results$monoPlot$state$data$item), names(long)[1:12])
+
+    a <- runAnalysis("msacheck", data, vars = items, monoPlot = TRUE, plotItems = items[c(2, 7)])
+    expect_setequal(unique(a$results$monoPlot$state$data$item), items[c(2, 7)])
+})
+
+test_that("item response function panels put the curve type on its own line", {
+    data <- edgeScaleData(items = 5)
+    a <- runAnalysis("msacheck", data, vars = names(data), monoPlot = TRUE)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    expect_true(renders(a, "monoPlot", ".plotMono"))
+    strips <- levels(ggplot2::last_plot()$data$facet)
+    expect_true(all(grepl("\n", strips, fixed = TRUE)))
+})
+
+test_that("color bar titles sit above the bar", {
+    for (pos in c("bottom", "right")) {
+        g <- MokkenLab:::.mk_colourbar_guide(list(plotLegend = pos))
+        position <- if (!is.null(g$params$theme)) g$params$theme$legend.title.position else g$title.position
+        expect_identical(position, "top")
+        # The horizontal bar is 8 cm long whatever the ggplot2 version (3.5+
+        # reads the length from legend.key.width, without multiplying it).
+        # ES: La barra horizontal mide 8 cm en cualquier versión de ggplot2.
+        if (pos == "bottom") {
+            width <- if (!is.null(g$params$theme)) g$params$theme$legend.key.width else g$barwidth
+            expect_equal(as.numeric(width), 8)
+        }
+    }
+})
+
+# 1.0.3: mokken orders P-matrix columns from the least to the most popular
+# item step, so P(++) lines rise and P(--) lines fall along the x axis.
+# ES: mokken ordena las columnas de la P-matrix del paso menos al más
+# popular, así que las líneas de P(++) suben y las de P(--) bajan.
+test_that("P-matrix plot runs from the least to the most popular item step", {
+    data <- edgeScaleData(items = 6)
+    a <- runAnalysis("msacheck", data, vars = names(data), checkPmatrix = TRUE, pmatPlot = TRUE)
+    state <- a$results$pmatPlot$state
+    expect_match(state$labels$x, "least to most popular")
+    df <- state$data
+    slope <- function(d) stats::cor(d$x, d$est)
+    pp <- sapply(split(df[df$matrix == "P(++)", ], df$step[df$matrix == "P(++)"]), slope)
+    mm <- sapply(split(df[df$matrix == "P(--)", ], df$step[df$matrix == "P(--)"]), slope)
+    expect_gt(mean(pp > 0, na.rm = TRUE), 0.5)
+    expect_gt(mean(mm < 0, na.rm = TRUE), 0.5)
+})

@@ -582,8 +582,10 @@ aispClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                 ggplot2::labs(x = NULL, y = NULL, fill = state$labels$fill) +
                 ggtheme + .mk_plot_theme(self$options) +
                 ggplot2::scale_fill_gradient(low = "white", high = high, limits = c(0, 1), na.value = "grey92")
-            if (self$options$plotLegend %in% c("bottom", "top"))
-                plot <- plot + ggplot2::theme(legend.key.width = grid::unit(1.6, "cm"))
+            # Title above a wide color bar, so it never covers a label.
+            # ES: Título encima de una barra de color ancha, para que nunca
+            # cubra una etiqueta.
+            plot <- plot + .mk_colourbar(self$options)
             print(plot)
             TRUE
         },
