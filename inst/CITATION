@@ -3,8 +3,8 @@ bibentry(
     title = "MokkenLab",
     author = person("A.", "Chacon"),
     year = "2026",
-    note = "Version 1.0.2 [jamovi module]",
+    note = "Version 1.0.3 [jamovi module]",
     url = "https://github.com/ArchieJamDev/MokkenLab",
-    doi = "10.5281/zenodo.24339275",
-    textVersion = "Chacon, A. (2026). MokkenLab (Version 1.0.2) [jamovi module]. Zenodo. https://doi.org/10.5281/zenodo.24339275"
+    doi = "10.5281/zenodo.24406603",
+    textVersion = "Chacon, A. (2026). MokkenLab (Version 1.0.3) [jamovi module]. Zenodo. https://doi.org/10.5281/zenodo.24406603"
 )

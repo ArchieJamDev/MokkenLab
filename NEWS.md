@@ -1,4 +1,4 @@
-# MokkenLab 1.0.3 (in development)
+# MokkenLab 1.0.3 (released 2026-11-20, DOI 10.5281/zenodo.24406603)
 
 Plot readability, found while writing the tutorial article.
 
