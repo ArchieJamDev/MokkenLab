@@ -1,4 +1,5 @@
 {
+    "code": "es",
     "domain": "messages",
     "locale_data": {
         "messages": {
@@ -703,14 +704,11 @@
             "Infrequent scores (O+)": [
                 "Puntajes infrecuentes (O+)"
             ],
-            "inline\u0004Wald-based": [
-                "de Wald"
+            "The W indices could not be computed because conditional association could not be computed: %s.": [
+                "Los índices W no pudieron calcularse porque la asociación condicional no pudo calcularse: %s."
             ],
             "Interval type": [
                 "Tipo de intervalo"
-            ],
-            "intervals\u0004range-preserving": [
-                "preservadores de rango"
             ],
             "Intraclass correlations": [
                 "Correlaciones intraclase"
@@ -879,12 +877,6 @@
             ],
             "Items to Plot (Empty = First 12; Pairs: First 6)": [
                 "Ítems a graficar (vacío = los 12 primeros; pares: los 6 primeros)"
-            ],
-            "With Items to plot empty, the plot shows the first 12 items; move items there to choose others.": [
-                "Con Ítems a graficar vacío, el gráfico muestra los 12 primeros ítems; mueve ítems a esa lista para elegir otros."
-            ],
-            "With Items to plot empty, the plot shows the pairs among the first six items; move items there to choose others.": [
-                "Con Ítems a graficar vacío, el gráfico muestra los pares entre los seis primeros ítems; mueve ítems a esa lista para elegir otros."
             ],
             "Items whose between-rater scalability is zero or negative (%d): %s. Raters do not agree on how these items order the subjects; they contribute little to measuring the subjects.": [
                 "Ítems cuya escalabilidad entre evaluadores es cero o negativa (%d): %s. Los evaluadores no concuerdan en cómo estos ítems ordenan a los sujetos; aportan poco a medir a los sujetos."
@@ -1723,9 +1715,6 @@
             "Test Hi against the lower bound": [
                 "Contrastar Hi contra la cota inferior"
             ],
-            "test\u0004Range-preserving": [
-                "Preservadora de rango"
-            ],
             "Score range: %s.": [
                 "Rango de puntajes: %s."
             ],
@@ -1887,9 +1876,6 @@
             ],
             "The subject variable has fewer than two subjects. Two-level scalability compares raters of different subjects; select the variable that identifies the rated person or object.": [
                 "La variable de sujeto tiene menos de dos sujetos. La escalabilidad de dos niveles compara evaluadores de distintos sujetos; seleccione la variable que identifica a la persona u objeto evaluado."
-            ],
-            "The W indices could not be computed because conditional association could not be computed: %s.": [
-                "Los índices W no pudieron calcularse porque la asociación condicional no pudo calcularse: %s."
             ],
             "The Wald-based test divides the difference between each coefficient and the lower bound %s by its standard error. A significant one-sided result means the coefficient is larger than the bound, which is stronger evidence than a point estimate above it (Koopman et al., 2022; see references).": [
                 "La prueba de Wald divide la diferencia entre cada coeficiente y la cota inferior %s por su error estándar. Un resultado unilateral significativo indica que el coeficiente es mayor que la cota, lo que es evidencia más fuerte que una estimación puntual por encima de ella (Koopman et al., 2022; ver referencias)."
@@ -2175,6 +2161,21 @@
             ],
             "Zone": [
                 "Zona"
+            ],
+            "With Items to plot empty, the plot shows the first 12 items; move items there to choose others.": [
+                "Con Ítems a graficar vacío, el gráfico muestra los 12 primeros ítems; mueve ítems a esa lista para elegir otros."
+            ],
+            "With Items to plot empty, the plot shows the pairs among the first six items; move items there to choose others.": [
+                "Con Ítems a graficar vacío, el gráfico muestra los pares entre los seis primeros ítems; mueve ítems a esa lista para elegir otros."
+            ],
+            "inline\u0004Wald-based": [
+                "de Wald"
+            ],
+            "intervals\u0004range-preserving": [
+                "preservadores de rango"
+            ],
+            "test\u0004Range-preserving": [
+                "Preservadora de rango"
             ]
         }
     }

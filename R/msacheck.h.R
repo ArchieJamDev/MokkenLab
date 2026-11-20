@@ -1471,7 +1471,7 @@ msacheckBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 package = "MokkenLab",
                 name = "msacheck",
-                version = c(1,0,0),
+                version = c(1,0,3),
                 options = options,
                 results = msacheckResults$new(options=options),
                 data = data,

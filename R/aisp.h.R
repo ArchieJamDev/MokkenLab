@@ -1020,7 +1020,7 @@ aispBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 package = "MokkenLab",
                 name = "aisp",
-                version = c(1,0,0),
+                version = c(1,0,3),
                 options = options,
                 results = aispResults$new(options=options),
                 data = data,
