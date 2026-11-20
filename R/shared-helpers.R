@@ -817,6 +817,25 @@
                                             vjust = if (angle == 90) 0.5 else 1))
 }
 
+# -----------------------------------------------------------------------------
+# .mk_colourbar()
+#
+# Input: options - the analysis options (plotLegend).
+# Output: a guides() layer for a continuous fill scale whose title sits above
+#   the color bar and is centered, so a horizontal bar (legend at the bottom
+#   or top) never draws its title over the first label.
+# ES: Salida: una capa guides() para una escala de relleno continua cuyo
+#   título va encima de la barra de color y centrado, para que una barra
+#   horizontal (leyenda abajo o arriba) nunca dibuje su título sobre la
+#   primera etiqueta.
+# -----------------------------------------------------------------------------
+.mk_colourbar <- function(options) {
+    horizontal <- is.null(options$plotLegend) || options$plotLegend %in% c("bottom", "top")
+    ggplot2::guides(fill = ggplot2::guide_colourbar(
+        title.position = "top", title.hjust = if (horizontal) 0.5 else 0,
+        barwidth = if (horizontal) grid::unit(8, "cm") else NULL))
+}
+
 .mk_set_size <- function(image, options, auto_width, auto_height) {
     width <- as.integer(options$plotWidth)
     height <- as.integer(options$plotHeight)

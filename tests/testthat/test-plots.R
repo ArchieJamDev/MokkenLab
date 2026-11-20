@@ -76,3 +76,45 @@ test_that("every curve type of the response function plot draws", {
         expect_true(renders(a, "monoPlot", ".plotMono"), info = curves)
     }
 })
+
+# 1.0.3: with Items to plot empty, the per-item plots draw the first 12 items
+# (a whole scale of up to 12 items) and the pair plots the pairs among the
+# first six items; chosen items always win.
+# ES: 1.0.3: con Ítems a graficar vacío, los gráficos por ítem dibujan los 12
+# primeros ítems y los de pares los pares entre los seis primeros; los ítems
+# elegidos siempre mandan.
+test_that("msacheck plots every item of a short scale when Items to plot is empty", {
+    data <- edgeScaleData(items = 8)
+    items <- names(data)
+    a <- runAnalysis("msacheck", data, vars = items, monoPlot = TRUE, monoCurves = "ISRF",
+                     checkPmatrix = TRUE, pmatPlot = TRUE, checkRest = TRUE, restPlot = TRUE)
+    expect_setequal(unique(a$results$monoPlot$state$data$item), items)
+    expect_setequal(unique(a$results$pmatPlot$state$data$item), items)
+    pairs <- unique(as.character(a$results$restPlot$state$data$pair))
+    expect_true(all(unique(a$results$restPlot$state$data$item) %in% items[1:6]))
+    expect_lte(length(pairs), choose(6, 2))
+
+    long <- edgeScaleData(items = 14)
+    a <- runAnalysis("msacheck", long, vars = names(long), monoPlot = TRUE, monoCurves = "IRF")
+    expect_setequal(unique(a$results$monoPlot$state$data$item), names(long)[1:12])
+
+    a <- runAnalysis("msacheck", data, vars = items, monoPlot = TRUE, plotItems = items[c(2, 7)])
+    expect_setequal(unique(a$results$monoPlot$state$data$item), items[c(2, 7)])
+})
+
+test_that("item response function panels put the curve type on its own line", {
+    data <- edgeScaleData(items = 5)
+    a <- runAnalysis("msacheck", data, vars = names(data), monoPlot = TRUE)
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off())
+    expect_true(renders(a, "monoPlot", ".plotMono"))
+    strips <- levels(ggplot2::last_plot()$data$facet)
+    expect_true(all(grepl("\n", strips, fixed = TRUE)))
+})
+
+test_that("color bar titles sit above the bar", {
+    for (pos in c("bottom", "right")) {
+        g <- .mk_colourbar(list(plotLegend = pos))$fill
+        expect_identical(g$title.position, "top")
+    }
+})

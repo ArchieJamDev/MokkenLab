@@ -1,3 +1,30 @@
+# MokkenLab 1.0.3 (in development)
+
+Plot readability, found while writing the tutorial article.
+
+## Changes visible to users
+
+* **Short scales are plotted whole.** In Model Assumptions, when Items to
+  plot is empty, the item response function and P-matrix plots now draw the
+  first 12 items instead of the first six, so a scale of up to 12 items is
+  shown complete. The pair plots (invariant item ordering and rest-score
+  method) still draw the pairs among the first six items, which keeps them
+  at 15 panels. The label now says so: "Items to Plot (Empty = First 12;
+  Pairs: First 6)", and the explanation of each plot repeats the rule.
+* **Color bar titles no longer cover a label.** In the Hij heat map
+  (Scalability) and the bootstrap co-membership plot (Automated Item
+  Selection), the legend title sits centered above a wider color bar, so
+  "Hij" and "Same scale" no longer overlap -1.0 or 0.00.
+* **Panel titles are not cut.** The panels of the item response function
+  and P-matrix plots show the item on one line and the curve type or matrix
+  on the next, so titles such as "ISRFs P(X ≥ k)" fit narrow panels.
+
+## Internal changes
+
+* New helper `.mk_colourbar()` in `R/shared-helpers.R`.
+* Tests in `tests/testthat/test-plots.R` cover the default items, the
+  two-line panel titles and the color bar guide.
+
 # MokkenLab 1.0.2 (released 2026-11-18, DOI 10.5281/zenodo.24339275)
 
 Version for the jamovi Library, with the change requested in jamovi's audit

@@ -230,23 +230,27 @@
             .("Monotonicity means that the probability of a higher item score never decreases as the attribute increases. It is the core assumption of Mokken's models: without it, a higher total score would not mean more of the attribute."),
             .("The attribute is unobserved, so it is replaced by the rest score: the total score on the other items. Respondents are grouped by rest score and, for each item step, the proportion P(X ≥ k) is compared across groups. Every decrease larger than the minimum violation (#vi) is tested; #zsig counts the significant ones."),
             .("Crit combines all the violation statistics into one value (Molenaar & Sijtsma, 2000): below 40 no serious violation, 40 to 80 doubtful, above 80 a serious violation. It is a heuristic, not a test."),
-            .("In the plot, curves should rise from left to right. Small dips within the confidence band are sampling noise; a clear, sustained fall is a real violation.")
+            .("In the plot, curves should rise from left to right. Small dips within the confidence band are sampling noise; a clear, sustained fall is a real violation."),
+            .("With Items to plot empty, the plot shows the first 12 items; move items there to choose others.")
         ),
         iio = c(
             .("Invariant item ordering (IIO) means that the items are ordered by difficulty in the same way for every respondent, whatever their attribute level. It is needed when you interpret the item order itself, for example in developmental or hierarchical scales, or when you compare people on individual items."),
             .("MIIO checks it pair by pair: within each rest-score group, the easier item must have the higher mean. Items with too many violations are removed one by one (backward selection) until the remaining set has an invariant order."),
             .("HT summarizes how accurately the remaining items are ordered: below .30 the order is too inaccurate to use, .30 to .40 weak, .40 to .50 medium, .50 or more high (Ligtvoet et al., 2010). Report HT only after the backward selection has removed violating items."),
-            .("Common misreading: a scale can be perfectly usable without IIO. To order respondents by the total score, what matters is the monotone homogeneity model (one attribute, local independence and monotonicity); IIO is an additional requirement only when the order of the items itself is interpreted.")
+            .("Common misreading: a scale can be perfectly usable without IIO. To order respondents by the total score, what matters is the monotone homogeneity model (one attribute, local independence and monotonicity); IIO is an additional requirement only when the order of the items itself is interpreted."),
+            .("With Items to plot empty, the plot shows the pairs among the first six items; move items there to choose others.")
         ),
         rest = c(
             .("The rest-score method checks nonintersection of the item step response functions, which the double monotonicity model requires: for any two items, the curves of their item steps must not cross."),
             .("For every pair of items, respondents are grouped by the rest score on the remaining items, and the order of the two items' step proportions is compared across groups. A reversal larger than the minimum violation is counted and tested, and crit summarizes the evidence as for monotonicity."),
-            .("In the plot, the two curves of each pair should run side by side without crossing.")
+            .("In the plot, the two curves of each pair should run side by side without crossing."),
+            .("With Items to plot empty, the plot shows the pairs among the first six items; move items there to choose others.")
         ),
         pmat = c(
             .("The P-matrix method checks nonintersection with two matrices: P(++) holds the proportion of respondents passing each pair of item steps, and P(--) the proportion failing both."),
             .("Under the double monotonicity model, when the columns are ordered from the most to the least popular item step, every row of P(++) must decrease and every row of P(--) must increase. A reversal is a violation."),
-            .("In the plot, each line is one item step: lines of P(++) should only go down and lines of P(--) only go up.")
+            .("In the plot, each line is one item step: lines of P(++) should only go down and lines of P(--) only go up."),
+            .("With Items to plot empty, the plot shows the first 12 items; move items there to choose others.")
         ),
         ca = c(
             .("Local independence means that, once the attribute is taken into account, item responses are unrelated. Locally dependent items (for example, items sharing a stimulus or almost identical wording) inflate scalability and reliability."),
