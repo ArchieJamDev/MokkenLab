@@ -195,7 +195,7 @@ children:
           - numeric
         children:
           - type: TargetLayoutBox
-            label: Items to Plot (Empty = First 12; Pairs: First 6)
+            label: 'Items to Plot (Empty = First 12; Pairs: First 6)'
             children:
               - type: VariablesListBox
                 name: plotItems

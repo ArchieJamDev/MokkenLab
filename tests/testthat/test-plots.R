@@ -114,8 +114,9 @@ test_that("item response function panels put the curve type on its own line", {
 
 test_that("color bar titles sit above the bar", {
     for (pos in c("bottom", "right")) {
-        g <- .mk_colourbar(list(plotLegend = pos))$fill
-        expect_identical(g$title.position, "top")
+        g <- MokkenLab:::.mk_colourbar_guide(list(plotLegend = pos))
+        position <- if (!is.null(g$params$theme)) g$params$theme$legend.title.position else g$title.position
+        expect_identical(position, "top")
     }
 })
 
