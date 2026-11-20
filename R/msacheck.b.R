@@ -877,7 +877,7 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
                     df <- do.call(rbind, out)
                     private$.sizeImage(self$results$pmatPlot, length(plot_items), length(which))
                     self$results$pmatPlot$setState(list(data = df, ci = isTRUE(self$options$plotCI),
-                        labels = list(x = .("Other item steps, from most to least popular"),
+                        labels = list(x = .("Other item steps, from least to most popular"),
                                       y = .("Joint proportion"),
                                       step = .("Item step"))))
                 }

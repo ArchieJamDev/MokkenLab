@@ -1557,11 +1557,11 @@ msgstr ""
 
 #: R/texts.R
 msgid ""
-"In the plot, each line is one item step: lines of P(++) should only go down "
-"and lines of P(--) only go up."
+"In the plot, each line is one item step: lines of P(++) should only go up "
+"and lines of P(--) only go down."
 msgstr ""
 "En el gráfico, cada línea es un paso de ítem: las líneas de P(++) solo "
-"deberían bajar y las de P(--) solo subir."
+"deberían subir y las de P(--) solo bajar."
 
 #: R/texts.R
 msgid ""
@@ -2878,8 +2878,8 @@ msgid "Original Z (Mokken)"
 msgstr "Z original (Mokken)"
 
 #: R/msacheck.b.R
-msgid "Other item steps, from most to least popular"
-msgstr "Otros pasos de ítem, del más al menos popular"
+msgid "Other item steps, from least to most popular"
+msgstr "Otros pasos de ítem, del menos al más popular"
 
 #: msa/ui[5].label
 msgid "Outliers"
@@ -4445,12 +4445,12 @@ msgstr "U2"
 #: R/texts.R
 msgid ""
 "Under the double monotonicity model, when the columns are ordered from the "
-"most to the least popular item step, every row of P(++) must decrease and "
-"every row of P(--) must increase. A reversal is a violation."
+"least to the most popular item step, every row of P(++) must increase and "
+"every row of P(--) must decrease. A reversal is a violation."
 msgstr ""
 "Bajo el modelo de doble monotonicidad, cuando las columnas se ordenan del "
-"paso de ítem más popular al menos popular, cada fila de P(++) debe disminuir "
-"y cada fila de P(--) aumentar. Una inversión es una violación."
+"paso de ítem menos popular al más popular, cada fila de P(++) debe aumentar "
+"y cada fila de P(--) disminuir. Una inversión es una violación."
 
 #: R/aisp.b.R
 #: aisp/results/bootTable.columns.title

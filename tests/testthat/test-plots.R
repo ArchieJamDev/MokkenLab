@@ -118,3 +118,20 @@ test_that("color bar titles sit above the bar", {
         expect_identical(g$title.position, "top")
     }
 })
+
+# 1.0.3: mokken orders P-matrix columns from the least to the most popular
+# item step, so P(++) lines rise and P(--) lines fall along the x axis.
+# ES: mokken ordena las columnas de la P-matrix del paso menos al más
+# popular, así que las líneas de P(++) suben y las de P(--) bajan.
+test_that("P-matrix plot runs from the least to the most popular item step", {
+    data <- edgeScaleData(items = 6)
+    a <- runAnalysis("msacheck", data, vars = names(data), checkPmatrix = TRUE, pmatPlot = TRUE)
+    state <- a$results$pmatPlot$state
+    expect_match(state$labels$x, "least to most popular")
+    df <- state$data
+    slope <- function(d) stats::cor(d$x, d$est)
+    pp <- sapply(split(df[df$matrix == "P(++)", ], df$step[df$matrix == "P(++)"]), slope)
+    mm <- sapply(split(df[df$matrix == "P(--)", ], df$step[df$matrix == "P(--)"]), slope)
+    expect_gt(mean(pp > 0, na.rm = TRUE), 0.5)
+    expect_gt(mean(mm < 0, na.rm = TRUE), 0.5)
+})

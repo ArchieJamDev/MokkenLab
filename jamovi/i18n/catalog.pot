@@ -1294,8 +1294,8 @@ msgstr ""
 
 #: R/texts.R
 msgid ""
-"In the plot, each line is one item step: lines of P(++) should only go down "
-"and lines of P(--) only go up."
+"In the plot, each line is one item step: lines of P(++) should only go up "
+"and lines of P(--) only go down."
 msgstr ""
 
 #: R/texts.R
@@ -2417,7 +2417,7 @@ msgid "Original Z (Mokken)"
 msgstr ""
 
 #: R/msacheck.b.R
-msgid "Other item steps, from most to least popular"
+msgid "Other item steps, from least to most popular"
 msgstr ""
 
 #: msa/ui[5].label
@@ -3707,8 +3707,8 @@ msgstr ""
 #: R/texts.R
 msgid ""
 "Under the double monotonicity model, when the columns are ordered from the "
-"most to the least popular item step, every row of P(++) must decrease and "
-"every row of P(--) must increase. A reversal is a violation."
+"least to the most popular item step, every row of P(++) must increase and "
+"every row of P(--) must decrease. A reversal is a violation."
 msgstr ""
 
 #: R/aisp.b.R

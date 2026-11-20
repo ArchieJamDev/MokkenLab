@@ -248,8 +248,8 @@
         ),
         pmat = c(
             .("The P-matrix method checks nonintersection with two matrices: P(++) holds the proportion of respondents passing each pair of item steps, and P(--) the proportion failing both."),
-            .("Under the double monotonicity model, when the columns are ordered from the most to the least popular item step, every row of P(++) must decrease and every row of P(--) must increase. A reversal is a violation."),
-            .("In the plot, each line is one item step: lines of P(++) should only go down and lines of P(--) only go up."),
+            .("Under the double monotonicity model, when the columns are ordered from the least to the most popular item step, every row of P(++) must increase and every row of P(--) must decrease. A reversal is a violation."),
+            .("In the plot, each line is one item step: lines of P(++) should only go up and lines of P(--) only go down."),
             .("With Items to plot empty, the plot shows the first 12 items; move items there to choose others.")
         ),
         ca = c(

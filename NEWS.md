@@ -19,6 +19,12 @@ Plot readability, found while writing the tutorial article.
   and P-matrix plots show the item on one line and the curve type or matrix
   on the next, so titles such as "ISRFs P(X ≥ k)" fit narrow panels.
 
+* **The P-matrix plot reads in the right direction.** mokken orders the
+  columns of P(++) and P(--) from the least to the most popular item step,
+  so under the double monotonicity model the P(++) lines rise and the P(--)
+  lines fall. The x-axis label and the explanation said the opposite (most
+  to least popular; P(++) going down); both now match the plot (EN/ES).
+
 ## Internal changes
 
 * New helper `.mk_colourbar()` in `R/shared-helpers.R`.

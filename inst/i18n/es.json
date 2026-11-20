@@ -682,8 +682,8 @@
             "In the plot, curves should rise from left to right. Small dips within the confidence band are sampling noise; a clear, sustained fall is a real violation.": [
                 "En el gráfico, las curvas deberían subir de izquierda a derecha. Pequeñas caídas dentro de la banda de confianza son ruido muestral; una caída clara y sostenida es una violación real."
             ],
-            "In the plot, each line is one item step: lines of P(++) should only go down and lines of P(--) only go up.": [
-                "En el gráfico, cada línea es un paso de ítem: las líneas de P(++) solo deberían bajar y las de P(--) solo subir."
+            "In the plot, each line is one item step: lines of P(++) should only go up and lines of P(--) only go down.": [
+                "En el gráfico, cada línea es un paso de ítem: las líneas de P(++) solo deberían subir y las de P(--) solo bajar."
             ],
             "In the plot, the two curves of each pair should run side by side without crossing.": [
                 "En el gráfico, las dos curvas de cada par deberían avanzar lado a lado sin cruzarse."
@@ -1285,8 +1285,8 @@
             "Original Z (Mokken)": [
                 "Z original (Mokken)"
             ],
-            "Other item steps, from most to least popular": [
-                "Otros pasos de ítem, del más al menos popular"
+            "Other item steps, from least to most popular": [
+                "Otros pasos de ítem, del menos al más popular"
             ],
             "Outliers": [
                 "Atípicos"
@@ -1987,8 +1987,8 @@
             "U2": [
                 "U2"
             ],
-            "Under the double monotonicity model, when the columns are ordered from the most to the least popular item step, every row of P(++) must decrease and every row of P(--) must increase. A reversal is a violation.": [
-                "Bajo el modelo de doble monotonicidad, cuando las columnas se ordenan del paso de ítem más popular al menos popular, cada fila de P(++) debe disminuir y cada fila de P(--) aumentar. Una inversión es una violación."
+            "Under the double monotonicity model, when the columns are ordered from the least to the most popular item step, every row of P(++) must increase and every row of P(--) must decrease. A reversal is a violation.": [
+                "Bajo el modelo de doble monotonicidad, cuando las columnas se ordenan del paso de ítem menos popular al más popular, cada fila de P(++) debe aumentar y cada fila de P(--) disminuir. Una inversión es una violación."
             ],
             "Unscalable": [
                 "No escalable"
