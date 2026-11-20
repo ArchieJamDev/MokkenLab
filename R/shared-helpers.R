@@ -838,7 +838,7 @@
         theme <- ggplot2::theme(legend.title.position = "top",
                                 legend.title = ggplot2::element_text(hjust = hjust))
         if (horizontal)
-            theme <- theme + ggplot2::theme(legend.key.width = grid::unit(8 / 5, "cm"))
+            theme <- theme + ggplot2::theme(legend.key.width = grid::unit(8, "cm"))
         return(ggplot2::guide_colourbar(theme = theme))
     }
     ggplot2::guide_colourbar(title.position = "top", title.hjust = hjust,

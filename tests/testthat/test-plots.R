@@ -117,6 +117,13 @@ test_that("color bar titles sit above the bar", {
         g <- MokkenLab:::.mk_colourbar_guide(list(plotLegend = pos))
         position <- if (!is.null(g$params$theme)) g$params$theme$legend.title.position else g$title.position
         expect_identical(position, "top")
+        # The horizontal bar is 8 cm long whatever the ggplot2 version (3.5+
+        # reads the length from legend.key.width, without multiplying it).
+        # ES: La barra horizontal mide 8 cm en cualquier versión de ggplot2.
+        if (pos == "bottom") {
+            width <- if (!is.null(g$params$theme)) g$params$theme$legend.key.width else g$barwidth
+            expect_equal(as.numeric(width), 8)
+        }
     }
 })
 
