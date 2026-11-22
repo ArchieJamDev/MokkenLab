@@ -27,7 +27,7 @@ title: Model Assumptions
 menuGroup: Mokken Lab
 menuSubgroup: Model fit
 menuTitle: Model Assumptions
-version: '1.0.3'
+version: '1.0.4'
 jas: '1.2'
 
 description:
@@ -82,10 +82,11 @@ options:
     default: false
 
   # Teaching blocks before each table: what the statistic measures, why it
-  # matters and how to read it. On by default: MokkenLab teaches methodology.
+  # matters and how to read it. Off by default, to keep the output short;
+  # the user turns them on to read the methodology.
   # ES: Bloques didácticos antes de cada tabla: qué mide el estadístico, por
-  # qué importa y cómo leerlo. Activados por defecto: MokkenLab enseña
-  # metodología.
+  # qué importa y cómo leerlo. Desactivados por defecto, para que la salida
+  # sea breve; el usuario los activa para leer la metodología.
   - name: showGuides
     title: How to read each table
     type: Bool

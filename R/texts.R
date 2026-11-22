@@ -337,7 +337,7 @@
         ca_note = .("Each step removes the item with the worst local-dependence flags and checks the rest again (Straat et al., 2016). Kept: items in the final set, where the procedure flags no further local dependence; a stepwise procedure does not guarantee the largest such set."),
         w_note = .("W indices of the first step (all items). W1 and W3: positive local dependence with another item (largest value and number of flagged pairs); W2: negative local dependence. Flags use outlier rules on each index (Straat et al., 2016)."),
         w_failed = .("The W indices could not be computed because conditional association could not be computed: %s."),
-        w_missing = .("check.ca() did not return W indices with these settings, so this table has no values. The conditional association steps above are not affected."),
+        w_missing = .("The conditional association check did not return W indices with these settings, so this table has no values. The conditional association steps above are not affected."),
         doubtful = .("%s: items with doubtful violations (crit 40-80) (%d): %s. Inspect their curves before deciding; with large samples small, irrelevant violations become significant."),
         mono_ok = .("Monotonicity: no serious violation was detected with these settings. This supports, but does not by itself establish, ordering respondents by the total score: the monotone homogeneity model also requires one attribute and local independence, and with polytomous items the total score orders respondents only in a weaker, average sense (Hemker et al., 1997; see references)."),
         key_mono_ok = .("Monotonicity: no serious violations."),

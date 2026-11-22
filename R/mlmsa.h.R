@@ -865,7 +865,7 @@ mlmsaBase <- if (requireNamespace("jmvcore", quietly=TRUE)) R6::R6Class(
             super$initialize(
                 package = "MokkenLab",
                 name = "mlmsa",
-                version = c(1,0,3),
+                version = c(1,0,4),
                 options = options,
                 results = mlmsaResults$new(options=options),
                 data = data,

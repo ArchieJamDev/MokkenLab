@@ -239,8 +239,8 @@
             "Check monotonicity first. Check invariant item ordering, nonintersection and local independence when your use of the scale needs them.": [
                 "Verifique primero la monotonicidad. Verifique el orden invariante, la no intersección y la independencia local cuando el uso que hará de la escala lo requiera."
             ],
-            "check.ca() did not return W indices with these settings, so this table has no values. The conditional association steps above are not affected.": [
-                "check.ca() no devolvió índices W con esta configuración, por lo que esta tabla no tiene valores. Los pasos de asociación condicional de arriba no se ven afectados."
+            "The conditional association check did not return W indices with these settings, so this table has no values. The conditional association steps above are not affected.": [
+                "La comprobación de asociación condicional no devolvió índices W con esta configuración, por lo que esta tabla no tiene valores. Los pasos de asociación condicional de arriba no se ven afectados."
             ],
             "Checks the assumptions of the monotone homogeneity and double monotonicity models: monotonicity, invariant item ordering, nonintersection (rest-score and P-matrix methods) and local independence (conditional association), with item response function plots and plain-language interpretation.": [
                 "Verifica los supuestos de los modelos de homogeneidad monótona y de doble monotonicidad: monotonicidad, orden invariante de los ítems, no intersección (métodos rest-score y P-matrix) e independencia local (asociación condicional), con gráficos de las funciones de respuesta de los ítems e interpretación en lenguaje claro."

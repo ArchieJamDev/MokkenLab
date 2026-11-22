@@ -255,7 +255,7 @@ test_that("the W indices table stays visible and says why it is empty", {
     expect_false("Not computable" %in% b$results$ca$asDF$item)
     expect_true(b$results$caW$visible)
     expect_equal(b$results$caW$asDF$item, names(data))
-    expect_match(note_of(b$results$caW), "did not return W indices", fixed = TRUE)
+    expect_match(note_of(b$results$caW), "The conditional association check did not return W indices", fixed = TRUE)
     # No result path hides the table any more.
     # ES: Ningún camino de resultados oculta ya la tabla.
     source_file <- testthat::test_path("..", "..", "R", "msacheck.b.R")
