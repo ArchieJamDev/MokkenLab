@@ -8,7 +8,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a>
   <a href="https://github.com/ArchieJamDev/MokkenLab/releases"><img src="https://img.shields.io/github/v/release/ArchieJamDev/MokkenLab?label=release&color=4A86E0" alt="Release"></a>
-  <a href="https://doi.org/10.5281/zenodo.24406603"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24406603.svg" alt="DOI"></a>
+  <a href="https://doi.org/10.5281/zenodo.24441938"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24441938.svg" alt="DOI"></a>
   <img src="https://img.shields.io/badge/mokken-%E2%89%A5%203.1.2-E6AC40" alt="mokken ≥ 3.1.2">
   <img src="https://img.shields.io/badge/jamovi-%E2%89%A5%201.0.8-4A86E0" alt="jamovi ≥ 1.0.8">
   <img src="https://img.shields.io/badge/jamovi%20Library-available-6B9DE8" alt="Available in the jamovi Library">
@@ -327,7 +327,8 @@ package.
 | 6 | Version 1.0.1, after the second jamovi audit, with Zenodo DOI [10.5281/zenodo.24305198](https://doi.org/10.5281/zenodo.24305198) | ✅ Done |
 | 7 | Version 1.0.2, after the jamovi audit of 1.0.1, with Zenodo DOI [10.5281/zenodo.24339275](https://doi.org/10.5281/zenodo.24339275) | ✅ Done |
 | 8 | Version 1.0.3, plot readability and the direction of the P-matrix plot, with Zenodo DOI [10.5281/zenodo.24406603](https://doi.org/10.5281/zenodo.24406603) | ✅ Done |
-| 9 | Published in the jamovi Library (from version 1.0.1) | ✅ Done |
+| 9 | Version 1.0.4, wording fixes from the jamovi audit of 1.0.3, with Zenodo DOI [10.5281/zenodo.24441938](https://doi.org/10.5281/zenodo.24441938) | ✅ Done |
+| 10 | Published in the jamovi Library (from version 1.0.1) | ✅ Done |
 
 ---
 
@@ -337,8 +338,8 @@ If you use MokkenLab in your research, please cite the module and the mokken
 package:
 
 > Chacón Chacón, A. D. L. (2026). *MokkenLab: A jamovi module for Mokken
-> scale analysis* (Version 1.0.3) [Computer software]. Zenodo.
-> https://doi.org/10.5281/zenodo.24406603
+> scale analysis* (Version 1.0.4) [Computer software]. Zenodo.
+> https://doi.org/10.5281/zenodo.24441938
 
 > van der Ark, L. A. (2012). New developments in Mokken scale analysis in R.
 > *Journal of Statistical Software, 48*(5), 1–27.

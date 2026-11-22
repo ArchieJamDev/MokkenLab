@@ -1,4 +1,4 @@
-# MokkenLab 1.0.4 (unreleased)
+# MokkenLab 1.0.4 (released 2026-11-22, DOI 10.5281/zenodo.24441938)
 
 Wording fixes from the jamovi module audit of 1.0.3 (2026-11-21). No option
 is renamed and no result changes, so saved analyses are not affected.
