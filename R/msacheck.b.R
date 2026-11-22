@@ -1062,9 +1062,9 @@ msacheckClass <- if (requireNamespace("jmvcore", quietly = TRUE)) R6::R6Class(
         },
 
         # P-matrix: one line per item step across the other item steps,
-        # ordered from the most to the least popular.
+        # ordered from the least to the most popular.
         # ES: P-matrix: una línea por paso de ítem a lo largo de los otros
-        # pasos, ordenados del más al menos popular.
+        # pasos, ordenados del menos al más popular.
         .plotPmatrix = function(image, ggtheme, theme, ...) {
             state <- image$state
             if (is.null(state) || is.null(state$data) || nrow(state$data) == 0)

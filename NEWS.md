@@ -1,3 +1,22 @@
+# MokkenLab 1.0.4 (unreleased)
+
+Wording fixes from the jamovi module audit of 1.0.3 (2026-11-21). No option
+is renamed and no result changes, so saved analyses are not affected.
+
+## Changes visible to users
+
+* **The W indices note no longer names an R function.** When the
+  conditional association check returns no W indices, the note under "W
+  indices of local dependence" now says "The conditional association check
+  did not return W indices…" instead of naming `check.ca()` (EN/ES).
+
+## Internal changes
+
+* The code comment above `.plotPmatrix` now gives the right direction
+  (least to most popular), matching the plot and its label (EN/ES).
+* The comments on `showGuides` in the four `.a.yaml` files now say the
+  guides are off by default, which is what `default: false` does.
+
 # MokkenLab 1.0.3 (released 2026-11-20, DOI 10.5281/zenodo.24406603)
 
 Plot readability, found while writing the tutorial article.

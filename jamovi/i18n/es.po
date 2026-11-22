@@ -524,12 +524,13 @@ msgstr ""
 
 #: R/texts.R
 msgid ""
-"check.ca() did not return W indices with these settings, so this table has "
-"no values. The conditional association steps above are not affected."
+"The conditional association check did not return W indices with these "
+"settings, so this table has no values. The conditional association steps "
+"above are not affected."
 msgstr ""
-"check.ca() no devolvió índices W con esta configuración, por lo que esta "
-"tabla no tiene valores. Los pasos de asociación condicional de arriba no se "
-"ven afectados."
+"La comprobación de asociación condicional no devolvió índices W con esta "
+"configuración, por lo que esta tabla no tiene valores. Los pasos de "
+"asociación condicional de arriba no se ven afectados."
 
 #: package/analyses/msacheck.description
 #: msacheck/options.description.main

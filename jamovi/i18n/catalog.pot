@@ -444,8 +444,9 @@ msgstr ""
 
 #: R/texts.R
 msgid ""
-"check.ca() did not return W indices with these settings, so this table has "
-"no values. The conditional association steps above are not affected."
+"The conditional association check did not return W indices with these "
+"settings, so this table has no values. The conditional association steps "
+"above are not affected."
 msgstr ""
 
 #: package/analyses/msacheck.description
