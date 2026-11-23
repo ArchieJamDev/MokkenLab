@@ -24,8 +24,9 @@ MokkenLab brings the nonparametric item response theory of the
 [mokken](https://CRAN.R-project.org/package=mokken) R package to
 [jamovi](https://www.jamovi.org/), without writing a line of R. Like its
 sibling modules [AssumptionsLab](https://github.com/ArchieJamDev/AssumptionsLab),
-[FiabilityLab](https://github.com/ArchieJamDev/FiabilityLab) and
-[EGAnetLab](https://github.com/ArchieJamDev/EGAnetLab), it does not stop at the
+[FiabilityLab](https://github.com/ArchieJamDev/FiabilityLab),
+[EGAnetLab](https://github.com/ArchieJamDev/EGAnetLab) and
+[PLSsemLab](https://github.com/ArchieJamDev/PLSsemLab), it does not stop at the
 numbers: every option in the menu explains what it does and when to choose it,
 and every result comes with a plain-language interpretation, the evidence
 behind it and the next step to take.
@@ -250,7 +251,9 @@ deletion or two-way imputation) rather than silently.
 
 MokkenLab is in the official jamovi Library. In jamovi, open
 **Modules** (the **+** at the right of the Analyses ribbon) › **jamovi
-library**, find **MokkenLab** and click **Install**.
+library**, find **MokkenLab** and click **Install**. The Library may carry
+an earlier version than the latest release (1.0.4, submitted to jamovi);
+the [release notes](NEWS.md) list what changed in each version.
 
 ### From source (any system)
 
@@ -329,6 +332,8 @@ package.
 | 8 | Version 1.0.3, plot readability and the direction of the P-matrix plot, with Zenodo DOI [10.5281/zenodo.24406603](https://doi.org/10.5281/zenodo.24406603) | ✅ Done |
 | 9 | Version 1.0.4, wording fixes from the jamovi audit of 1.0.3, with Zenodo DOI [10.5281/zenodo.24441938](https://doi.org/10.5281/zenodo.24441938) | ✅ Done |
 | 10 | Published in the jamovi Library (from version 1.0.1) | ✅ Done |
+| 11 | Version 1.0.4 submitted to update the jamovi Library | 🔄 In progress |
+| 12 | Ribbon icon for the *Mokken Lab* menu (`jamovi/icons/mokkenlab.svg`), shown once jamovi supports module menu icons | ✅ Done |
 
 ---
 
