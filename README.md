@@ -8,7 +8,7 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a>
   <a href="https://github.com/ArchieJamDev/MokkenLab/releases"><img src="https://img.shields.io/github/v/release/ArchieJamDev/MokkenLab?label=release&color=4A86E0" alt="Release"></a>
-  <a href="https://doi.org/10.5281/zenodo.24441938"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.24441938.svg" alt="DOI"></a>
+  <a href="https://doi.org/10.5281/zenodo.23955263"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23955263.svg" alt="DOI (all versions, resolves to the latest)"></a>
   <img src="https://img.shields.io/badge/mokken-%E2%89%A5%203.1.2-E6AC40" alt="mokken ≥ 3.1.2">
   <img src="https://img.shields.io/badge/jamovi-%E2%89%A5%201.0.8-4A86E0" alt="jamovi ≥ 1.0.8">
   <img src="https://img.shields.io/badge/jamovi%20Library-available-6B9DE8" alt="Available in the jamovi Library">
@@ -192,7 +192,7 @@ cannot be typed in an option panel; mokken's default is used). See
 
 ## Graphics
 
-Fifteen plots, all rebuilt in ggplot from mokken's own result matrices so
+Fourteen plots, all rebuilt in ggplot from mokken's own result matrices so
 they follow jamovi's theme and survive export: item scalability with
 intervals, the *H<sub>ij</sub>* heat map, *H<sub>i</sub>* by group,
 Guttman-error distributions with their fences, the percentile-rank curve with
@@ -325,7 +325,7 @@ package.
 | 1 | Two-Level Mokken Scale Analysis | ✅ Done |
 | 2 | Test suite and CI, validation against direct mokken calls | ✅ Done |
 | 3 | Documentation (bibliography, architecture) | ✅ Done |
-| 4 | First release, v0.1.0, with Zenodo DOI [10.5281/zenodo.23955263](https://doi.org/10.5281/zenodo.23955263) | ✅ Done |
+| 4 | First release, v0.1.0, archived in Zenodo (DOI of all versions [10.5281/zenodo.23955263](https://doi.org/10.5281/zenodo.23955263)) | ✅ Done |
 | 5 | Version 1.0.0, after the jamovi Library review, with Zenodo DOI [10.5281/zenodo.24119065](https://doi.org/10.5281/zenodo.24119065) | ✅ Done |
 | 6 | Version 1.0.1, after the second jamovi audit, with Zenodo DOI [10.5281/zenodo.24305198](https://doi.org/10.5281/zenodo.24305198) | ✅ Done |
 | 7 | Version 1.0.2, after the jamovi audit of 1.0.1, with Zenodo DOI [10.5281/zenodo.24339275](https://doi.org/10.5281/zenodo.24339275) | ✅ Done |
@@ -340,11 +340,15 @@ package.
 ## Citation
 
 If you use MokkenLab in your research, please cite the module and the mokken
-package:
+package. Every release is archived in Zenodo. The DOI
+[10.5281/zenodo.23955263](https://doi.org/10.5281/zenodo.23955263) covers all
+versions and always resolves to the latest one; each version also has its own
+DOI, listed on the Zenodo page. Version 1.0.4 is
+[10.5281/zenodo.24441938](https://doi.org/10.5281/zenodo.24441938).
 
 > Chacón Chacón, A. D. L. (2026). *MokkenLab: A jamovi module for Mokken
 > scale analysis* (Version 1.0.4) [Computer software]. Zenodo.
-> https://doi.org/10.5281/zenodo.24441938
+> https://doi.org/10.5281/zenodo.23955263
 
 > van der Ark, L. A. (2012). New developments in Mokken scale analysis in R.
 > *Journal of Statistical Software, 48*(5), 1–27.
@@ -384,7 +388,7 @@ mokken (validation/).
 Trabaja con ítems dicotómicos y politómicos ordinales. Cada opción del menú
 incluye un párrafo que explica qué hace y cuándo conviene elegirla, y los
 resultados se acompañan de un resumen de hallazgos, guías e interpretaciones
-en español o inglés, según el idioma configurado en jamovi. Sus quince
+en español o inglés, según el idioma configurado en jamovi. Sus catorce
 gráficos se parametrizan desde una misma caja de ajustes (tamaño, puntos,
 líneas, paneles, leyenda, ejes, rango y etiquetas) y usan la paleta de
 jamovi. Incluye cuatro conjuntos de datos públicos del paquete mokken para
